@@ -1,3 +1,9 @@
 /iDispatchMobile/gen/
-/Frameworks
-
+/iDispatchDWS/nbproject/private/
+/iDispatchCommand/nbproject/private/
+/iDispatchRunBoard/nbproject/private/
+/MapImporter/nbproject/private/
+/iDispatchServer/nbproject/private/
+/Maps
+/Libs
+/MapImporter/target/
