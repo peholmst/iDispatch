@@ -20,7 +20,7 @@ public class MapBrowser extends AbstractComponent {
     
     private final MapBrowserServerRpc rpc = new MapBrowserServerRpc() {
         @Override
-        public void browserResized(int widthInPixels, int heightInPixels) {
+        public void componentResized(int widthInPixels, int heightInPixels) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
     };
