@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class MapBrowserWidget extends Widget {
     
     /** CSS class name to allow styling */
-    public static final String CLASSNAME = "mapbrowser";
+    public static final String CLASSNAME = "v-mapbrowser";
     
     public MapBrowserWidget() {
         setElement(Document.get().createDivElement());
