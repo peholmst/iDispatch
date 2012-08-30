@@ -5,7 +5,7 @@ package net.pkhsolutions.idispatch.mapbrowserweb.components;
 
 /**
  * Interface for listening for a {@link MapBrowserClickEvent} fired by a
- * {@link MapBrowserComponent}.
+ * {@link MapBrowser}.
  *
  * @author Petter Holmström
  * @since 1.0
@@ -13,7 +13,7 @@ package net.pkhsolutions.idispatch.mapbrowserweb.components;
 public interface MapBrowserClickListener extends java.io.Serializable {
 
     /**
-     * Called when a {@link MapBrowserComponent} has been clicked.
+     * Called when a {@link MapBrowser} has been clicked.
      *
      * @param event an event containing information about the click.
      */

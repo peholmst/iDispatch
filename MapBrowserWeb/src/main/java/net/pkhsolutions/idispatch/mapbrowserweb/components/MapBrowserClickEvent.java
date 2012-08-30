@@ -7,7 +7,7 @@ import com.vaadin.ui.Component;
 import java.awt.Point;
 
 /**
- * This event is fired when a {@link MapBrowserComponent} is clicked.
+ * This event is fired when a {@link MapBrowser} is clicked.
  *
  * @author Petter Holmström
  * @since 1.0
@@ -23,7 +23,7 @@ public class MapBrowserClickEvent extends Component.Event {
      * @param coordinates the lat/long coordinates of the point where the map
      * was clicked (must not be {@code null}).
      */
-    protected MapBrowserClickEvent(MapBrowserComponent source, Point.Double coordinates) {
+    protected MapBrowserClickEvent(MapBrowser source, Point.Double coordinates) {
         super(source);
         if (coordinates == null) {
             throw new IllegalArgumentException("Coordinates must not be null");
@@ -40,7 +40,7 @@ public class MapBrowserClickEvent extends Component.Event {
     }
 
     @Override
-    public MapBrowserComponent getComponent() {
-        return (MapBrowserComponent) super.getComponent();
+    public MapBrowser getComponent() {
+        return (MapBrowser) super.getComponent();
     }
 }
