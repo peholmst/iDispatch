@@ -12,7 +12,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>iDispatch Command</name>
+    <name>iDispatch Command App</name>
 
     <dependencies>
         <dependency>

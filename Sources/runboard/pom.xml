@@ -12,7 +12,7 @@
     <version>1.0-SNAPSHOT</version>
     <packaging>war</packaging>
 
-    <name>iDispatch Runboard</name>
+    <name>iDispatch Runboard App</name>
 
     <dependencies>
         <dependency>
