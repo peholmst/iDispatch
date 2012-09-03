@@ -12,4 +12,7 @@ import com.vaadin.terminal.gwt.client.ComponentState;
  * @since 1.0
  */
 public class MapBrowserState extends ComponentState {
+    
+    
+    
 }

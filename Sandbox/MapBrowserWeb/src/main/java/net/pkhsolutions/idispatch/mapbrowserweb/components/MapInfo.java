@@ -146,4 +146,32 @@ public interface MapInfo extends java.io.Serializable {
      * @throws IllegalArgumentException if the cell is out of bounds.
      */
     void render(Graphics2D graphics, int row, int col) throws IllegalArgumentException;
+
+    /**
+     * TODO Document me!
+     *
+     * @param listener
+     */
+    void addListener(Listener listener);
+
+    /**
+     * TODO Document me!
+     *
+     * @param listener
+     */
+    void removeListener(Listener listener);
+
+    /**
+     * TODO Document me!
+     */
+    interface Listener {
+
+        /**
+         * TODO Document me!
+         *
+         * @param mapInfo
+         * @param newZoomLevel
+         */
+        void zoomLevelChanged(MapInfo mapInfo, int newZoomLevel);
+    }
 }

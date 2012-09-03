@@ -5,6 +5,8 @@ package net.pkhsolutions.idispatch.mapbrowserweb.components;
 
 import com.vaadin.ui.AbstractComponent;
 import java.awt.Point;
+import java.util.LinkedList;
+import java.util.List;
 import net.pkhsolutions.idispatch.mapbrowserweb.components.client.MapBrowserServerRpc;
 import net.pkhsolutions.idispatch.mapbrowserweb.components.client.MapBrowserState;
 
@@ -17,14 +19,24 @@ import net.pkhsolutions.idispatch.mapbrowserweb.components.client.MapBrowserStat
 public class MapBrowser extends AbstractComponent {
 
     // TODO Improve documentation once this component is really working.
-    
+    private List<MapBrowserClickListener> listeners = new LinkedList<>();
+    private MapInfo mapInfo;
     private final MapBrowserServerRpc rpc = new MapBrowserServerRpc() {
         @Override
         public void componentResized(int widthInPixels, int heightInPixels) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            MapBrowser.this.componentResized(widthInPixels, heightInPixels);
         }
     };
+    private final MapInfo.Listener mapInfoListener = new MapInfo.Listener() {
 
+        @Override
+        public void zoomLevelChanged(MapInfo mapInfo, int newZoomLevel) {
+            renderMap();
+        }
+    };
+    private int widthInPixels = -1;
+    private int heightInPixels = -1;
+    
     /**
      * Creates a new {@code MapBrowser}. By default, it has an undefined size.
      */
@@ -43,7 +55,7 @@ public class MapBrowser extends AbstractComponent {
      * map is being displayed.
      */
     public MapInfo getMapInfo() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return mapInfo;
     }
 
     /**
@@ -51,27 +63,17 @@ public class MapBrowser extends AbstractComponent {
      * nothing is displayed.
      */
     public void setMapInfo(MapInfo mapInfo) {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    /**
-     * Returns the current zoom level of the map.
-     */
-    public int getZoomLevel() {
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
-    /**
-     * Sets the current zoom level of the map. If the zoom level falls out of
-     * the allowed interval, it is set to the closest ending point (i.e. if the
-     * zoom level is less than the minimum zoom level, it is set to the minimum
-     * zoom level).
-     *
-     * @see MapInfo#getMaximumZoomLevel()
-     * @see MapInfo#getMinimumZoomLevel()
-     */
-    public void setZoomLevel(int zoomLevel) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (this.mapInfo != null) {
+            this.mapInfo.removeListener(mapInfoListener);
+        }
+        this.mapInfo = mapInfo;
+        if (mapInfo != null) {
+            mapInfo.addListener(mapInfoListener);
+            // This call will also call renderMap()
+            center(mapInfo.getCenterCoordinates());
+        } else {
+            renderMap();
+        }
     }
 
     /**
@@ -104,7 +106,9 @@ public class MapBrowser extends AbstractComponent {
      * happens.
      */
     public void addListener(MapBrowserClickListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (listener != null) {
+            listeners.add(listener);
+        }
     }
 
     /**
@@ -113,6 +117,17 @@ public class MapBrowser extends AbstractComponent {
      * nothing happens.
      */
     public void removeListener(MapBrowserClickListener listener) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (listener != null) {
+            listeners.remove(listener);
+        }
+    }
+
+    private void componentResized(int widthInPixels, int heightInPixels) {
+        this.widthInPixels = widthInPixels;
+        this.heightInPixels = heightInPixels;
+    }
+    
+    private void renderMap() {
+        
     }
 }

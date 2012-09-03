@@ -4,7 +4,7 @@ import com.vaadin.terminal.WrappedRequest;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Root;
 import com.vaadin.ui.VerticalLayout;
-import net.pkhsolutions.idispatch.mapbrowserweb.components.MapBrowserComponent;
+import net.pkhsolutions.idispatch.mapbrowserweb.components.MapBrowser;
 
 /**
  * TODO Document me!
@@ -25,7 +25,7 @@ public class MapBrowserRoot extends Root {
         Label title = new Label("Map Browser");
         rootLayout.addComponent(title);
 
-        MapBrowserComponent map = new MapBrowserComponent();
+        MapBrowser map = new MapBrowser();
         map.setSizeFull();
         rootLayout.addComponent(map);
         rootLayout.setExpandRatio(map, 1.0f);
