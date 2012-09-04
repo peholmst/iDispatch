@@ -1,2 +1,9 @@
 /Maps
 /Libs
+/Sources/domain/target/
+/Sources/common/target/
+/Sources/dws/target/
+/Sources/runboard/target/
+/Sources/command/target/
+/Sources/reporting/target/
+/Sources/ear/target/
