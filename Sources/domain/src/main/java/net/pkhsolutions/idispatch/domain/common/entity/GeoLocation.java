@@ -6,6 +6,8 @@ package net.pkhsolutions.idispatch.domain.common.entity;
 import java.math.BigDecimal;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import net.pkhsolutions.idispatch.domain.AbstractValueObject;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -21,8 +23,12 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 public class GeoLocation extends AbstractValueObject<GeoLocation> {
 
     @Column(precision = 10, scale = 7)
+    @Max(180)
+    @Min(-180)
     private BigDecimal longitude;
     @Column(precision = 9, scale = 7)
+    @Max(90)
+    @Min(-90)
     private BigDecimal latitude;
 
     public static class Builder extends AbstractBuilder<GeoLocation> {
