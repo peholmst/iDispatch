@@ -6,6 +6,7 @@ package net.pkhsolutions.idispatch.domain;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
 /**
@@ -14,6 +15,7 @@ import javax.persistence.Version;
  * @author Petter Holmström
  * @since 1.0
  */
+@MappedSuperclass
 public abstract class AbstractEntity<T extends AbstractEntity<T>> implements java.io.Serializable {
 
     @Id
