@@ -3,6 +3,8 @@
  */
 package net.pkhsolutions.idispatch.domain;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.ParameterizedType;
 import javax.persistence.Embeddable;
 
@@ -47,11 +49,7 @@ public abstract class AbstractValueObject<T extends AbstractValueObject<T>> impl
 
         private T createNew() {
             final Class<T> voClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
-            try {
-                return voClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
-                throw new RuntimeException("Could not create instance of " + voClass, ex);
-            }
+            return newValueObject(voClass);
         }
 
         /**
@@ -136,13 +134,8 @@ public abstract class AbstractValueObject<T extends AbstractValueObject<T>> impl
      * {@code null}.
      */
     public T copy() {
-        T copy;
-        try {
-            copy = getValueObjectType().newInstance();
-            internalCopy(copy);
-        } catch (InstantiationException | IllegalAccessException ex) {
-            throw new RuntimeException("Could not create instance of " + getValueObjectType(), ex);
-        }
+        T copy = newValueObject(getValueObjectType());
+        internalCopy(copy);
         copy.isNull = this.isNull;
         return copy;
     }
@@ -176,6 +169,17 @@ public abstract class AbstractValueObject<T extends AbstractValueObject<T>> impl
 
     private Class<T> getValueObjectType() {
         return (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+    }
+
+    private static <T> T newValueObject(Class<T> voClass) {
+        try {
+            final Constructor<T> constructor = voClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException ex) {
+            throw new RuntimeException("Could not create instance of " + voClass, ex);
+        }
+
     }
 
     /**
