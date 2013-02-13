@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.dws.ui.data;
+package net.pkhsolutions.idispatch.data;
 
 import com.vaadin.data.Container;
 import com.vaadin.data.Property;

@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.dws.ui.data;
+package net.pkhsolutions.idispatch.data;
 
 import java.lang.reflect.InvocationTargetException;
 
