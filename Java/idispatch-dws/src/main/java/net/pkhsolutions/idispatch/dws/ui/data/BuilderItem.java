@@ -2,9 +2,7 @@ package net.pkhsolutions.idispatch.dws.ui.data;
 
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
-import java.beans.Introspector;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,7 +15,7 @@ import net.pkhsolutions.idispatch.entity.AbstractEntity;
  *
  * @author Petter Holmström
  */
-public abstract class BuilderItem<E extends AbstractEntity, B extends AbstractEntity.AbstractEntityBuilder> implements Item {
+public class BuilderItem<E extends AbstractEntity, B extends AbstractEntity.AbstractEntityBuilder> implements Item {
 
     private Class<E> entityClass;
     private Class<B> builderClass;
@@ -25,29 +23,21 @@ public abstract class BuilderItem<E extends AbstractEntity, B extends AbstractEn
     private Map<Object, BuilderProperty> propertyMap = new HashMap<>();
     private E entity;
 
-    protected BuilderItem(Class<E> entityClass, Class<B> builderClass) {
+    public BuilderItem(Class<E> entityClass, Class<B> builderClass) {
         this.entityClass = entityClass;
         this.builderClass = builderClass;
-        scanForProperties();
+        registerProperties(BuilderPropertyDescriptor.sanForProperties(entityClass, builderClass));
     }
 
-    private void scanForProperties() {
-        for (Method potentialReadMethod : entityClass.getMethods()) {
-            if (potentialReadMethod.getReturnType() == Void.TYPE && potentialReadMethod.getParameterTypes().length == 0) {
-                String methodName = potentialReadMethod.getName();
-                if (methodName.length() > 3 && methodName.startsWith("get")) {
-                    // This is a read method, now let's try to find a corresponding write method
-                    String baseName = methodName.substring(3);
-                    String writeMethodName = "with" + baseName;
-                    Method writeMethod;
-                    try {
-                        writeMethod = builderClass.getMethod(writeMethodName, potentialReadMethod.getReturnType());
-                    } catch (NoSuchMethodException | SecurityException ex) {
-                        writeMethod = null;
-                    }
-                    propertyMap.put(Introspector.decapitalize(baseName), new BuilderProperty(potentialReadMethod, writeMethod));
-                }
-            }
+    protected BuilderItem(Class<E> entityClass, Class<B> builderClass, Collection<BuilderPropertyDescriptor<E, B>> propertyDescriptors) {
+        this.entityClass = entityClass;
+        this.builderClass = builderClass;
+        registerProperties(propertyDescriptors);
+    }
+
+    private void registerProperties(Collection<BuilderPropertyDescriptor<E, B>> propertyDescriptors) {
+        for (BuilderPropertyDescriptor<E, B> descriptor : propertyDescriptors) {
+            propertyMap.put(descriptor.getName(), new BuilderProperty(descriptor));
         }
     }
 
@@ -97,37 +87,24 @@ public abstract class BuilderItem<E extends AbstractEntity, B extends AbstractEn
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException ex) {
             throw new RuntimeException("Could not create new builder instance", ex);
         } catch (InvocationTargetException ex) {
-            throw unwrap(ex);
+            throw ExceptionUtils.unwrap(ex);
         }
     }
 
     public class BuilderProperty implements Property, Property.ValueChangeNotifier, Property.ReadOnlyStatusChangeNotifier {
 
-        private Method entityReadMethod;
-        private Method builderWriteMethod;
-        // TODO Serialize methods
+        private BuilderPropertyDescriptor<E, B> descriptor;
         private boolean readOnly;
         private Set<Property.ValueChangeListener> valueChangeListeners = new HashSet<>();
         private Set<ReadOnlyStatusChangeListener> readOnlyStatusChangeListeners = new HashSet<>();
 
-        protected BuilderProperty(Method entityReadMethod, Method builderWriteMethod) {
-            this.entityReadMethod = entityReadMethod;
-            this.builderWriteMethod = builderWriteMethod;
+        protected BuilderProperty(BuilderPropertyDescriptor<E, B> descriptor) {
+            this.descriptor = descriptor;
         }
 
         @Override
         public Object getValue() {
-            if (getEntity() == null) {
-                return null;
-            } else {
-                try {
-                    return entityReadMethod.invoke(getEntity());
-                } catch (IllegalAccessException ex) {
-                    throw new RuntimeException("Could not get value", ex);
-                } catch (InvocationTargetException ex) {
-                    throw unwrap(ex);
-                }
-            }
+            return descriptor.getValue(getEntity());
         }
 
         @Override
@@ -135,31 +112,25 @@ public abstract class BuilderItem<E extends AbstractEntity, B extends AbstractEn
             if (isReadOnly()) {
                 throw new Property.ReadOnlyException();
             }
-            try {
-                B builder = createNewBuilder();
-                builderWriteMethod.invoke(builder, newValue);
-                setInternalEntity(entityClass.cast(builder.build()));
-                fireValueChangeEvent();
-            } catch (IllegalAccessException ex) {
-                throw new RuntimeException("Could not set value", ex);
-            } catch (InvocationTargetException ex) {
-                throw unwrap(ex);
-            }
+            B builder = createNewBuilder();
+            E newEntity = descriptor.setValue(builder, newValue);
+            setInternalEntity(newEntity);
+            fireValueChangeEvent();
         }
 
         @Override
         public Class getType() {
-            return entityReadMethod.getReturnType();
+            return descriptor.getType();
         }
 
         @Override
         public boolean isReadOnly() {
-            return builderWriteMethod == null || getEntity() == null || readOnly;
+            return !descriptor.isWritable() || getEntity() == null || readOnly;
         }
 
         @Override
         public void setReadOnly(boolean newStatus) {
-            if (builderWriteMethod == null) {
+            if (!descriptor.isWritable()) {
                 throw new UnsupportedOperationException("No write method is available so this property is always read only");
             }
             if (readOnly != newStatus) {
@@ -234,14 +205,6 @@ public abstract class BuilderItem<E extends AbstractEntity, B extends AbstractEn
             for (Property.ValueChangeListener listener : new HashSet<>(valueChangeListeners)) {
                 listener.valueChange(event);
             }
-        }
-    }
-
-    private static RuntimeException unwrap(InvocationTargetException ex) {
-        if (ex.getTargetException() instanceof RuntimeException) {
-            return (RuntimeException) ex.getTargetException();
-        } else {
-            return new RuntimeException(ex);
         }
     }
 }
