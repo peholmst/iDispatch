@@ -3,13 +3,13 @@ package net.pkhsolutions.idispatch.entity.events;
 import net.pkhsolutions.idispatch.entity.Ticket;
 
 /**
- * Event fired when an existing Ticket is changed.
+ * Event fired when an existing Ticket is closed.
  *
  * @author Petter Holmström
  */
-public class TicketChangedEvent extends TicketEvent {
+public class TicketClosedEvent extends TicketEvent {
 
-    public TicketChangedEvent(Ticket ticket) {
+    public TicketClosedEvent(Ticket ticket) {
         super(ticket);
     }
 }
