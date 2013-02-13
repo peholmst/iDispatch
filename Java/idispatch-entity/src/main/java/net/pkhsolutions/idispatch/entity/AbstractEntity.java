@@ -1,9 +1,11 @@
 package net.pkhsolutions.idispatch.entity;
 
+import java.io.Serializable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
 
 @MappedSuperclass
 public class AbstractEntity implements Serializable {
@@ -11,6 +13,9 @@ public class AbstractEntity implements Serializable {
     @Id
     @GeneratedValue
     private Long id;
+
+    protected AbstractEntity() {
+    }
 
     public Long getId() {
         return id;
@@ -26,8 +31,12 @@ public class AbstractEntity implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         AbstractEntity that = (AbstractEntity) o;
 
@@ -37,5 +46,31 @@ public class AbstractEntity implements Serializable {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : System.identityHashCode(this);
+    }
+
+    public static abstract class AbstractEntityBuilder {
+
+        private AbstractEntity entity;
+
+        public AbstractEntityBuilder(Class<? extends AbstractEntity> entityClass) {
+            try {
+                entity = entityClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException ex) {
+                Logger.getLogger(AbstractEntity.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        public AbstractEntityBuilder(Class<? extends AbstractEntity> entityClass, AbstractEntity original) {
+            this(entityClass);
+            entity.id = original.id;
+        }
+
+        public AbstractEntity build() {
+            return entity;
+        }
+
+        protected AbstractEntity getEntity() {
+            return entity;
+        }
     }
 }
