@@ -1,10 +1,12 @@
 package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 
 @Entity
 public class ResourceType extends AbstractEntityWithOptimisticLocking {
 
+    @NotNull(message = "Please enter a name for the resource type")
     private String name;
 
     protected ResourceType() {
@@ -18,21 +20,20 @@ public class ResourceType extends AbstractEntityWithOptimisticLocking {
         this.name = name;
     }
 
-    public static class Builder {
-        private ResourceType resourceType;
+    public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<ResourceType, Builder> {
 
         public Builder() {
-            resourceType = new ResourceType();
+            super(ResourceType.class);
+        }
+
+        public Builder(ResourceType original) {
+            super(ResourceType.class, original);
+            entity.setName(original.getName());
         }
 
         public Builder withName(String name) {
-            resourceType.setName(name);
+            entity.setName(name);
             return this;
-        }
-
-        public ResourceType build() {
-            // TODO Validate the fields
-            return resourceType;
         }
     }
 }

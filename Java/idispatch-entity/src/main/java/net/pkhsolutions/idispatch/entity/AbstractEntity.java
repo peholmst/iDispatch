@@ -1,6 +1,8 @@
 package net.pkhsolutions.idispatch.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.persistence.GeneratedValue;
@@ -48,11 +50,11 @@ public class AbstractEntity implements Serializable {
         return id != null ? id.hashCode() : System.identityHashCode(this);
     }
 
-    public static abstract class AbstractEntityBuilder {
+    public static abstract class AbstractEntityBuilder<E extends AbstractEntity, B extends AbstractEntityBuilder<E, B>> {
 
-        private AbstractEntity entity;
+        protected E entity;
 
-        public AbstractEntityBuilder(Class<? extends AbstractEntity> entityClass) {
+        public AbstractEntityBuilder(Class<E> entityClass) {
             try {
                 entity = entityClass.newInstance();
             } catch (InstantiationException | IllegalAccessException ex) {
@@ -60,17 +62,33 @@ public class AbstractEntity implements Serializable {
             }
         }
 
-        public AbstractEntityBuilder(Class<? extends AbstractEntity> entityClass, AbstractEntity original) {
+        public AbstractEntityBuilder(Class<E> entityClass, E original) {
             this(entityClass);
-            entity.id = original.id;
+            entity.setId(original.getId());
         }
 
-        public AbstractEntity build() {
+        public E build() {
             return entity;
         }
 
-        protected AbstractEntity getEntity() {
-            return entity;
+        public B clearIdentityInfo() {
+            entity.setId(null);
+            return (B) this;
+        }
+
+        protected static <T> T clone(T original) {
+            if (original == null) {
+                return null;
+            } else if (original instanceof Cloneable) {
+                try {
+                    Method clone = original.getClass().getMethod("clone");
+                    return (T) clone.invoke(original);
+                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | InvocationTargetException ex) {
+                    throw new IllegalArgumentException("Object cannot be cloned even though it implements the Cloneable interface", ex);
+                }
+            } else {
+                throw new IllegalArgumentException("Object is not cloneable");
+            }
         }
     }
 }

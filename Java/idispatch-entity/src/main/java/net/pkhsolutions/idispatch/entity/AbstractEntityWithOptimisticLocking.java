@@ -20,21 +20,21 @@ public class AbstractEntityWithOptimisticLocking extends AbstractEntity {
         this.version = version;
     }
 
-    public static abstract class AbstractEntityWithOptimisticLockingBuilder extends AbstractEntityBuilder {
+    public static abstract class AbstractEntityWithOptimisticLockingBuilder<E extends AbstractEntityWithOptimisticLocking, B extends AbstractEntityWithOptimisticLockingBuilder<E, B>> extends AbstractEntityBuilder<E, B> {
 
-        public AbstractEntityWithOptimisticLockingBuilder(Class<? extends AbstractEntityWithOptimisticLocking> entityClass) {
+        public AbstractEntityWithOptimisticLockingBuilder(Class<E> entityClass) {
             super(entityClass);
         }
 
-        @SuppressWarnings("OverridableMethodCallInConstructor")
-        public AbstractEntityWithOptimisticLockingBuilder(Class<? extends AbstractEntityWithOptimisticLocking> entityClass, AbstractEntityWithOptimisticLocking original) {
-            this(entityClass);
-            getEntity().version = original.version;
+        public AbstractEntityWithOptimisticLockingBuilder(Class<E> entityClass, E original) {
+            super(entityClass, original);
+            entity.setVersion(original.getVersion());
         }
 
         @Override
-        protected AbstractEntityWithOptimisticLocking getEntity() {
-            return (AbstractEntityWithOptimisticLocking) super.getEntity();
+        public B clearIdentityInfo() {
+            entity.setVersion(null);
+            return super.clearIdentityInfo();
         }
     }
 }
