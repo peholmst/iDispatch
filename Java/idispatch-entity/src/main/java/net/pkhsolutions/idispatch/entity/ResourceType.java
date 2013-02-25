@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.entity;
 
+import java.util.Locale;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +29,15 @@ public class ResourceType extends AbstractEntityWithOptimisticLocking {
 
     public void setNameSv(String nameSv) {
         this.nameSv = nameSv;
+    }
+
+    public String getName(Locale locale) {
+        switch (locale.getLanguage()) {
+            case "fi":
+                return getNameFi();
+            default:
+                return getNameSv();
+        }
     }
 
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<ResourceType, Builder> {
