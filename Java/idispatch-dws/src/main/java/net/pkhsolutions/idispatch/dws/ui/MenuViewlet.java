@@ -33,7 +33,6 @@ public class MenuViewlet extends CustomComponent {
     public MenuViewlet() {
         addStyleName("menu-viewlet");
         layout = new VerticalLayout();
-        layout.setMargin(true);
         setCompositionRoot(layout);
     }
 
@@ -44,6 +43,7 @@ public class MenuViewlet extends CustomComponent {
 
     public void addMenuItem(String caption, final String viewId) {
         HorizontalLayout menuItem = new HorizontalLayout();
+        menuItem.setWidth("100%");
         menuItem.addStyleName("menu-item");
         menuItem.addComponent(new Label(caption));
         menuItem.addLayoutClickListener(new LayoutEvents.LayoutClickListener() {
