@@ -1,5 +1,7 @@
 package net.pkhsolutions.idispatch.dws.ui.masterdata;
 
+import com.github.peholmst.i18n4vaadin.annotations.Message;
+import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.FormLayout;
@@ -22,10 +24,13 @@ public class ResourceTypeView extends AbstractMasterDataView<ResourceType> {
     public static final String VIEW_ID = "resourceTypeMasterData";
     @Inject
     ResourceTypeEJB resourceType;
+    @Inject
+    ResourceTypeViewBundle bundle;
 
+    @Message(key = "title", value = "Resurstyper")
     @Override
     protected String getTitle() {
-        return "Resource Type Master Data";
+        return bundle.title();
     }
 
     @Override
@@ -33,18 +38,29 @@ public class ResourceTypeView extends AbstractMasterDataView<ResourceType> {
         return resourceType;
     }
 
+    @Messages({
+        @Message(key = "nameFi", value = "Namn (finska)"),
+        @Message(key = "nameSv", value = "Namn (svenska)")
+    })
     @Override
     protected void setUpFormFields(FormLayout formLayout, FieldGroup fieldGroup) {
-        TextField name = new TextField("Name");
-        name.setWidth("200px");
-        name.setNullRepresentation("");
-        fieldGroup.bind(name, "name");
-        formLayout.addComponent(name);
+        TextField nameFi = new TextField(bundle.nameFi());
+        nameFi.setWidth("200px");
+        nameFi.setNullRepresentation("");
+        fieldGroup.bind(nameFi, "nameFi");
+        formLayout.addComponent(nameFi);
+
+        TextField nameSv = new TextField(bundle.nameSv());
+        nameSv.setWidth("200px");
+        nameSv.setNullRepresentation("");
+        fieldGroup.bind(nameSv, "nameSv");
+        formLayout.addComponent(nameSv);
     }
 
     @Override
     protected void setUpTable(Table table) {
-        table.setVisibleColumns(new String[]{"name"});
+        table.setVisibleColumns(new String[]{"nameFi", "nameSv"});
+        table.setColumnHeaders(new String[]{bundle.nameFi(), bundle.nameSv()});
     }
 
     @Override
@@ -64,8 +80,11 @@ public class ResourceTypeView extends AbstractMasterDataView<ResourceType> {
 
     public static class MenuItemRegistrar {
 
+        @Inject
+        ResourceTypeViewBundle bundle;
+
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem("Resource Type Master Data", VIEW_ID);
+            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
         }
     }
 }
