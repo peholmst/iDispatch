@@ -10,8 +10,10 @@ public class TicketType extends AbstractEntityWithOptimisticLocking {
     @Column(unique = true, nullable = false)
     @NotNull(message = "Please enter a code for the ticket type")
     private String code;
-    @NotNull(message = "Please enter a description for the ticket type")
-    private String description;
+    @NotNull(message = "Please enter a Finnish description for the ticket type")
+    private String descriptionFi;
+    @NotNull(message = "Please enter a Swedish description for the ticket type")
+    private String descriptionSv;
 
     protected TicketType() {
     }
@@ -24,12 +26,20 @@ public class TicketType extends AbstractEntityWithOptimisticLocking {
         this.code = code;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescriptionFi() {
+        return descriptionFi;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionFi(String descriptionFi) {
+        this.descriptionFi = descriptionFi;
+    }
+
+    public String getDescriptionSv() {
+        return descriptionSv;
+    }
+
+    public void setDescriptionSv(String descriptionSv) {
+        this.descriptionSv = descriptionSv;
     }
 
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<TicketType, Builder> {
@@ -41,7 +51,8 @@ public class TicketType extends AbstractEntityWithOptimisticLocking {
         public Builder(TicketType original) {
             super(TicketType.class, original);
             entity.setCode(original.getCode());
-            entity.setDescription(original.getDescription());
+            entity.setDescriptionFi(original.getDescriptionFi());
+            entity.setDescriptionSv(original.getDescriptionSv());
         }
 
         public Builder withCode(String code) {
@@ -49,8 +60,13 @@ public class TicketType extends AbstractEntityWithOptimisticLocking {
             return this;
         }
 
-        public Builder withDescription(String description) {
-            entity.setDescription(description);
+        public Builder withFinnishDescription(String description) {
+            entity.setDescriptionFi(description);
+            return this;
+        }
+
+        public Builder withSwedishDescription(String description) {
+            entity.setDescriptionSv(description);
             return this;
         }
     }
