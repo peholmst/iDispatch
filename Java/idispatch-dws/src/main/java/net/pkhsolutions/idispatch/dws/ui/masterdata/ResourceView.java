@@ -1,5 +1,8 @@
 package net.pkhsolutions.idispatch.dws.ui.masterdata;
 
+import com.github.peholmst.i18n4vaadin.I18N;
+import com.github.peholmst.i18n4vaadin.annotations.Message;
+import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
@@ -16,6 +19,7 @@ import net.pkhsolutions.idispatch.ejb.masterdata.ResourceEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceTypeEJB;
 import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceType;
+import org.apache.commons.lang.StringUtils;
 
 /**
  *
@@ -26,13 +30,18 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
 
     public static final String VIEW_ID = "resourceMasterData";
     @Inject
-    ResourceEJB resource;
+    private ResourceEJB resource;
     @Inject
-    ResourceTypeEJB resourceType;
+    private ResourceTypeEJB resourceType;
+    @Inject
+    private ResourceViewBundle bundle;
+    @Inject
+    private I18N i18n;
 
+    @Message(key = "title", value = "Resurser")
     @Override
     protected String getTitle() {
-        return "Resource Master Data";
+        return bundle.title();
     }
 
     @Override
@@ -40,17 +49,21 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
         return resource;
     }
 
+    @Messages({
+        @Message(key = "callSign", value = "Anropsnamn"),
+        @Message(key = "resourceType", value = "Typ")
+    })
     @Override
     protected void setUpFormFields(FormLayout formLayout, FieldGroup fieldGroup) {
-        TextField callSign = new TextField("Call Sign");
+        TextField callSign = new TextField(bundle.callSign());
         callSign.setWidth("100px");
         callSign.setNullRepresentation("");
         fieldGroup.bind(callSign, "callSign");
         formLayout.addComponent(callSign);
 
-        ComboBox type = new ComboBox("Type", new BeanItemContainer<>(resourceType.findAll()));
+        ComboBox type = new ComboBox(bundle.resourceType(), new BeanItemContainer<>(ResourceType.class, resourceType.findAll()));
         type.setItemCaptionMode(AbstractSelect.ItemCaptionMode.PROPERTY);
-        type.setItemCaptionPropertyId("name");
+        type.setItemCaptionPropertyId("name" + StringUtils.capitalize(i18n.getLocale().getLanguage()));
         fieldGroup.bind(type, "resourceType");
         formLayout.addComponent(type);
     }
@@ -61,11 +74,11 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
             @Override
             public Object generateCell(Table source, Object itemId, Object columnId) {
                 ResourceType rt = (ResourceType) source.getItem(itemId).getItemProperty("resourceType").getValue();
-                return rt.getName();
+                return rt.getName(i18n.getLocale());
             }
         });
         table.setVisibleColumns(new String[]{"callSign", "typeName"});
-        table.setColumnHeaders(new String[]{"Call Sign", "Type"});
+        table.setColumnHeaders(new String[]{bundle.callSign(), bundle.resourceType()});
     }
 
     @Override
@@ -85,8 +98,11 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
 
     public static class MenuItemRegistrar {
 
+        @Inject
+        ResourceViewBundle bundle;
+
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem("Resource Master Data", VIEW_ID);
+            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
         }
     }
 }

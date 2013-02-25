@@ -1,5 +1,7 @@
 package net.pkhsolutions.idispatch.dws.ui.masterdata;
 
+import com.github.peholmst.i18n4vaadin.annotations.Message;
+import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
 import net.pkhsolutions.idispatch.ejb.masterdata.ConcurrentModificationException;
@@ -35,6 +38,11 @@ import net.pkhsolutions.idispatch.entity.AbstractEntity;
  *
  * @author peholmst
  */
+@Messages({
+    @Message(key = "saveAndClose", value = "Spara och stäng"),
+    @Message(key = "closeWithoutSaving", value = "Stäng utan att spara"),
+    @Message(key = "concurrentModification.message.update", value = "En annan användare har ändrat informationen du just försökte spara. Informationen har nu uppdaterats. Gör om dina ändringar och försök igen.")
+})
 public abstract class AbstractMasterDataView<E extends AbstractEntity> extends CustomComponent implements View {
 
     public class EditorWindow extends Window {
@@ -58,14 +66,14 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
             fieldGroup = new FieldGroup();
             setUpFormFields(formLayout, fieldGroup);
 
-            save = new Button("Save and Close", new Button.ClickListener() {
+            save = new Button(bundle.saveAndClose(), new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     save();
                 }
             });
             save.setDisableOnClick(true);
-            cancel = new Button("Close Without Saving", new Button.ClickListener() {
+            cancel = new Button(bundle.closeWithoutSaving(), new Button.ClickListener() {
                 @Override
                 public void buttonClick(Button.ClickEvent event) {
                     cancel();
@@ -98,9 +106,8 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
                 setValidationErrors(fieldGroup, ex);
             } catch (ConcurrentModificationException ex) {
                 setEntity(getBackend().refresh(entity));
-                Notification.show("Concurrent modification detected",
-                        "Another user has modified the data you just attempted to save. "
-                        + "The data has now been refreshed. Please remake your changes and try again.",
+                Notification.show(bundle.concurrentModification_caption(),
+                        bundle.concurrentModification_message_update(),
                         Notification.Type.HUMANIZED_MESSAGE);
             } finally {
                 save.setEnabled(true);
@@ -123,6 +130,8 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
     private Button add;
     private Button edit;
     private BeanItemContainer<E> container;
+    @Inject
+    private AbstractMasterDataViewBundle bundle;
 
     public AbstractMasterDataView() {
         addStyleName("master-data-view");
@@ -134,6 +143,12 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
         setSizeFull();
     }
 
+    @Messages({
+        @Message(key = "refresh", value = "Uppdatera"),
+        @Message(key = "add", value = "Lägg till"),
+        @Message(key = "edit", value = "Redigera"),
+        @Message(key = "delete", value = "Ta bort")
+    })
     @PostConstruct
     protected void init() {
         Label title = new Label(getTitle());
@@ -158,7 +173,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
         layout.addComponent(table);
         layout.setExpandRatio(table, 1);
 
-        refresh = new Button("Refresh", new Button.ClickListener() {
+        refresh = new Button(bundle.refresh(), new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 refresh();
@@ -166,7 +181,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
         });
         refresh.setDisableOnClick(true);
 
-        add = new Button("Add", new Button.ClickListener() {
+        add = new Button(bundle.add(), new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 add();
@@ -174,7 +189,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
         });
         add.setDisableOnClick(true);
 
-        edit = new Button("Edit", new Button.ClickListener() {
+        edit = new Button(bundle.edit(), new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 edit();
@@ -182,7 +197,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
         });
         edit.setDisableOnClick(true);
 
-        delete = new Button("Delete", new Button.ClickListener() {
+        delete = new Button(bundle.delete(), new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 delete();
@@ -267,7 +282,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
 
     protected void add() {
         try {
-            EditorWindow window = new EditorWindow("Add", createNewEntity());
+            EditorWindow window = new EditorWindow(bundle.add(), createNewEntity());
             getUI().addWindow(window);
         } finally {
             add.setEnabled(true);
@@ -279,7 +294,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
             try {
                 E entity = getSelectedEntity();
                 getBackend().refresh(entity);
-                EditorWindow window = new EditorWindow("Edit", createCopyOfEntity(entity));
+                EditorWindow window = new EditorWindow(bundle.edit(), createCopyOfEntity(entity));
                 getUI().addWindow(window);
             } finally {
                 edit.setEnabled(true);
@@ -287,6 +302,10 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
         }
     }
 
+    @Messages({
+        @Message(key = "concurrentModification.caption", value = "Samtidig uppdatering upptäckt"),
+        @Message(key = "concurrentModification.message.delete", value = "En annan användare har uppdaterat informationen du just försökte ta bort. Informationen har nu uppdaterats. Försök igen om du fortfarande fill ta bort informationen.")
+    })
     protected void delete() {
         if (table.getValue() != null) {
             E entity = getSelectedEntity();
@@ -297,9 +316,8 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
                 container.removeItem(entity);
                 entity = getBackend().refresh(entity);
                 container.addItem(entity);
-                Notification.show("Concurrent modification detected",
-                        "Another user has modified the data you just attempted to delete. "
-                        + "The data has now been refreshed. Please try again if you still wish to delete the data.",
+                Notification.show(bundle.concurrentModification_caption(),
+                        bundle.concurrentModification_message_delete(),
                         Notification.Type.HUMANIZED_MESSAGE);
             } finally {
                 delete.setEnabled(true);

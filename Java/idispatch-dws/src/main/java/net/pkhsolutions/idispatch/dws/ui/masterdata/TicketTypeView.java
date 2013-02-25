@@ -23,9 +23,9 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
 
     public static final String VIEW_ID = "ticketTypeMasterData";
     @Inject
-    TicketTypeEJB ticketType;
+    private TicketTypeEJB ticketType;
     @Inject
-    TicketTypeViewBundle bundle;
+    private TicketTypeViewBundle bundle;
 
     @Override
     protected Backend<TicketType> getBackend() {

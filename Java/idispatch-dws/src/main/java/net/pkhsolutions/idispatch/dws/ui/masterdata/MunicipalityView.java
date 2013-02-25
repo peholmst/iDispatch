@@ -12,34 +12,34 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
-import net.pkhsolutions.idispatch.ejb.masterdata.ResourceTypeEJB;
-import net.pkhsolutions.idispatch.entity.ResourceType;
+import net.pkhsolutions.idispatch.ejb.masterdata.MunicipalityEJB;
+import net.pkhsolutions.idispatch.entity.Municipality;
 import org.apache.commons.lang.StringUtils;
 
 /**
  *
  * @author peholmst
  */
-@VaadinView(ResourceTypeView.VIEW_ID)
-public class ResourceTypeView extends AbstractMasterDataView<ResourceType> {
+@VaadinView(MunicipalityView.VIEW_ID)
+public class MunicipalityView extends AbstractMasterDataView<Municipality> {
 
-    public static final String VIEW_ID = "resourceTypeMasterData";
+    public static final String VIEW_ID = "municipalityMasterData";
     @Inject
-    private ResourceTypeEJB resourceType;
+    private MunicipalityEJB municipality;
     @Inject
-    private ResourceTypeViewBundle bundle;
+    private MunicipalityViewBundle bundle;
     @Inject
     private I18N i18n;
 
-    @Message(key = "title", value = "Resurstyper")
+    @Message(key = "title", value = "Kommuner")
     @Override
     protected String getTitle() {
         return bundle.title();
     }
 
     @Override
-    protected Backend<ResourceType> getBackend() {
-        return resourceType;
+    protected Backend<Municipality> getBackend() {
+        return municipality;
     }
 
     @Messages({
@@ -69,24 +69,24 @@ public class ResourceTypeView extends AbstractMasterDataView<ResourceType> {
     }
 
     @Override
-    protected Class<ResourceType> getEntityClass() {
-        return ResourceType.class;
+    protected Class<Municipality> getEntityClass() {
+        return Municipality.class;
     }
 
     @Override
-    protected ResourceType createNewEntity() {
-        return new ResourceType.Builder().build();
+    protected Municipality createNewEntity() {
+        return new Municipality.Builder().build();
     }
 
     @Override
-    protected ResourceType createCopyOfEntity(ResourceType entity) {
-        return new ResourceType.Builder(entity).build();
+    protected Municipality createCopyOfEntity(Municipality entity) {
+        return new Municipality.Builder(entity).build();
     }
 
     public static class MenuItemRegistrar {
 
         @Inject
-        ResourceTypeViewBundle bundle;
+        MunicipalityViewBundle bundle;
 
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
             event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
