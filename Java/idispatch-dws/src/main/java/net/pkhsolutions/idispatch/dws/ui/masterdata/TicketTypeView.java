@@ -1,5 +1,7 @@
 package net.pkhsolutions.idispatch.dws.ui.masterdata;
 
+import com.github.peholmst.i18n4vaadin.annotations.Message;
+import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.FormLayout;
@@ -22,30 +24,44 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
     public static final String VIEW_ID = "ticketTypeMasterData";
     @Inject
     TicketTypeEJB ticketType;
+    @Inject
+    TicketTypeViewBundle bundle;
 
     @Override
     protected Backend<TicketType> getBackend() {
         return ticketType;
     }
 
+    @Messages({
+        @Message(key = "code", value = "Kod"),
+        @Message(key = "descriptionFi", value = "Beskrivning (finska)"),
+        @Message(key = "descriptionSv", value = "Beskrivning (svenska)")
+    })
     @Override
     protected void setUpFormFields(FormLayout formLayout, FieldGroup fieldGroup) {
-        TextField code = new TextField("Code");
+        TextField code = new TextField(bundle.code());
         code.setWidth("100px");
         code.setNullRepresentation("");
         fieldGroup.bind(code, "code");
         formLayout.addComponent(code);
 
-        TextField description = new TextField("Description");
-        description.setWidth("200px");
-        description.setNullRepresentation("");
-        fieldGroup.bind(description, "description");
-        formLayout.addComponent(description);
+        TextField descriptionFi = new TextField(bundle.descriptionFi());
+        descriptionFi.setWidth("200px");
+        descriptionFi.setNullRepresentation("");
+        fieldGroup.bind(descriptionFi, "descriptionFi");
+        formLayout.addComponent(descriptionFi);
+
+        TextField descriptionSv = new TextField(bundle.descriptionSv());
+        descriptionSv.setWidth("200px");
+        descriptionSv.setNullRepresentation("");
+        fieldGroup.bind(descriptionSv, "descriptionSv");
+        formLayout.addComponent(descriptionSv);
     }
 
     @Override
     protected void setUpTable(Table table) {
-        table.setVisibleColumns(new String[]{"code", "description"});
+        table.setVisibleColumns(new String[]{"code", "descriptionFi", "descriptionSv"});
+        table.setColumnHeaders(new String[]{bundle.code(), bundle.descriptionFi(), bundle.descriptionSv()});
     }
 
     @Override
@@ -63,15 +79,19 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
         return new TicketType.Builder(entity).build();
     }
 
+    @Message(key = "title", value = "Uppdragstyper")
     @Override
     protected String getTitle() {
-        return "Ticket Type Master Data";
+        return bundle.title();
     }
 
     public static class MenuItemRegistrar {
 
+        @Inject
+        TicketTypeViewBundle bundle;
+
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem("Ticket Type Master Data", VIEW_ID);
+            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
         }
     }
 }
