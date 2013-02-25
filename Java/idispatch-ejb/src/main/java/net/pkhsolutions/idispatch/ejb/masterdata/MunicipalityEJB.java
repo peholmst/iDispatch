@@ -4,18 +4,18 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
-import net.pkhsolutions.idispatch.entity.ResourceType;
+import net.pkhsolutions.idispatch.entity.Municipality;
 
 /**
- * EJB for managing {@link ResourceType}s.
+ * EJB for managing {@link Municipality}-objects.
  *
  * @author Petter Holmström
  */
 @Stateless
 @PermitAll // TODO Replace with admin role
-public class ResourceTypeEJB extends Backend<ResourceType> {
+public class MunicipalityEJB extends Backend<Municipality> {
 
-    private static final Logger log = Logger.getLogger(ResourceTypeEJB.class.getCanonicalName());
+    private static final Logger log = Logger.getLogger(MunicipalityEJB.class.getCanonicalName());
 
     @Override
     protected Logger log() {
@@ -23,7 +23,7 @@ public class ResourceTypeEJB extends Backend<ResourceType> {
     }
 
     @Override
-    public List<ResourceType> findAll() {
-        return em().createQuery("SELECT rt FROM ResourceType rt ORDER BY rt.name", ResourceType.class).getResultList();
+    public List<Municipality> findAll() {
+        return em().createQuery("SELECT m FROM Municipality m", Municipality.class).getResultList();
     }
 }

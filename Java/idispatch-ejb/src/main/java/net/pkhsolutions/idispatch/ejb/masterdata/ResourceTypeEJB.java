@@ -24,6 +24,6 @@ public class ResourceTypeEJB extends Backend<ResourceType> {
 
     @Override
     public List<ResourceType> findAll() {
-        return em().createQuery("SELECT rt FROM ResourceType rt ORDER BY rt.name", ResourceType.class).getResultList();
+        return em().createQuery("SELECT rt FROM ResourceType rt", ResourceType.class).getResultList();
     }
 }
