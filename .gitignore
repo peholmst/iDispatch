@@ -3,3 +3,6 @@
 *.iws
 .DS_Store
 target/
+rebel.xml
+nb-configuration.xml
+
