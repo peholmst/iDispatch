@@ -27,6 +27,10 @@ public class Municipality extends AbstractEntityWithOptimisticLocking {
         this.nameSv = nameSv;
     }
 
+    public String getBothNames() {
+        return String.format("%s / %s", nameFi, nameSv);
+    }
+
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<Municipality, Builder> {
 
         public Builder() {

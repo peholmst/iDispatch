@@ -26,7 +26,7 @@ public class AbstractEntityWithOptimisticLocking extends AbstractEntity {
             super(entityClass);
         }
 
-        public AbstractEntityWithOptimisticLockingBuilder(Class<E> entityClass, E original) {
+        public AbstractEntityWithOptimisticLockingBuilder(Class<E> entityClass, AbstractEntityWithOptimisticLocking original) {
             super(entityClass, original);
             entity.setVersion(original.getVersion());
         }

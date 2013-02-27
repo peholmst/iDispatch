@@ -42,6 +42,14 @@ public class TicketType extends AbstractEntityWithOptimisticLocking {
         this.descriptionSv = descriptionSv;
     }
 
+    public String getFormattedDescriptionFi() {
+        return String.format("%s - %s", code, descriptionFi);
+    }
+
+    public String getFormattedDescriptionSv() {
+        return String.format("%s - %s", code, descriptionSv);
+    }
+
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<TicketType, Builder> {
 
         public Builder() {

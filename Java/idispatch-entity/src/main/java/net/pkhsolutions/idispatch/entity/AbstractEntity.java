@@ -8,12 +8,14 @@ import java.util.logging.Logger;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlAttribute;
 
 @MappedSuperclass
 public class AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue
+    @XmlAttribute
     private Long id;
 
     protected AbstractEntity() {
@@ -62,7 +64,7 @@ public class AbstractEntity implements Serializable {
             }
         }
 
-        public AbstractEntityBuilder(Class<E> entityClass, E original) {
+        public AbstractEntityBuilder(Class<E> entityClass, AbstractEntity original) {
             this(entityClass);
             entity.setId(original.getId());
         }

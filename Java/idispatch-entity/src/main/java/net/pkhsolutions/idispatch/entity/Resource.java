@@ -14,6 +14,8 @@ public class Resource extends AbstractEntityWithOptimisticLocking {
     @ManyToOne(optional = false)
     @NotNull(message = "Please select a type for the resource")
     private ResourceType resourceType;
+    @Column(nullable = false)
+    private boolean active = true;
 
     protected Resource() {
     }
@@ -34,6 +36,14 @@ public class Resource extends AbstractEntityWithOptimisticLocking {
         this.resourceType = resourceType;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<Resource, Builder> {
 
         public Builder() {
@@ -44,10 +54,21 @@ public class Resource extends AbstractEntityWithOptimisticLocking {
             super(Resource.class, original);
             entity.setCallSign(original.getCallSign());
             entity.setResourceType(original.getResourceType());
+            entity.setActive(original.isActive());
         }
 
         public Builder withCallSign(String callSign) {
             entity.setCallSign(callSign);
+            return this;
+        }
+
+        public Builder active() {
+            entity.setActive(true);
+            return this;
+        }
+
+        public Builder inactive() {
+            entity.setActive(false);
             return this;
         }
 
