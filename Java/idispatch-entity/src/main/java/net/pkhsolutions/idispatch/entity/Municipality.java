@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.entity;
 
+import java.util.Locale;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
@@ -29,6 +30,15 @@ public class Municipality extends AbstractEntityWithOptimisticLocking {
 
     public String getBothNames() {
         return String.format("%s / %s", nameFi, nameSv);
+    }
+
+    public String getName(Locale locale) {
+        switch (locale.getLanguage()) {
+            case "fi":
+                return getNameFi();
+            default:
+                return getNameSv();
+        }
     }
 
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<Municipality, Builder> {
