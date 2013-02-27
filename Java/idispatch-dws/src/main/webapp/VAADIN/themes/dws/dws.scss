@@ -1,185 +1,15 @@
 @import "../reindeer/reindeer.scss";
 
-$control-background: #2B2B2B;
-$control-border: #252728;
-$control-border-focused: #6394b7;
-$selection: #2f65ca;
-$layout-background: #3c3f41;
-$caption-text: #bbbbbb;
-
-@mixin dark-textfield {
-  .v-textfield, .v-textarea {
-    background-color: $control-background;
-    color: $caption-text;
-    border: 1px solid $control-border;
-    background-image: none;
-  }
-  .v-textfield-prompt {
-    color: #505355;
-  }
-  .v-textfield-focus, .v-textarea-focus {
-    border: 1px solid $control-border-focused;
-  }
-}
-
-@mixin dark-combobox {
-  .v-filterselect {
-    background-color: $control-background;
-    border: 1px solid $control-border;
-    background-image: none;
-    border-radius: 2px;
-  }
-  .v-filterselect-input {
-    color: $caption-text;
-    border: none;
-    background-image: none;
-  }
-  .v-filterselect-button {
-    background-image: none;
-    vertical-align: middle;
-    text-align: center;
-    line-height: 25px;
-  }
-  .v-filterselect-button:before {
-    content: "\25BE";
-    color: $caption-text;
-  }
-  .v-filterselect-button:hover {
-    background-image: none;
-  }
-  .v-filterselect-focus {
-    border: 1px solid $control-border-focused;
-  }
-}
-
-@mixin dark-button {
-  .v-button, .v-button:focus {
-    background: none;
-    background-color: #505355;
-    background: -webkit-linear-gradient(top, #505355, $control-background);
-    border: 1px solid $control-border;
-    border-radius: 5px;
-  }
-
-  .v-button:focus {
-    border: 2px solid $control-border-focused;
-  }
-
-  .v-button .v-button-wrap, .v-button:focus .v-button-wrap {
-    background: none;
-  }
-
-  .v-button-caption {
-    text-shadow: none;
-    color: $caption-text;
-  }
-         /*
-  .v-button.v-pressed, .v-button:active {
-    background-color: orange;
-  }
-
-  .v-button:focus .v-button-wrap {
-    padding-left: 8px;
-    padding-right: 14px;
-  }
-
-  .v-button:focus .v-button-caption {
-    border: 1px dotted black;
-    padding-left: 7px;
-    padding-right: 13px;
-  }
-
-  .v-button:hover {
-    cursor: pointer;
-  }
-
-  .v-button .v-button-wrap,
-  .v-button.v-pressed .v-button-wrap,
-  .v-button:active .v-button-wrap,
-  .v-button:focus .v-button-wrap {
-    background: none;
-  }
-
-  .v-button .v-button {
-    text-shadow: none;
-    font-weight: normal;
-  }   */
-
-}
-
-@mixin dark-table {
-  .v-table {
-    border: 1px solid $control-border;
-
-    .v-selected {
-      background-color: $selection;
-      background-image: none;
-      color: #ffffff;
-    }
-  }
-
-  .v-table-body {
-    background-color: $control-background;
-    border-left: none;
-  }
-
-  .v-table-row {
-    color: $caption-text;
-    background-color: $control-background;
-  }
-
-  .v-table-row-odd {
-    color: $caption-text;
-    background-color: #2e2e2e;
-  }
-  .v-table-cell-content {
-    border-right-color: $control-border;
-  }
-
-  .v-table-header-wrap {
-    background-color: #585c60;
-    background-image: none;
-    color: #dddddd;
-    text-shadow: #252728 0px 1px 0px;
-    border-color: #505254;
-  }
-
-  .v-table-header-cell {
-    border-color: $control-border;
-  }
-
-  // TODO Focus
-}
-
-@mixin dark-layout {
-  background-color: $layout-background;
-  .v-captiontext {
-    color: $caption-text;
-  }
-  .v-label-h1 {
-    color: $caption-text;
-    text-shadow: #252728 0px -1px 1px;
-  }
-}
+/******************************************************************************/
+/* THEME RULES BEGIN                                                          */
+/******************************************************************************/
 
 @mixin dws {
   /* Include all the styles from the reindeer theme */
   @include reindeer;
 
-  .v-splitpanel-vsplitter {
-    background-color: #585c60;
-    background-image: none;
-    border: 1px solid $control-border;
-    height: 3px;
-    cursor: ns-resize;
-
-    div {
-      visibility: hidden;
-    }
-  }
-
   .menu-viewlet {
-     background: -webkit-linear-gradient(left, #505355, $control-background);
+     background: -webkit-linear-gradient(left, #505355, #2B2B2B);
 
     .menu-item {
       cursor: pointer;
@@ -205,29 +35,37 @@ $caption-text: #bbbbbb;
   }
 
   .ticket-view {
-    @include dark-layout;
-    @include dark-textfield;
-    @include dark-table;
-    @include dark-combobox;
-    @include dark-button;
   }
 
   .resource-status-view {
-    @include dark-layout;
-    @include dark-textfield;
-    @include dark-table;
+    .v-splitpanel-vsplitter {
+      background-color: transparent;
+      background-image: none;
+      border: none;
+      height: 3px;
+
+      div {
+        background: none;
+      }
+    }
   }
 
   .resource-status-card-panel {
-    .v-panel-content {
-      background-color: $control-background;
-      border: 1px solid $control-border;
+    .v-csslayout {
+      padding-right: 2px;
+      padding-left: 2px;
+      padding-bottom: 2px;
     }
   }
 
   .resource-status-card {
-    border: 1px solid $control-border; // #505355;
-    //margin: 5px;
+    border: 1px solid #000000;
+    cursor: pointer;
+    //border: solid 1px #b59b24;
+    float: left;
+    margin-left: 2px;
+    margin-right: 2px;
+    margin-top: 4px;
     .call-sign {
       font-weight: bold;
     }
@@ -259,6 +97,7 @@ $caption-text: #bbbbbb;
 
   .state-unavailable, .v-table-row-state-unavailable {
     background-color: #696969;
+    color: #ffffff;
   }
 
   .state-on_scene, .v-table-row-state-on_scene {
