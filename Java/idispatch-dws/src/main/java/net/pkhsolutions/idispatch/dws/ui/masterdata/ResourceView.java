@@ -6,11 +6,14 @@ import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.ui.AbstractSelect;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.ComboBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
+import java.util.Locale;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
@@ -21,10 +24,6 @@ import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceType;
 import org.apache.commons.lang.StringUtils;
 
-/**
- *
- * @author peholmst
- */
 @VaadinView(ResourceView.VIEW_ID)
 public class ResourceView extends AbstractMasterDataView<Resource> {
 
@@ -51,7 +50,8 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
 
     @Messages({
         @Message(key = "callSign", value = "Anropsnamn"),
-        @Message(key = "resourceType", value = "Typ")
+        @Message(key = "resourceType", value = "Typ"),
+        @Message(key = "active", value = "Aktiv")
     })
     @Override
     protected void setUpFormFields(FormLayout formLayout, FieldGroup fieldGroup) {
@@ -66,19 +66,39 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
         type.setItemCaptionPropertyId("name" + StringUtils.capitalize(i18n.getLocale().getLanguage()));
         fieldGroup.bind(type, "resourceType");
         formLayout.addComponent(type);
+
+        CheckBox active = new CheckBox(bundle.active());
+        fieldGroup.bind(active, "active");
+        formLayout.addComponent(active);
     }
 
     @Override
     protected void setUpTable(Table table) {
-        table.addGeneratedColumn("typeName", new Table.ColumnGenerator() {
+        table.setVisibleColumns(new String[]{"callSign", "resourceType"});
+        // TODO Add separate row style for inactive resources
+        table.setColumnHeaders(new String[]{bundle.callSign(), bundle.resourceType()});
+        table.setSortContainerPropertyId("callSign");
+        table.setConverter("resourceType", new Converter<String, ResourceType>() {
             @Override
-            public Object generateCell(Table source, Object itemId, Object columnId) {
-                ResourceType rt = (ResourceType) source.getItem(itemId).getItemProperty("resourceType").getValue();
-                return rt.getName(i18n.getLocale());
+            public ResourceType convertToModel(String value, Locale locale) throws Converter.ConversionException {
+                return null; // This is a read-only converter
+            }
+
+            @Override
+            public String convertToPresentation(ResourceType value, Locale locale) throws Converter.ConversionException {
+                return value.getName(i18n.getLocale());
+            }
+
+            @Override
+            public Class<ResourceType> getModelType() {
+                return ResourceType.class;
+            }
+
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
             }
         });
-        table.setVisibleColumns(new String[]{"callSign", "typeName"});
-        table.setColumnHeaders(new String[]{bundle.callSign(), bundle.resourceType()});
     }
 
     @Override
