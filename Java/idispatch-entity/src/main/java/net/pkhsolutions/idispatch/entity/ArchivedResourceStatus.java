@@ -33,6 +33,7 @@ public class ArchivedResourceStatus extends AbstractResourceStatus {
 
         public Builder(CurrentResourceStatus original) {
             super(ArchivedResourceStatus.class, original);
+            entity.setId(null);
         }
     }
 }
