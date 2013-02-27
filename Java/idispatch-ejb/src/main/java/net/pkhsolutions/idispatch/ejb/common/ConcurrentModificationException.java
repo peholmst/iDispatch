@@ -1,12 +1,8 @@
-package net.pkhsolutions.idispatch.ejb.masterdata;
+package net.pkhsolutions.idispatch.ejb.common;
 
 import javax.ejb.ApplicationException;
 
-/**
- *
- * @author peholmst
- */
-@ApplicationException
+@ApplicationException(rollback = true)
 public class ConcurrentModificationException extends Exception {
 
     public ConcurrentModificationException() {
