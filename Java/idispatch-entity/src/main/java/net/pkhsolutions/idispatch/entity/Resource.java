@@ -6,7 +6,7 @@ import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
-public class Resource extends AbstractEntityWithOptimisticLocking {
+public class Resource extends AbstractEntityWithOptimisticLocking implements Comparable<Resource> {
 
     @Column(nullable = false, unique = true)
     @NotNull(message = "Please enter a call sign for the resource")
@@ -42,6 +42,11 @@ public class Resource extends AbstractEntityWithOptimisticLocking {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public int compareTo(Resource o) {
+        return callSign.compareTo(o.callSign);
     }
 
     public static final class Builder extends AbstractEntityWithOptimisticLockingBuilder<Resource, Builder> {
