@@ -1,28 +1,52 @@
-package net.pkhsolutions.idispatch.dws.ui.units;
+package net.pkhsolutions.idispatch.dws.ui.resources;
 
+import com.github.peholmst.i18n4vaadin.I18N;
+import com.github.peholmst.i18n4vaadin.annotations.Message;
+import com.github.peholmst.i18n4vaadin.annotations.Messages;
+import com.github.wolfie.refresher.Refresher;
 import com.vaadin.cdi.VaadinView;
+import com.vaadin.data.Container;
+import com.vaadin.data.Item;
+import com.vaadin.data.Property;
+import com.vaadin.data.util.converter.Converter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Extension;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
-import net.pkhsolutions.idispatch.entity.Resource;
+import java.util.Locale;
 import net.pkhsolutions.idispatch.entity.ResourceState;
-import net.pkhsolutions.idispatch.entity.ResourceStatus;
-import net.pkhsolutions.idispatch.entity.ResourceType;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
+import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
+import net.pkhsolutions.idispatch.dws.ui.utils.CalendarConverter;
+import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
+import net.pkhsolutions.idispatch.entity.Resource;
 
-/**
- * @author peholmst
- */
-@VaadinView(value = "resourceStatus")
-public class ResourceStatusView extends CustomComponent implements View {
+@VaadinView(value = ResourceStatusView.VIEW_ID)
+public class ResourceStatusView extends CustomComponent implements View, Refresher.RefreshListener {
 
+    public static final String VIEW_ID = "resourceStatus";
     private VerticalLayout layout;
-
     @Inject
-    ResourceStatusContainer resourceStatusContainer;
+    private ResourceStatusContainer resourceStatusContainer;
+    @Inject
+    private ResourceStatusViewBundle bundle;
+    @Inject
+    private Instance<ResourceStatusCardPanel> panelFactory;
+    @Inject
+    private I18N i18n;
+    private Table statusTable;
+    private ResourceStatusCardPanel unavailable;
+    private ResourceStatusCardPanel onScene;
+    private ResourceStatusCardPanel enRoute;
+    private ResourceStatusCardPanel dispatched;
+    private ResourceStatusCardPanel assigned;
+    private ResourceStatusCardPanel atStation;
+    private ResourceStatusCardPanel available;
 
     public ResourceStatusView() {
         addStyleName("resource-status-view");
@@ -34,109 +58,261 @@ public class ResourceStatusView extends CustomComponent implements View {
         setCompositionRoot(layout);
     }
 
+    @Messages({
+        @Message(key = "status.available", value = "Ledig på radio"),
+        @Message(key = "status.atStation", value = "Ledig på stationen"),
+        @Message(key = "status.assigned", value = "Reserverad för uppdrag"),
+        @Message(key = "status.dispatched", value = "Alarmerad"),
+        @Message(key = "status.enRoute", value = "På väg"),
+        @Message(key = "status.onScene", value = "Framme"),
+        @Message(key = "status.unavailable", value = "Ej alarmerbar"),
+        @Message(key = "search", value = "Sök efter resurs"),
+        @Message(key = "title", value = "Resursöversikt"),
+        @Message(key = "column.resource", value = "Resurs"),
+        @Message(key = "column.state", value = "Status"),
+        @Message(key = "column.timestamp", value = "Senast ändrad"),
+        @Message(key = "column.ticketNo", value = "Uppdragsnr"),
+        @Message(key = "column.ticketCode", value = "Uppdragskod"),
+        @Message(key = "column.ticketMunicipality", value = "Kommun"),
+        @Message(key = "column.ticketAddress", value = "Adress")
+    })
     @PostConstruct
     protected void init() {
         HorizontalLayout header = new HorizontalLayout();
         header.setWidth("100%");
         layout.addComponent(header);
 
-        Label title = new Label("Resource Status Overview");
+        Label title = new Label(bundle.title());
         title.setSizeUndefined();
         title.addStyleName(Reindeer.LABEL_H1);
         header.addComponent(title);
 
-        TextField filterResources = new TextField();
-        filterResources.setInputPrompt("Search for a resource");
+        final TextField filterResources = new TextField();
+        filterResources.setInputPrompt(bundle.search());
         filterResources.setWidth("200px");
+        filterResources.setImmediate(true);
+        filterResources.addValueChangeListener(new Property.ValueChangeListener() {
+            @Override
+            public void valueChange(Property.ValueChangeEvent event) {
+                if (filterResources.getValue() == null || filterResources.getValue().isEmpty()) {
+                    resourceStatusContainer.removeAllContainerFilters();
+                } else {
+                    resourceStatusContainer.addContainerFilter(new Container.Filter() {
+                        @Override
+                        public boolean passesFilter(Object itemId, Item item) throws UnsupportedOperationException {
+                            CurrentResourceStatus status = (CurrentResourceStatus) itemId;
+                            return status.getResource().getCallSign().startsWith(filterResources.getValue());
+                        }
+
+                        @Override
+                        public boolean appliesToProperty(Object propertyId) {
+                            return "resource".equals(propertyId);
+                        }
+                    });
+                }
+            }
+        });
         header.addComponent(filterResources);
         header.setComponentAlignment(filterResources, Alignment.MIDDLE_RIGHT);
+
+        VerticalSplitPanel splitPanel = new VerticalSplitPanel();
+        splitPanel.setSizeFull();
+        layout.addComponent(splitPanel);
+        layout.setExpandRatio(splitPanel, 1);
 
         HorizontalLayout statusPanels = new HorizontalLayout();
         statusPanels.setSizeFull();
         statusPanels.setSpacing(true);
-        layout.addComponent(statusPanels);
-        layout.setExpandRatio(statusPanels, 1);
+        splitPanel.setFirstComponent(statusPanels);
 
-        ResourceStatusCardPanel available = new ResourceStatusCardPanel(ResourceState.AVAILABLE, "Available on radio");
+        available = panelFactory.get().init(ResourceState.AVAILABLE, bundle.status_available());
         available.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(available);
 
-        ResourceStatusCardPanel atStation = new ResourceStatusCardPanel(ResourceState.AT_STATION, "Available at station");
+        atStation = panelFactory.get().init(ResourceState.AT_STATION, bundle.status_atStation());
         atStation.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(atStation);
 
-        ResourceStatusCardPanel assigned = new ResourceStatusCardPanel(ResourceState.ASSIGNED, "Assigned");
+        assigned = panelFactory.get().init(ResourceState.ASSIGNED, bundle.status_assigned());
         assigned.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(assigned);
 
-        ResourceStatusCardPanel dispatched = new ResourceStatusCardPanel(ResourceState.DISPATCHED, "Dispatched");
+        dispatched = panelFactory.get().init(ResourceState.DISPATCHED, bundle.status_dispatched());
         dispatched.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(dispatched);
 
-        ResourceStatusCardPanel enRoute = new ResourceStatusCardPanel(ResourceState.EN_ROUTE, "En route");
+        enRoute = panelFactory.get().init(ResourceState.EN_ROUTE, bundle.status_enRoute());
         enRoute.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(enRoute);
 
-        ResourceStatusCardPanel onScene = new ResourceStatusCardPanel(ResourceState.ON_SCENE, "On scene");
+        onScene = panelFactory.get().init(ResourceState.ON_SCENE, bundle.status_onScene());
         onScene.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(onScene);
 
-        ResourceStatusCardPanel unavailable = new ResourceStatusCardPanel(ResourceState.UNAVAILABLE, "Unavailable");
+        unavailable = panelFactory.get().init(ResourceState.UNAVAILABLE, bundle.status_unavailable());
         unavailable.setDataSource(resourceStatusContainer);
         statusPanels.addComponent(unavailable);
 
-        createDummyData();
-    }
+        statusTable = new Table();
+        statusTable.setSizeFull();
+        splitPanel.setSecondComponent(statusTable);
+        statusTable.setContainerDataSource(resourceStatusContainer);
+        statusTable.setSortEnabled(true);
+        statusTable.setConverter("resource", new Converter<String, Resource>() {
+            @Override
+            public Resource convertToModel(String value, Locale locale) throws Converter.ConversionException {
+                return null;
+            }
 
-    private void createDummyData() {
-        ResourceType pumper = new ResourceType.Builder().withName("Släckningsbil").build();
-        ResourceType carrier = new ResourceType.Builder().withName("Tankbil").build();
-        ResourceType manpower = new ResourceType.Builder().withName("Manskapsbil").build();
-        ResourceType chief = new ResourceType.Builder().withName("Brandmästare").build();
-        ResourceType rescueDiver = new ResourceType.Builder().withName("Räddningsdykare").build();
-        ResourceType ambulance = new ResourceType.Builder().withName("Ambulans").build();
+            @Override
+            public String convertToPresentation(Resource value, Locale locale) throws Converter.ConversionException {
+                return value == null ? null : value.getCallSign();
+            }
 
-        Resource it3 = new Resource.Builder().withCallSign("Itä P3").withUnitType(chief).build();
-        Resource it30 = new Resource.Builder().withCallSign("Itä P30").withUnitType(chief).build();
-        Resource la3 = new Resource.Builder().withCallSign("Länsi P3").withUnitType(chief).build();
-        Resource la30 = new Resource.Builder().withCallSign("Länsi P30").withUnitType(chief).build();
+            @Override
+            public Class<Resource> getModelType() {
+                return Resource.class;
+            }
 
-        Resource pg11 = new Resource.Builder().withCallSign("Pg11").withUnitType(pumper).build();
-        Resource pg21 = new Resource.Builder().withCallSign("Pg21").withUnitType(pumper).build();
-        Resource pg31 = new Resource.Builder().withCallSign("Pg31").withUnitType(pumper).build();
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
+            }
+        });
+        statusTable.setConverter("stateChangeTimestamp", CalendarConverter.dateTime());
+        statusTable.setConverter("resourceState", new Converter<String, ResourceState>() {
+            @Override
+            public ResourceState convertToModel(String value, Locale locale) throws Converter.ConversionException {
+                return null;
+            }
 
-        Resource pg13 = new Resource.Builder().withCallSign("Pg13").withUnitType(carrier).build();
-        Resource pg23 = new Resource.Builder().withCallSign("Pg23").withUnitType(carrier).build();
+            @Override
+            public String convertToPresentation(ResourceState value, Locale locale) throws Converter.ConversionException {
+                switch (value) {
+                    case ASSIGNED:
+                        return bundle.status_assigned();
+                    case AT_STATION:
+                        return bundle.status_atStation();
+                    case AVAILABLE:
+                        return bundle.status_available();
+                    case DISPATCHED:
+                        return bundle.status_dispatched();
+                    case EN_ROUTE:
+                        return bundle.status_enRoute();
+                    case ON_SCENE:
+                        return bundle.status_onScene();
+                    case UNAVAILABLE:
+                        return bundle.status_unavailable();
+                    default:
+                        return "";
+                }
+            }
 
-        Resource pg17 = new Resource.Builder().withCallSign("Pg17").withUnitType(manpower).build();
-        Resource pg27 = new Resource.Builder().withCallSign("Pg27").withUnitType(manpower).build();
-        Resource pg371 = new Resource.Builder().withCallSign("Pg27").withUnitType(manpower).build();
+            @Override
+            public Class<ResourceState> getModelType() {
+                return ResourceState.class;
+            }
 
-        Resource t15 = new Resource.Builder().withCallSign("T15").withUnitType(rescueDiver).build();
-        Resource evs5211 = new Resource.Builder().withCallSign("EVS5211").withUnitType(ambulance).build();
-
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(it3).withState(ResourceState.ASSIGNED).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(it30).withState(ResourceState.EN_ROUTE).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(la3).withState(ResourceState.AVAILABLE).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(la30).withState(ResourceState.AVAILABLE).build());
-
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg11).withState(ResourceState.UNAVAILABLE).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg21).withState(ResourceState.ON_SCENE).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg31).withState(ResourceState.EN_ROUTE).build());
-
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg13).withState(ResourceState.EN_ROUTE).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg23).withState(ResourceState.ON_SCENE).build());
-
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg17).withState(ResourceState.AT_STATION).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg27).withState(ResourceState.EN_ROUTE).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(pg371).withState(ResourceState.AT_STATION).build());
-
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(t15).withState(ResourceState.ASSIGNED).build());
-        resourceStatusContainer.addBean(new ResourceStatus.Builder().withResource(evs5211).withState(ResourceState.DISPATCHED).build());
+            @Override
+            public Class<String> getPresentationType() {
+                return String.class;
+            }
+        });
+        statusTable.addGeneratedColumn("ticketNo", new Table.ColumnGenerator() {
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                CurrentResourceStatus status = (CurrentResourceStatus) itemId;
+                return status.getTicket() == null ? new Label() : new Label(status.getTicket().getId().toString());
+            }
+        });
+        statusTable.addGeneratedColumn("ticketCode", new Table.ColumnGenerator() {
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                CurrentResourceStatus status = (CurrentResourceStatus) itemId;
+                return (status.getTicket() == null || status.getTicket().getTicketType() == null) ? new Label() : new Label(status.getTicket().getTicketType().getCode() + status.getTicket().getUrgency());
+            }
+        });
+        statusTable.addGeneratedColumn("ticketMunicipality", new Table.ColumnGenerator() {
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                CurrentResourceStatus status = (CurrentResourceStatus) itemId;
+                return (status.getTicket() == null || status.getTicket().getMunicipality() == null) ? new Label() : new Label(status.getTicket().getMunicipality().getName(i18n.getLocale()));
+            }
+        });
+        statusTable.addGeneratedColumn("ticketAddress", new Table.ColumnGenerator() {
+            @Override
+            public Object generateCell(Table source, Object itemId, Object columnId) {
+                CurrentResourceStatus status = (CurrentResourceStatus) itemId;
+                return status.getTicket() == null ? new Label() : new Label(status.getTicket().getAddress());
+            }
+        });
+        statusTable.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                CurrentResourceStatus status = (CurrentResourceStatus) itemId;
+                return "state-" + status.getResourceState().toString().toLowerCase();
+            }
+        });
+        statusTable.setVisibleColumns(new Object[]{
+            "resource",
+            "resourceState",
+            "stateChangeTimestamp",
+            "ticketNo",
+            "ticketCode",
+            "ticketMunicipality",
+            "ticketAddress"});
+        statusTable.setColumnHeaders(new String[]{
+            bundle.column_resource(),
+            bundle.column_state(),
+            bundle.column_timestamp(),
+            bundle.column_ticketNo(),
+            bundle.column_ticketCode(),
+            bundle.column_ticketMunicipality(),
+            bundle.column_ticketAddress()
+        });
+        statusTable.setSortContainerPropertyId("resource");
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent viewChangeEvent) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        resourceStatusContainer.refresh();
+        statusTable.sort();
+    }
+
+    @Override
+    public void refresh(Refresher source) {
+        resourceStatusContainer.refresh();
+        statusTable.sort();
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        getRefresher().addListener(this);
+    }
+
+    @Override
+    public void detach() {
+        getRefresher().removeListener(this);
+        super.detach();
+    }
+
+    private Refresher getRefresher() {
+        for (Extension extension : getUI().getExtensions()) {
+            if (extension instanceof Refresher) {
+                return (Refresher) extension;
+            }
+        }
+        return null;
+    }
+
+    public static class MenuItemRegistrar {
+
+        @Inject
+        private ResourceStatusViewBundle bundle;
+
+        public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
+            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
+        }
     }
 }

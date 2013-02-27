@@ -1,52 +1,117 @@
-package net.pkhsolutions.idispatch.dws.ui.units;
+package net.pkhsolutions.idispatch.dws.ui.resources;
 
+import com.github.peholmst.i18n4vaadin.I18N;
+import com.github.peholmst.i18n4vaadin.annotations.Message;
+import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.DragAndDropWrapper;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
-import net.pkhsolutions.idispatch.entity.ResourceStatus;
+import com.vaadin.ui.themes.Reindeer;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.inject.Inject;
+import net.pkhsolutions.idispatch.dws.ui.tickets.TicketView;
+import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
 
-/**
- *
- * @author peholmst
- */
 public class ResourceStatusCard extends DragAndDropWrapper {
 
-    public ResourceStatusCard(BeanItem<ResourceStatus> resourceStatus) {
+    @Inject
+    private I18N i18n;
+    @Inject
+    private ResourceStatusCardBundle bundle;
+    private CurrentResourceStatus resourceStatus;
+
+    public ResourceStatusCard() {
         super(new VerticalLayout());
-        assert resourceStatus != null : "resourceStatus must not be null";
+    }
+
+    @Messages({
+        @Message(key = "ticketNo", value = "Uppdrag")
+    })
+    public ResourceStatusCard init(final BeanItem<CurrentResourceStatus> status) {
+        resourceStatus = status.getBean();
         addStyleName("resource-status-card");
-        addStyleName("state-" + resourceStatus.getBean().getState().toString().toLowerCase());
+        addStyleName("state-" + resourceStatus.getResourceState().toString().toLowerCase());
+
         setSizeUndefined();
         VerticalLayout layout = (VerticalLayout) getCompositionRoot();
         layout.setSizeUndefined();
         layout.setSpacing(true);
         layout.setMargin(true);
 
-        Label callSign = new Label(resourceStatus.getBean().getResource().getCallSign());
+        Label callSign = new Label(resourceStatus.getResource().getCallSign());
         callSign.addStyleName("call-sign");
+        callSign.setDescription(resourceStatus.getResource().getResourceType().getName(i18n.getLocale()));
         layout.addComponent(callSign);
 
-        Label resourceType = new Label(resourceStatus.getBean().getResource().getResourceType().getName());
-        resourceType.addStyleName("resource-type");
-        layout.addComponent(resourceType);
-
-        Button ticket;
-        if (resourceStatus.getBean().getTicket() != null) {
-            // TODO Create ticket button
-            ticket = null;
-        } else {
-            ticket = null;
+        if (this.resourceStatus.getTicket() != null) {
+            String ticketDescription = String.format("%s: %s",
+                    getTicketMunicipality(),
+                    getTicketAddress());
+            String ticketCaption = String.format("%s %d (%s%s)",
+                    bundle.ticketNo(),
+                    resourceStatus.getTicket().getId(),
+                    getTicketTypeCode(),
+                    getTicketUrgency());
+            Button ticket = new Button(ticketCaption);
+            ticket.setDescription(ticketDescription);
+            ticket.addStyleName(Reindeer.BUTTON_LINK);
+            layout.addComponent(ticket);
+            ticket.addClickListener(new Button.ClickListener() {
+                @Override
+                public void buttonClick(Button.ClickEvent event) {
+                    Long ticketId = resourceStatus.getTicket().getId();
+                    getUI().getNavigator().navigateTo(TicketView.VIEW_ID + "/" + ticketId);
+                }
+            });
         }
 
-        Label timestamp = new Label(formatShortTimestamp(resourceStatus.getBean().getTimestamp()));
-        timestamp.setDescription(formatLongTimestamp(resourceStatus.getBean().getTimestamp()));
+        Label timestamp = new Label(formatShortTimestamp(resourceStatus.getStateChangeTimestamp().getTime()));
+        timestamp.setDescription(formatLongTimestamp(resourceStatus.getStateChangeTimestamp().getTime()));
         timestamp.addStyleName("timestamp");
         layout.addComponent(timestamp);
+
+        setDragStartMode(DragStartMode.WRAPPER);
+        return this;
+    }
+
+    private String getTicketMunicipality() {
+        if (resourceStatus.getTicket() == null || resourceStatus.getTicket().getMunicipality() == null) {
+            return "";
+        } else {
+            return resourceStatus.getTicket().getMunicipality().getName(i18n.getLocale());
+        }
+    }
+
+    private String getTicketAddress() {
+        if (resourceStatus.getTicket() == null || resourceStatus.getTicket().getAddress() == null) {
+            return "";
+        } else {
+            return resourceStatus.getTicket().getAddress();
+        }
+    }
+
+    private String getTicketUrgency() {
+        if (resourceStatus.getTicket() == null || resourceStatus.getTicket().getUrgency() == null) {
+            return "";
+        } else {
+            return resourceStatus.getTicket().getUrgency().toString();
+        }
+    }
+
+    private String getTicketTypeCode() {
+        if (resourceStatus.getTicket() == null || resourceStatus.getTicket().getTicketType() == null) {
+            return "";
+        } else {
+            return resourceStatus.getTicket().getTicketType().getCode();
+        }
+    }
+
+    public CurrentResourceStatus getResourceStatus() {
+        return resourceStatus;
     }
 
     private static String formatShortTimestamp(Date timestamp) {
