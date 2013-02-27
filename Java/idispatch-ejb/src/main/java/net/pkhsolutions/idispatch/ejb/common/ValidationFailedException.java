@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.ejb.masterdata;
+package net.pkhsolutions.idispatch.ejb.common;
 
 import java.util.Collections;
 import java.util.HashSet;

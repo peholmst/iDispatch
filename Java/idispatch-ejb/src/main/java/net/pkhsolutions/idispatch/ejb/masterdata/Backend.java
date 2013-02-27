@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.ejb.masterdata;
 
+import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;

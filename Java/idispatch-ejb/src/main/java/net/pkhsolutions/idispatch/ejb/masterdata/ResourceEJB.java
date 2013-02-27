@@ -26,4 +26,8 @@ public class ResourceEJB extends Backend<Resource> {
     public List<Resource> findAll() {
         return em().createQuery("SELECT r FROM Resource r ORDER BY r.callSign", Resource.class).getResultList();
     }
+
+    public List<Resource> findActive() {
+        return em().createQuery("SELECT r FROM Resource r WHERE r.active = true ORDER BY r.callSign", Resource.class).getResultList();
+    }
 }
