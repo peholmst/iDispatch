@@ -30,8 +30,10 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
-import net.pkhsolutions.idispatch.ejb.masterdata.ConcurrentModificationException;
-import net.pkhsolutions.idispatch.ejb.masterdata.ValidationFailedException;
+import net.pkhsolutions.idispatch.ejb.common.ConcurrentModificationException;
+import net.pkhsolutions.idispatch.ejb.common.DeletionFailedException;
+import net.pkhsolutions.idispatch.ejb.common.SaveFailedException;
+import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
 import net.pkhsolutions.idispatch.entity.AbstractEntity;
 
 /**
@@ -41,7 +43,9 @@ import net.pkhsolutions.idispatch.entity.AbstractEntity;
 @Messages({
     @Message(key = "saveAndClose", value = "Spara och stäng"),
     @Message(key = "closeWithoutSaving", value = "Stäng utan att spara"),
-    @Message(key = "concurrentModification.message.update", value = "En annan användare har ändrat informationen du just försökte spara. Informationen har nu uppdaterats. Gör om dina ändringar och försök igen.")
+    @Message(key = "concurrentModification.message.update", value = "En annan användare har ändrat informationen du just försökte spara. Informationen har nu uppdaterats. Gör om dina ändringar och försök igen."),
+    @Message(key = "saveFailed.caption", value = "Informationen kunde inte sparas"),
+    @Message(key = "saveFailed.message", value = "Följande meddelande rapporterades från databasen: {0}")
 })
 public abstract class AbstractMasterDataView<E extends AbstractEntity> extends CustomComponent implements View {
 
@@ -109,6 +113,10 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
                 Notification.show(bundle.concurrentModification_caption(),
                         bundle.concurrentModification_message_update(),
                         Notification.Type.HUMANIZED_MESSAGE);
+            } catch (SaveFailedException ex) {
+                Notification.show(bundle.saveFailed_caption(),
+                        bundle.saveFailed_message(ex.getMessage()),
+                        Notification.Type.WARNING_MESSAGE);
             } finally {
                 save.setEnabled(true);
             }
@@ -266,6 +274,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
             container.removeAllItems();
             container.addAll(getBackend().findAll());
             table.setValue(null);
+            table.sort();
         } finally {
             refresh.setEnabled(true);
         }
@@ -304,7 +313,9 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
 
     @Messages({
         @Message(key = "concurrentModification.caption", value = "Samtidig uppdatering upptäckt"),
-        @Message(key = "concurrentModification.message.delete", value = "En annan användare har uppdaterat informationen du just försökte ta bort. Informationen har nu uppdaterats. Försök igen om du fortfarande fill ta bort informationen.")
+        @Message(key = "concurrentModification.message.delete", value = "En annan användare har uppdaterat informationen du just försökte ta bort. Informationen har nu uppdaterats. Försök igen om du fortfarande fill ta bort informationen."),
+        @Message(key = "deletionFailed.caption", value = "Informationen kunde inte tas bort"),
+        @Message(key = "deletionFailed.message", value = "Följande meddelande rapporterades från databasen: {0}")
     })
     protected void delete() {
         if (table.getValue() != null) {
@@ -319,6 +330,10 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
                 Notification.show(bundle.concurrentModification_caption(),
                         bundle.concurrentModification_message_delete(),
                         Notification.Type.HUMANIZED_MESSAGE);
+            } catch (DeletionFailedException ex) {
+                Notification.show(bundle.deletionFailed_caption(),
+                        bundle.deletionFailed_message(ex.getMessage()),
+                        Notification.Type.WARNING_MESSAGE);
             } finally {
                 delete.setEnabled(true);
             }
