@@ -9,7 +9,10 @@ import javax.annotation.Resource;
 import javax.persistence.EntityManager;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.PersistenceException;
 import javax.validation.Validator;
+import net.pkhsolutions.idispatch.ejb.common.DeletionFailedException;
+import net.pkhsolutions.idispatch.ejb.common.SaveFailedException;
 import net.pkhsolutions.idispatch.entity.AbstractEntity;
 
 /**
@@ -41,7 +44,7 @@ public abstract class Backend<E extends AbstractEntity> {
 
     public abstract List<E> findAll();
 
-    public E save(E entity) throws ValidationFailedException, ConcurrentModificationException {
+    public E save(E entity) throws ValidationFailedException, ConcurrentModificationException, SaveFailedException {
         log().log(Level.INFO, "Saving entity {0} with ID {1}",
                 new Object[]{entity, entity.getId()});
         ValidationFailedException.throwIfNonEmpty(validator().validate(entity));
@@ -55,10 +58,12 @@ public abstract class Backend<E extends AbstractEntity> {
             return entity;
         } catch (OptimisticLockException ex) {
             throw new ConcurrentModificationException();
+        } catch (PersistenceException ex) {
+            throw new SaveFailedException(ex);
         }
     }
 
-    public void delete(E entity) throws ConcurrentModificationException {
+    public void delete(E entity) throws ConcurrentModificationException, DeletionFailedException {
         if (!entity.isPersistent()) {
             return;
         }
@@ -67,8 +72,10 @@ public abstract class Backend<E extends AbstractEntity> {
         try {
             em().remove(em().merge(entity));
             em().flush();
-        } catch (OptimisticLockException e) {
+        } catch (OptimisticLockException ex) {
             throw new ConcurrentModificationException();
+        } catch (PersistenceException ex) {
+            throw new DeletionFailedException(ex);
         }
     }
 }
