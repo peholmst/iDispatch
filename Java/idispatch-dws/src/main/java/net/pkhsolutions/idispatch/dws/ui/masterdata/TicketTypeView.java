@@ -62,6 +62,7 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
     protected void setUpTable(Table table) {
         table.setVisibleColumns(new String[]{"code", "descriptionFi", "descriptionSv"});
         table.setColumnHeaders(new String[]{bundle.code(), bundle.descriptionFi(), bundle.descriptionSv()});
+        table.setSortContainerPropertyId("code");
     }
 
     @Override
