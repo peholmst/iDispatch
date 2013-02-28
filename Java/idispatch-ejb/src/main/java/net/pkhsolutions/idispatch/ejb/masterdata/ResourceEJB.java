@@ -1,10 +1,12 @@
 package net.pkhsolutions.idispatch.ejb.masterdata;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
 import javax.annotation.security.PermitAll;
 import javax.ejb.Stateless;
+import javax.persistence.TypedQuery;
 import net.pkhsolutions.idispatch.ejb.common.ConcurrentModificationException;
 import net.pkhsolutions.idispatch.ejb.common.SaveFailedException;
 import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
@@ -53,5 +55,11 @@ public class ResourceEJB extends Backend<Resource> {
 
     public List<Resource> findActive() {
         return em().createQuery("SELECT r FROM Resource r WHERE r.active = true ORDER BY r.callSign", Resource.class).getResultList();
+    }
+
+    public List<Resource> findActiveAndAvailable() {
+        TypedQuery<Resource> query = em().createQuery("SELECT crs.resource FROM CurrentResourceStatus crs WHERE crs.resource.active = TRUE AND crs.resourceState IN :states ORDER BY crs.resource.callSign", Resource.class);
+        query.setParameter("states", Arrays.asList(ResourceState.AT_STATION, ResourceState.AVAILABLE));
+        return query.getResultList();
     }
 }

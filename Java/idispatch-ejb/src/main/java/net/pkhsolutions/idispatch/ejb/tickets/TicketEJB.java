@@ -1,8 +1,11 @@
 package net.pkhsolutions.idispatch.ejb.tickets;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,10 +19,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.Validator;
 import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
+import net.pkhsolutions.idispatch.ejb.resources.NoStatusInformationFoundException;
+import net.pkhsolutions.idispatch.ejb.resources.ResourceStatusChangedException;
 import net.pkhsolutions.idispatch.ejb.resources.ResourceStatusEJB;
-import net.pkhsolutions.idispatch.entity.DispatchNotification;
 import net.pkhsolutions.idispatch.entity.Resource;
-import net.pkhsolutions.idispatch.entity.AbstractResourceStatus;
+import net.pkhsolutions.idispatch.entity.ArchivedResourceStatus;
 import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
 import net.pkhsolutions.idispatch.entity.ResourceState;
 import net.pkhsolutions.idispatch.entity.Ticket;
@@ -69,12 +73,13 @@ public class TicketEJB {
      * after it was retrieved from the database.
      * @throws TicketClosedException if the ticket is already closed.
      */
-    public void closeTicket(Ticket ticket) throws NoSuchTicketException, TicketModifiedException, TicketClosedException {
+    public Ticket closeTicket(Ticket ticket) throws NoSuchTicketException, TicketModifiedException, TicketClosedException {
         verifyThatTicketExistsAndIsOpen(ticket);
         Ticket closedTicket = new Ticket.Builder(ticket).close().build();
         try {
-            entityManager.merge(closedTicket);
+            closedTicket = entityManager.merge(closedTicket);
             entityManager.flush();
+            return closedTicket;
         } catch (OptimisticLockException ex) {
             throw new TicketModifiedException(ticket);
         }
@@ -142,22 +147,87 @@ public class TicketEJB {
     }
 
     public List<TicketResourceDTO> findResourcesForTicket(Ticket ticket) throws NoSuchTicketException {
-        return null;
+        List<ArchivedResourceStatus> statuses = resourceStatusBean.getStatusesForTicket(findPersistentTicket(ticket));
+        return new ArchivedResourceStatusToDTOMapper(statuses).getDtos();
     }
 
-    public TicketResourceDTO assignResourceToTicket(Resource resource, Ticket ticket) throws TicketClosedException, NoSuchTicketException {
-        /*       verifyThatTicketExistsAndIsOpen(ticket);
-         CurrentResourceStatus status = resourceStatusBean.getCurrentStatus(resource);
-         status.setTicket(ticket);
-         status.setResourceState(ResourceState.ASSIGNED);
-         status = resourceStatusBean.updateStatus(status);
-         return new TicketResourceDTO(resource.getCallSign(), status.getStateChangeTimestamp(), null, null, null, null, null, false);*/
-        return null;
+    private class ArchivedResourceStatusToDTOMapper {
+
+        Map<Resource, List<TicketResourceDTO>> dtoMap = new HashMap<>();
+
+        ArchivedResourceStatusToDTOMapper(List<ArchivedResourceStatus> statuses) {
+            for (ArchivedResourceStatus status : statuses) {
+                updateDto(status);
+            }
+        }
+
+        private List<TicketResourceDTO> getDtosForResource(Resource resource) {
+            List<TicketResourceDTO> dtos = dtoMap.get(resource);
+            if (dtos == null) {
+                dtos = new ArrayList();
+                dtoMap.put(resource, dtos);
+            }
+            return dtos;
+        }
+
+        private void updateDto(ArchivedResourceStatus status) {
+            TicketResourceDTO dto = getDtoForResource(status.getResource(), false);
+            if (dto.getTimestamp(status.getResourceState()) == null) {
+                dto.setTimestamp(status.getResourceState(), status.getStateChangeTimestamp());
+            } else {
+                getDtoForResource(status.getResource(), true).setTimestamp(status.getResourceState(), status.getStateChangeTimestamp());
+            }
+        }
+
+        private TicketResourceDTO getDtoForResource(Resource resource, boolean forceNew) {
+            List<TicketResourceDTO> dtos = getDtosForResource(resource);
+            TicketResourceDTO dto;
+            if (dtos.isEmpty() || forceNew) {
+                dto = new TicketResourceDTO();
+                dto.setResourceCallSign(resource.getCallSign());
+                dto.setOrderNo(dtos.size());
+                dtos.add(dto);
+            } else {
+                dto = dtos.get(dtos.size() - 1);
+            }
+            return dto;
+        }
+
+        List<TicketResourceDTO> getDtos() {
+            List<TicketResourceDTO> dtos = new ArrayList<>();
+            for (List<TicketResourceDTO> dtosForResource : dtoMap.values()) {
+                dtos.addAll(dtosForResource);
+            }
+            return dtos;
+        }
+    }
+
+    public TicketResourceDTO assignResourceToTicket(Resource resource, Ticket ticket) throws TicketClosedException, NoSuchTicketException, ResourceNotAvailableException {
+        verifyThatTicketExistsAndIsOpen(ticket);
+        CurrentResourceStatus status;
+        try {
+            status = resourceStatusBean.getCurrentStatus(resource);
+        } catch (NoStatusInformationFoundException ex) {
+            throw new ResourceNotAvailableException(ex);
+        }
+
+        if (!Arrays.asList(ResourceState.AT_STATION, ResourceState.AVAILABLE).contains(status.getResourceState())) {
+            throw new ResourceNotAvailableException();
+        }
+        status.setTicket(ticket);
+        status.setResourceState(ResourceState.ASSIGNED);
+        try {
+            status = resourceStatusBean.updateStatus(status);
+        } catch (ResourceStatusChangedException ex) {
+            throw new ResourceNotAvailableException(ex);
+        }
+        return new TicketResourceDTO(resource.getCallSign(), status.getStateChangeTimestamp(), null, null, null, null, null);
     }
 
     public void dispatchAllResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException {
         verifyThatTicketExistsAndIsOpen(ticket);
         validateTicketForDispatching(ticket);
+        // TODO Implement me!
     }
 
     public void dispatchAssignedResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException {
@@ -169,10 +239,13 @@ public class TicketEJB {
     public void dispatchSelectedResources(Ticket ticket, Set<Resource> resources) throws ValidationFailedException, TicketClosedException, NoSuchTicketException {
         verifyThatTicketExistsAndIsOpen(ticket);
         validateTicketForDispatching(ticket);
-        DispatchNotification notification = new DispatchNotification.Builder().fromTicket(ticket).withResources(resources).build();
+        // TODO Implement me!
+        /*
+         DispatchNotification notification = new DispatchNotification.Builder().fromTicket(ticket).withResources(resources).build();
         entityManager.persist(notification);
         entityManager.flush();
-        dispatchNotificationCreatedEventBus.fire(new DispatchNotificationCreatedEvent(notification));
+
+         dispatchNotificationCreatedEventBus.fire(new DispatchNotificationCreatedEvent(notification));*/
     }
 
     private void validateTicketForDispatching(Ticket ticket) throws ValidationFailedException {
