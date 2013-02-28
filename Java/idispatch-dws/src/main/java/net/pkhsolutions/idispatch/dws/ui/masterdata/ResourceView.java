@@ -37,7 +37,7 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
     @Inject
     private I18N i18n;
 
-    @Message(key = "title", value = "Resurser")
+    @Message(key = "title", value = "Administrera resurser")
     @Override
     protected String getTitle() {
         return bundle.title();
@@ -75,7 +75,17 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
     @Override
     protected void setUpTable(Table table) {
         table.setVisibleColumns(new String[]{"callSign", "resourceType"});
-        // TODO Add separate row style for inactive resources
+        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                Resource resource = (Resource) itemId;
+                if (!resource.isActive()) {
+                    return "not-active";
+                } else {
+                    return null;
+                }
+            }
+        });
         table.setColumnHeaders(new String[]{bundle.callSign(), bundle.resourceType()});
         table.setSortContainerPropertyId("callSign");
         table.setConverter("resourceType", new Converter<String, ResourceType>() {
