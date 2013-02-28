@@ -3,30 +3,34 @@ package net.pkhsolutions.idispatch.dws.ui.tickets;
 import com.github.peholmst.i18n4vaadin.I18N;
 import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
+import com.github.wolfie.refresher.Refresher;
 import com.vaadin.cdi.VaadinView;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.data.util.converter.Converter;
+import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
+import com.vaadin.server.Extension;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Locale;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
+import net.pkhsolutions.idispatch.dws.ui.utils.CalendarConverter;
 import net.pkhsolutions.idispatch.ejb.masterdata.MunicipalityEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.TicketTypeEJB;
 import net.pkhsolutions.idispatch.ejb.tickets.NoSuchTicketException;
+import net.pkhsolutions.idispatch.ejb.tickets.ResourceNotAvailableException;
 import net.pkhsolutions.idispatch.ejb.tickets.TicketClosedException;
 import net.pkhsolutions.idispatch.ejb.tickets.TicketEJB;
 import net.pkhsolutions.idispatch.ejb.tickets.TicketModifiedException;
@@ -39,7 +43,7 @@ import net.pkhsolutions.idispatch.entity.TicketUrgency;
 import org.apache.commons.lang.StringUtils;
 
 @VaadinView(value = TicketView.VIEW_ID)
-public class TicketView extends CustomComponent implements View {
+public class TicketView extends CustomComponent implements View, Refresher.RefreshListener {
 
     public static final String VIEW_ID = "ticket";
     private VerticalLayout layout;
@@ -67,6 +71,21 @@ public class TicketView extends CustomComponent implements View {
             }
         }
     };
+    private Button closeTicket;
+    private TextArea description;
+    private ComboBox urgency;
+    private ComboBox type;
+    private ComboBox municipality;
+    private TextField address;
+    private TextField ticketNo;
+    private TextField ticketOpened;
+    private TextField ticketClosed;
+    private ComboBox resource;
+    private Button dispatchAll;
+    private Button dispatchSelected;
+    private Button dispatchAssigned;
+    private Button assign;
+    private boolean formDisabled = false;
 
     public TicketView() {
         addStyleName("ticket-view");
@@ -78,27 +97,33 @@ public class TicketView extends CustomComponent implements View {
         setCompositionRoot(layout);
     }
 
-    private static class CalendarConverter implements Converter<String, Calendar> {
+    @Override
+    public void refresh(Refresher source) {
+        refreshResources();
+    }
 
-        @Override
-        public Calendar convertToModel(String value, Locale locale) throws ConversionException {
+    @Override
+    public void attach() {
+        super.attach();
+        getRefresher().addListener(this);
+    }
+
+    @Override
+    public void detach() {
+        getRefresher().removeListener(this);
+        super.detach();
+    }
+
+    private Refresher getRefresher() {
+        if (getUI() == null) {
             return null;
         }
-
-        @Override
-        public String convertToPresentation(Calendar value, Locale locale) throws ConversionException {
-            return value == null ? "" : new SimpleDateFormat("d.M.yyyy HH:mm:ss").format(value.getTime());
+        for (Extension extension : getUI().getExtensions()) {
+            if (extension instanceof Refresher) {
+                return (Refresher) extension;
+            }
         }
-
-        @Override
-        public Class<Calendar> getModelType() {
-            return Calendar.class;
-        }
-
-        @Override
-        public Class<String> getPresentationType() {
-            return String.class;
-        }
+        return null;
     }
 
     @Messages({
@@ -114,11 +139,16 @@ public class TicketView extends CustomComponent implements View {
         @Message(key = "address", value = "Adress"),
         @Message(key = "resources", value = "Resurser"),
         @Message(key = "resources.callSign", value = "Resurs"),
+        @Message(key = "resources.assigned", value = "Reserverad"),
         @Message(key = "resources.dispatched", value = "Alarmerad"),
         @Message(key = "resources.enRoute", value = "På väg"),
         @Message(key = "resources.onScene", value = "Framme"),
         @Message(key = "resources.availableOnRadio", value = "Ledig"),
-        @Message(key = "resources.availableAtStation", value = "På stationen")
+        @Message(key = "resources.availableAtStation", value = "På stationen"),
+        @Message(key = "assign", value = "Reservera för uppdraget"),
+        @Message(key = "dispatchAll", value = "Alarmera alla"),
+        @Message(key = "dispatchSelected", value = "Alarmera valda"),
+        @Message(key = "dispatchAssigned", value = "Alarmera reserverade")
     })
     @PostConstruct
     protected void init() {
@@ -135,26 +165,35 @@ public class TicketView extends CustomComponent implements View {
         timestamps.setWidth("600px");
         layout.addComponent(timestamps);
 
-        TextField ticketNo = new TextField(bundle.ticketNo());
+        ticketNo = new TextField(bundle.ticketNo());
         fieldGroup.bind(ticketNo, "id");
         timestamps.addComponent(ticketNo);
 
-        TextField ticketOpened = new TextField(bundle.ticketOpened());
-        ticketOpened.setConverter(new CalendarConverter());
+        ticketOpened = new TextField(bundle.ticketOpened());
+        ticketOpened.setConverter(CalendarConverter.dateTime());
+        ticketOpened.setNullRepresentation("");
         fieldGroup.bind(ticketOpened, "ticketOpened");
         timestamps.addComponent(ticketOpened);
 
-        TextField ticketClosed = new TextField(bundle.ticketClosed());
-        ticketClosed.setConverter(new CalendarConverter());
+        ticketClosed = new TextField(bundle.ticketClosed());
+        ticketClosed.setConverter(CalendarConverter.dateTime());
+        ticketClosed.setNullRepresentation("");
         fieldGroup.bind(ticketClosed, "ticketClosed");
         timestamps.addComponent(ticketClosed);
 
-        Button closeTicket = new Button(bundle.closeTicket());
+        closeTicket = new Button(bundle.closeTicket(), new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                closeTicket();
+                closeTicket.setEnabled(!formDisabled);
+            }
+        });
+        closeTicket.setDisableOnClick(true);
         timestamps.addComponent(closeTicket);
         timestamps.setComponentAlignment(closeTicket, Alignment.BOTTOM_RIGHT);
         timestamps.setExpandRatio(closeTicket, 1);
 
-        TextArea description = new TextArea(bundle.description());
+        description = new TextArea(bundle.description());
         description.setNullRepresentation("");
         description.setImmediate(true);
         fieldGroup.bind(description, "description");
@@ -168,13 +207,13 @@ public class TicketView extends CustomComponent implements View {
         classification.setSpacing(true);
         layout.addComponent(classification);
 
-        ComboBox urgency = new ComboBox(bundle.urgency(), new BeanItemContainer<>(TicketUrgency.class, Arrays.asList(TicketUrgency.values())));
+        urgency = new ComboBox(bundle.urgency(), new BeanItemContainer<>(TicketUrgency.class, Arrays.asList(TicketUrgency.values())));
         urgency.setImmediate(true);
         fieldGroup.bind(urgency, "urgency");
         urgency.addValueChangeListener(saveListener);
         classification.addComponent(urgency);
 
-        ComboBox type = new ComboBox(bundle.incidentType(), new BeanItemContainer<>(TicketType.class, ticketTypeBean.findAll()));
+        type = new ComboBox(bundle.incidentType(), new BeanItemContainer<>(TicketType.class, ticketTypeBean.findAll()));
         type.setImmediate(true);
         fieldGroup.bind(type, "ticketType");
         type.addValueChangeListener(saveListener);
@@ -188,7 +227,7 @@ public class TicketView extends CustomComponent implements View {
         location1.setSpacing(true);
         layout.addComponent(location1);
 
-        ComboBox municipality = new ComboBox(bundle.municipality(), new BeanItemContainer<>(Municipality.class, municipalityBean.findAll()));
+        municipality = new ComboBox(bundle.municipality(), new BeanItemContainer<>(Municipality.class, municipalityBean.findAll()));
         municipality.setImmediate(true);
         fieldGroup.bind(municipality, "municipality");
         municipality.addValueChangeListener(saveListener);
@@ -197,7 +236,7 @@ public class TicketView extends CustomComponent implements View {
 
         location1.addComponent(municipality);
 
-        TextField address = new TextField(bundle.address());
+        address = new TextField(bundle.address());
         address.setNullRepresentation("");
         address.setImmediate(true);
         fieldGroup.bind(address, "address");
@@ -208,13 +247,17 @@ public class TicketView extends CustomComponent implements View {
 
         resourcesContainer = new BeanItemContainer<>(TicketResourceDTO.class);
 
+        // TODO Color-code rows in resources table
         resources = new Table(bundle.resources());
         resources.setContainerDataSource(resourcesContainer);
         resources.setSizeFull();
+        resources.setSelectable(true);
+        resources.setMultiSelect(true);
         resources.setSortEnabled(false);
         resources.setSortContainerPropertyId("resourceCallSign");
         resources.setVisibleColumns(new Object[]{
             "resourceCallSign",
+            "assigned",
             "dispatched",
             "enRoute",
             "onScene",
@@ -222,12 +265,25 @@ public class TicketView extends CustomComponent implements View {
             "availableAtStation"});
         resources.setColumnHeaders(new String[]{
             bundle.resources_callSign(),
+            bundle.resources_assigned(),
             bundle.resources_dispatched(),
             bundle.resources_enRoute(),
             bundle.resources_onScene(),
             bundle.resources_availableOnRadio(),
             bundle.resources_availableAtStation()
         });
+        resources.setConverter("assigned", CalendarConverter.dateTime());
+        resources.setConverter("dispatched", CalendarConverter.dateTime());
+        resources.setConverter("enRoute", CalendarConverter.dateTime());
+        resources.setConverter("onScene", CalendarConverter.dateTime());
+        resources.setConverter("availableOnRadio", CalendarConverter.dateTime());
+        resources.setConverter("availableAtStation", CalendarConverter.dateTime());
+        resources.setColumnWidth("assigned", 130);
+        resources.setColumnWidth("dispatched", 130);
+        resources.setColumnWidth("enRoute", 130);
+        resources.setColumnWidth("onScene", 130);
+        resources.setColumnWidth("availableOnRadio", 130);
+        resources.setColumnWidth("availableAtStation", 130);
         layout.addComponent(resources);
         layout.setExpandRatio(resources, 1);
 
@@ -236,11 +292,17 @@ public class TicketView extends CustomComponent implements View {
         buttons.setWidth("100%");
         layout.addComponent(buttons);
 
-        final ComboBox resource = new ComboBox(null, new BeanItemContainer<>(Resource.class, resourceBean.findAll()));
+        resource = new ComboBox(null);
+        resource.addFocusListener(new FieldEvents.FocusListener() {
+            @Override
+            public void focus(FieldEvents.FocusEvent event) {
+                resource.setContainerDataSource(new BeanItemContainer<>(Resource.class, resourceBean.findActiveAndAvailable()));
+            }
+        });
         resource.setItemCaptionPropertyId("callSign");
         buttons.addComponent(resource);
 
-        Button assign = new Button("Assign", new Button.ClickListener() {
+        assign = new Button(bundle.assign(), new Button.ClickListener() {
             @Override
             public void buttonClick(Button.ClickEvent event) {
                 Resource selectedResource = (Resource) resource.getValue();
@@ -249,26 +311,28 @@ public class TicketView extends CustomComponent implements View {
                     resource.setValue(null);
                 }
                 resource.focus();
+                assign.setEnabled(!formDisabled);
             }
         });
+        assign.setDisableOnClick(true);
         buttons.addComponent(assign);
+        buttons.setExpandRatio(assign, 1);
 
-        Button detach = new Button("Detach");
-        buttons.addComponent(detach);
-        buttons.setExpandRatio(detach, 1);
-
-        Button dispatchAll = new Button("Dispatch all");
+        dispatchAll = new Button(bundle.dispatchAll());
         dispatchAll.addStyleName("dispatch-all");
+        dispatchAll.setDisableOnClick(true);
         buttons.addComponent(dispatchAll);
         buttons.setComponentAlignment(dispatchAll, Alignment.MIDDLE_RIGHT);
 
-        Button dispatchSelected = new Button("Dispatch selected");
+        dispatchSelected = new Button(bundle.dispatchSelected());
         dispatchSelected.addStyleName("dispatch-selected");
+        dispatchSelected.setDisableOnClick(true);
         buttons.addComponent(dispatchSelected);
         buttons.setComponentAlignment(dispatchSelected, Alignment.MIDDLE_RIGHT);
 
-        Button dispatchAssigned = new Button("Dispatch assigned");
+        dispatchAssigned = new Button(bundle.dispatchAssigned());
         dispatchAssigned.addStyleName("dispatch-assigned");
+        dispatchAssigned.setDisableOnClick(true);
         buttons.addComponent(dispatchAssigned);
         buttons.setComponentAlignment(dispatchAssigned, Alignment.MIDDLE_RIGHT);
     }
@@ -281,9 +345,30 @@ public class TicketView extends CustomComponent implements View {
             dataSource.getItemProperty("ticketOpened").setReadOnly(true);
             dataSource.getItemProperty("ticketClosed").setReadOnly(true);
             fieldGroup.setItemDataSource(dataSource);
+            refreshResources();
+            if (ticket.isClosed()) {
+                disableForm();
+            }
         } finally {
             changingTicket = false;
         }
+    }
+
+    private void disableForm() {
+        Refresher refresher = getRefresher();
+        if (refresher != null) {
+            refresher.removeListener(this);
+        }
+
+        fieldGroup.setReadOnly(true);
+        closeTicket.setEnabled(false);
+        resource.setEnabled(false);
+        assign.setEnabled(false);
+        dispatchAll.setEnabled(false);
+        dispatchAssigned.setEnabled(false);
+        dispatchSelected.setEnabled(false);
+        resources.setSelectable(false);
+        formDisabled = true;
     }
 
     private Ticket getTicket() {
@@ -296,16 +381,46 @@ public class TicketView extends CustomComponent implements View {
             setTicket(ticketBean.refreshTicket(ticket));
         } catch (NoSuchTicketException ex) {
             Notification.show(bundle.noSuchTicketException(), Notification.Type.WARNING_MESSAGE);
+            disableForm();
         }
     }
 
+    private void refreshResources() {
+        if (getTicket() == null) {
+            return;
+        }
+        try {
+            List<TicketResourceDTO> dtos = ticketBean.findResourcesForTicket(getTicket());
+            Set<TicketResourceDTO> dtosToRemove = new HashSet<>(resourcesContainer.getItemIds());
+
+            for (TicketResourceDTO dto : dtos) {
+                if (!dtosToRemove.remove(dto)) {
+                    resourcesContainer.addBean(dto);
+                }
+            }
+
+            for (TicketResourceDTO dtoToRemove : dtosToRemove) {
+                resourcesContainer.removeItem(dtoToRemove);
+            }
+            resources.sort();
+        } catch (NoSuchTicketException ex) {
+            disableForm();
+        }
+    }
+
+    @Message(key = "resourceNotAvailable", value = "Resursen {0} är inte tillgänglig för alarmering")
     private void assignResource(Resource resource) {
         try {
             resourcesContainer.addBean(ticketBean.assignResourceToTicket(resource, getTicket()));
+            resources.sort();
         } catch (NoSuchTicketException ex) {
             Notification.show(bundle.noSuchTicketException(), Notification.Type.WARNING_MESSAGE);
+            disableForm();
         } catch (TicketClosedException ex) {
             Notification.show(bundle.ticketClosedException());
+            disableForm();
+        } catch (ResourceNotAvailableException ex) {
+            Notification.show(bundle.resourceNotAvailable(resource.getCallSign()));
         }
     }
 
@@ -317,7 +432,7 @@ public class TicketView extends CustomComponent implements View {
     })
     private void save() {
         try {
-            Ticket ticket = ((BeanItem<Ticket>) fieldGroup.getItemDataSource()).getBean();
+            Ticket ticket = getTicket();
             setTicket(ticketBean.saveTicket(ticket));
             Notification.show(bundle.ticketSaved(), Notification.Type.TRAY_NOTIFICATION);
         } catch (TicketModifiedException ex) {
@@ -325,8 +440,28 @@ public class TicketView extends CustomComponent implements View {
             Notification.show(bundle.ticketModifiedException());
         } catch (TicketClosedException ex) {
             Notification.show(bundle.ticketClosedException());
+            disableForm();
         } catch (NoSuchTicketException ex) {
             Notification.show(bundle.noSuchTicketException(), Notification.Type.WARNING_MESSAGE);
+            disableForm();
+        }
+    }
+
+    @Message(key = "ticketClosedMessage", value = "Uppdraget har avslutats")
+    private void closeTicket() {
+        try {
+            Ticket ticket = getTicket();
+            setTicket(ticketBean.closeTicket(ticket));
+            Notification.show(bundle.ticketClosedMessage(), Notification.Type.TRAY_NOTIFICATION);
+        } catch (NoSuchTicketException ex) {
+            Notification.show(bundle.noSuchTicketException(), Notification.Type.WARNING_MESSAGE);
+            disableForm();
+        } catch (TicketClosedException ex) {
+            Notification.show(bundle.ticketClosedException());
+            disableForm();
+        } catch (TicketModifiedException ex) {
+            refresh();
+            Notification.show(bundle.ticketModifiedException());
         }
     }
 
