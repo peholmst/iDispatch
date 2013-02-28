@@ -88,7 +88,7 @@
   }
 
   .state-en_route, .v-table-row-state-en_route {
-    background-color: #e1c066;
+    background-color: #F3F781;
   }
 
   .state-dispatched, .v-table-row-state-dispatched {
@@ -101,9 +101,12 @@
   }
 
   .state-on_scene, .v-table-row-state-on_scene {
-    background-color: #5f9ea0;
+    background-color: #CEECF5;
   }
 
+  .v-table-row-not-active {
+    background-color: #F6CECE;
+  }
 
 /* Insert your theme rules here */
   .header {
