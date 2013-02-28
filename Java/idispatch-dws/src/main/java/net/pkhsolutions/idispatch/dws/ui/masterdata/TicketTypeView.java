@@ -80,7 +80,7 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
         return new TicketType.Builder(entity).build();
     }
 
-    @Message(key = "title", value = "Uppdragstyper")
+    @Message(key = "title", value = "Administrera uppdragstyper")
     @Override
     protected String getTitle() {
         return bundle.title();

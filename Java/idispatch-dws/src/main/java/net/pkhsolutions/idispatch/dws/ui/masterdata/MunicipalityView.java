@@ -31,7 +31,7 @@ public class MunicipalityView extends AbstractMasterDataView<Municipality> {
     @Inject
     private I18N i18n;
 
-    @Message(key = "title", value = "Kommuner")
+    @Message(key = "title", value = "Administrera kommuner")
     @Override
     protected String getTitle() {
         return bundle.title();

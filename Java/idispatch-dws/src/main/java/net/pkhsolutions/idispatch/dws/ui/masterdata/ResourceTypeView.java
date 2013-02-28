@@ -31,7 +31,7 @@ public class ResourceTypeView extends AbstractMasterDataView<ResourceType> {
     @Inject
     private I18N i18n;
 
-    @Message(key = "title", value = "Resurstyper")
+    @Message(key = "title", value = "Administrera resurstyper")
     @Override
     protected String getTitle() {
         return bundle.title();
