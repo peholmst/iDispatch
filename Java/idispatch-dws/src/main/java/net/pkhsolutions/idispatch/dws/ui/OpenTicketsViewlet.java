@@ -43,6 +43,7 @@ public class OpenTicketsViewlet extends CustomComponent implements Refresher.Ref
     }
 
     @Messages({
+        @Message(key = "caption", value = "Pågående uppdrag"),
         @Message(key = "ticketNo", value = "Nr"),
         @Message(key = "ticketType", value = "Typ"),
         @Message(key = "ticketOpened", value = "Påbörjat")
@@ -51,6 +52,7 @@ public class OpenTicketsViewlet extends CustomComponent implements Refresher.Ref
     protected void init() {
         ticketsContainer = new BeanItemContainer<>(OpenTicketDTO.class);
         ticketsTable = new Table();
+        ticketsTable.setCaption(bundle.caption());
         ticketsTable.addStyleName(Reindeer.TABLE_BORDERLESS);
         ticketsTable.setSelectable(false);
         ticketsTable.setSortEnabled(false);
