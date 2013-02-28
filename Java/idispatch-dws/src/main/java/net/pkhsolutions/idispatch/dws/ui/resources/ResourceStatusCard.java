@@ -11,10 +11,12 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.tickets.TicketView;
 import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
+import net.pkhsolutions.idispatch.entity.ResourceState;
 
 public class ResourceStatusCard extends DragAndDropWrapper {
 
@@ -47,7 +49,7 @@ public class ResourceStatusCard extends DragAndDropWrapper {
         callSign.setDescription(resourceStatus.getResource().getResourceType().getName(i18n.getLocale()));
         layout.addComponent(callSign);
 
-        if (this.resourceStatus.getTicket() != null) {
+        if (Arrays.asList(ResourceState.ASSIGNED, ResourceState.DISPATCHED, ResourceState.EN_ROUTE, ResourceState.ON_SCENE).contains(this.resourceStatus.getResourceState()) && this.resourceStatus.getTicket() != null) {
             String ticketDescription = String.format("%s: %s",
                     getTicketMunicipality(),
                     getTicketAddress());

@@ -124,7 +124,6 @@ public class ResourceStatusCardPanel extends DragAndDropWrapper implements DropH
                     updateStatus(status);
                 }
             } else {
-                status.setTicket(null);
                 updateStatus(status);
             }
         }
