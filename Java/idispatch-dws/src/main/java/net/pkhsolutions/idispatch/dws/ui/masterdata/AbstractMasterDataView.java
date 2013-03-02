@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.validation.ConstraintViolation;
+import net.pkhsolutions.idispatch.dws.ui.utils.ValidationUtils;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
 import net.pkhsolutions.idispatch.ejb.common.ConcurrentModificationException;
 import net.pkhsolutions.idispatch.ejb.common.DeletionFailedException;
@@ -107,7 +108,7 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
             } catch (FieldGroup.CommitException ex) {
                 Logger.getLogger(AbstractMasterDataView.class.getCanonicalName()).log(Level.WARNING, "Error committing form", ex);
             } catch (ValidationFailedException ex) {
-                setValidationErrors(fieldGroup, ex);
+                ValidationUtils.setValidationErrors(fieldGroup, ex);
             } catch (ConcurrentModificationException ex) {
                 setEntity(getBackend().refresh(entity));
                 Notification.show(bundle.concurrentModification_caption(),
@@ -227,34 +228,6 @@ public abstract class AbstractMasterDataView<E extends AbstractEntity> extends C
 
     protected EditorWindow createEditorWindow(String caption, E entity) {
         return new EditorWindow(caption, entity);
-    }
-
-    protected void setValidationErrors(FieldGroup fieldGroup, ValidationFailedException ex) {
-        Map<Object, String> errorMessages = new HashMap<>();
-
-        for (ConstraintViolation<?> violation : ex.getViolations()) {
-            String propertyId = violation.getPropertyPath().toString();
-            StringBuilder sb = new StringBuilder();
-            if (errorMessages.containsKey(propertyId)) {
-                sb.append(errorMessages.get(propertyId));
-            }
-            if (sb.length() > 0) {
-                sb.append("<br/>");
-            }
-            sb.append(violation.getMessage());
-            errorMessages.put(propertyId, sb.toString());
-        }
-
-        for (Object propertyId : fieldGroup.getBoundPropertyIds()) {
-            Field field = fieldGroup.getField(propertyId);
-            if (field instanceof AbstractComponent) {
-                UserError error = null;
-                if (errorMessages.containsKey(propertyId)) {
-                    error = new UserError(errorMessages.get(propertyId));
-                }
-                ((AbstractComponent) field).setComponentError(error);
-            }
-        }
     }
 
     protected abstract Backend<E> getBackend();
