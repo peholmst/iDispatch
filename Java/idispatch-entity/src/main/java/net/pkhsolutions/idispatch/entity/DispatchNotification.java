@@ -131,9 +131,20 @@ public class DispatchNotification extends AbstractEntity {
             return this;
         }
 
+        public Builder withResourceStatus(CurrentResourceStatus resource) {
+            return withResource(resource.getResource());
+        }
+
         public Builder withResources(Collection<Resource> resources) {
             for (Resource r : resources) {
                 entity.resourceCallSigns.add(r.getCallSign());
+            }
+            return this;
+        }
+
+        public Builder withResourceStatuses(Collection<CurrentResourceStatus> resources) {
+            for (CurrentResourceStatus r : resources) {
+                entity.resourceCallSigns.add(r.getResource().getCallSign());
             }
             return this;
         }
