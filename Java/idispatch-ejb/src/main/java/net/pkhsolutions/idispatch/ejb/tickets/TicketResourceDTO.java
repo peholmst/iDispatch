@@ -3,6 +3,7 @@ package net.pkhsolutions.idispatch.ejb.tickets;
 import java.util.Calendar;
 import java.util.Objects;
 import java.util.TimeZone;
+import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceState;
 import static net.pkhsolutions.idispatch.entity.ResourceState.ASSIGNED;
 import static net.pkhsolutions.idispatch.entity.ResourceState.AT_STATION;
@@ -14,19 +15,19 @@ import static net.pkhsolutions.idispatch.entity.ResourceState.ON_SCENE;
 public class TicketResourceDTO implements java.io.Serializable, Comparable<TicketResourceDTO> {
 
     private int orderNo = 0;
-    private String resourceCallSign;
     private Calendar assigned;
     private Calendar dispatched;
     private Calendar enRoute;
     private Calendar onScene;
     private Calendar availableOnRadio;
     private Calendar availableAtStation;
+    private Resource resource;
 
     TicketResourceDTO() {
     }
 
-    public TicketResourceDTO(String resourceCallSign, Calendar assigned, Calendar dispatched, Calendar enRoute, Calendar onScene, Calendar availableOnRadio, Calendar availableAtStation) {
-        setResourceCallSign(resourceCallSign);
+    public TicketResourceDTO(Resource resource, Calendar assigned, Calendar dispatched, Calendar enRoute, Calendar onScene, Calendar availableOnRadio, Calendar availableAtStation) {
+        setResource(resource);
         setAssigned(assigned);
         setDispatched(dispatched);
         setEnRoute(enRoute);
@@ -77,11 +78,7 @@ public class TicketResourceDTO implements java.io.Serializable, Comparable<Ticke
     }
 
     public String getResourceCallSign() {
-        return resourceCallSign;
-    }
-
-    final void setResourceCallSign(String resourceCallSign) {
-        this.resourceCallSign = resourceCallSign;
+        return resource.getCallSign();
     }
 
     public Calendar getAssigned() {
@@ -140,6 +137,14 @@ public class TicketResourceDTO implements java.io.Serializable, Comparable<Ticke
         this.orderNo = orderNo;
     }
 
+    public Resource getResource() {
+        return resource;
+    }
+
+    final void setResource(Resource resource) {
+        this.resource = resource;
+    }
+
     private Calendar normalizeCalendar(Calendar cal) {
         if (cal == null) {
             return null;
@@ -154,13 +159,13 @@ public class TicketResourceDTO implements java.io.Serializable, Comparable<Ticke
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 79 * hash + Objects.hashCode(this.resourceCallSign);
         hash = 79 * hash + Objects.hashCode(this.assigned);
         hash = 79 * hash + Objects.hashCode(this.dispatched);
         hash = 79 * hash + Objects.hashCode(this.enRoute);
         hash = 79 * hash + Objects.hashCode(this.onScene);
         hash = 79 * hash + Objects.hashCode(this.availableOnRadio);
         hash = 79 * hash + Objects.hashCode(this.availableAtStation);
+        hash = 79 * hash + Objects.hashCode(this.resource);
         return hash;
     }
 
@@ -173,9 +178,6 @@ public class TicketResourceDTO implements java.io.Serializable, Comparable<Ticke
             return false;
         }
         final TicketResourceDTO other = (TicketResourceDTO) obj;
-        if (!Objects.equals(this.resourceCallSign, other.resourceCallSign)) {
-            return false;
-        }
         if (!Objects.equals(this.assigned, other.assigned)) {
             return false;
         }
@@ -194,12 +196,15 @@ public class TicketResourceDTO implements java.io.Serializable, Comparable<Ticke
         if (!Objects.equals(this.availableAtStation, other.availableAtStation)) {
             return false;
         }
+        if (!Objects.equals(this.resource, other.resource)) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public int compareTo(TicketResourceDTO o) {
-        int result = resourceCallSign.compareTo(o.resourceCallSign);
+        int result = resource.compareTo(o.resource);
         if (result == 0) {
             return orderNo - o.orderNo;
         } else {

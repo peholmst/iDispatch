@@ -189,7 +189,7 @@ public class TicketEJB {
             TicketResourceDTO dto;
             if (dtos.isEmpty() || forceNew) {
                 dto = new TicketResourceDTO();
-                dto.setResourceCallSign(resource.getCallSign());
+                dto.setResource(resource);
                 dto.setOrderNo(dtos.size());
                 dtos.add(dto);
             } else {
@@ -226,7 +226,7 @@ public class TicketEJB {
         } catch (ResourceStatusChangedException ex) {
             throw new ResourceNotAvailableException(resource, ex);
         }
-        return new TicketResourceDTO(resource.getCallSign(), status.getStateChangeTimestamp(), null, null, null, null, null);
+        return new TicketResourceDTO(resource, status.getStateChangeTimestamp(), null, null, null, null, null);
     }
 
     public void dispatchAllResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException, ResourceStatusChangedException {
