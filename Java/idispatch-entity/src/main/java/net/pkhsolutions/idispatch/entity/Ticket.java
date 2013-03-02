@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Ticket extends AbstractEntityWithOptimisticLocking {
 
-    public static class DispatchValidation {
+    public interface DispatchValidation {
     }
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar ticketOpened;
