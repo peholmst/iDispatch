@@ -33,6 +33,9 @@ public class CalendarConverter implements Converter<String, Calendar> {
             return null;
         } else {
             try {
+                if (locale == null) {
+                    locale = Locale.getDefault();
+                }
                 Date date = new SimpleDateFormat(formatString, locale).parse(value);
                 Calendar cal = Calendar.getInstance(locale);
                 cal.setTime(date);
@@ -45,6 +48,9 @@ public class CalendarConverter implements Converter<String, Calendar> {
 
     @Override
     public String convertToPresentation(Calendar value, Locale locale) throws ConversionException {
+        if (locale == null) {
+            locale = Locale.getDefault();
+        }
         return value == null ? null : new SimpleDateFormat(formatString, locale).format(value.getTime());
     }
 
