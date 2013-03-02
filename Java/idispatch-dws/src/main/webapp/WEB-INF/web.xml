@@ -24,7 +24,7 @@
     </security-constraint>
     <login-config>
         <auth-method>BASIC</auth-method>
-        <realm-name>iDispatchDWS</realm-name>
+        <realm-name>iDispatchRealm</realm-name>
     </login-config>
     <security-role>
         <description>User of the DWS</description>
