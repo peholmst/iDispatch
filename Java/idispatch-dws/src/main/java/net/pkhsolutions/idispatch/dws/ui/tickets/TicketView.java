@@ -19,6 +19,7 @@ import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -28,11 +29,15 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
 import net.pkhsolutions.idispatch.dws.ui.utils.CalendarConverter;
+import net.pkhsolutions.idispatch.dws.ui.utils.ValidationUtils;
 import net.pkhsolutions.idispatch.ejb.common.Roles;
+import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
 import net.pkhsolutions.idispatch.ejb.masterdata.MunicipalityEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.TicketTypeEJB;
+import net.pkhsolutions.idispatch.ejb.resources.ResourceStatusChangedException;
 import net.pkhsolutions.idispatch.ejb.tickets.NoSuchTicketException;
+import net.pkhsolutions.idispatch.ejb.tickets.ResourceNotAssignedToTicketException;
 import net.pkhsolutions.idispatch.ejb.tickets.ResourceNotAvailableException;
 import net.pkhsolutions.idispatch.ejb.tickets.TicketClosedException;
 import net.pkhsolutions.idispatch.ejb.tickets.TicketEJB;
@@ -321,19 +326,34 @@ public class TicketView extends CustomComponent implements View, Refresher.Refre
         buttons.addComponent(assign);
         buttons.setExpandRatio(assign, 1);
 
-        dispatchAll = new Button(bundle.dispatchAll());
+        dispatchAll = new Button(bundle.dispatchAll(), new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                dispatchAll();
+            }
+        });
         dispatchAll.addStyleName("dispatch-all");
         dispatchAll.setDisableOnClick(true);
         buttons.addComponent(dispatchAll);
         buttons.setComponentAlignment(dispatchAll, Alignment.MIDDLE_RIGHT);
 
-        dispatchSelected = new Button(bundle.dispatchSelected());
+        dispatchSelected = new Button(bundle.dispatchSelected(), new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                dispatchSelected();
+            }
+        });
         dispatchSelected.addStyleName("dispatch-selected");
         dispatchSelected.setDisableOnClick(true);
         buttons.addComponent(dispatchSelected);
         buttons.setComponentAlignment(dispatchSelected, Alignment.MIDDLE_RIGHT);
 
-        dispatchAssigned = new Button(bundle.dispatchAssigned());
+        dispatchAssigned = new Button(bundle.dispatchAssigned(), new Button.ClickListener() {
+            @Override
+            public void buttonClick(Button.ClickEvent event) {
+                dispatchAssigned();
+            }
+        });
         dispatchAssigned.addStyleName("dispatch-assigned");
         dispatchAssigned.setDisableOnClick(true);
         buttons.addComponent(dispatchAssigned);
@@ -354,6 +374,71 @@ public class TicketView extends CustomComponent implements View, Refresher.Refre
             }
         } finally {
             changingTicket = false;
+        }
+    }
+
+    @Message(key = "dispatched", value = "Resurserna har alarmerats")
+    private void dispatchAll() {
+        ValidationUtils.setValidationErrors(fieldGroup, null);
+        try {
+            ticketBean.dispatchAllResources(getTicket());
+            Notification.show(bundle.dispatched(), Notification.Type.TRAY_NOTIFICATION);
+        } catch (ValidationFailedException | TicketClosedException | NoSuchTicketException | ResourceStatusChangedException ex) {
+            handleDispatchException(ex);
+        } finally {
+            dispatchAll.setEnabled(true);
+        }
+    }
+
+    @Messages({
+        @Message(key = "resourceStatusChangedException", value = "En resurs har ändrat sin status och kan inte alarmeras. Försök igen."),
+        @Message(key = "resourceNotAssignedToTicketException", value = "Resursen {0} har inte reserverats för uppdraget och kan inte alarmeras.")
+    })
+    private void handleDispatchException(Exception ex) {
+        if (ex instanceof ValidationFailedException) {
+            ValidationUtils.setValidationErrors(fieldGroup, (ValidationFailedException) ex);
+        } else if (ex instanceof TicketClosedException) {
+            Notification.show(bundle.ticketClosedException());
+            disableForm();
+        } else if (ex instanceof NoSuchTicketException) {
+            Notification.show(bundle.noSuchTicketException(), Notification.Type.WARNING_MESSAGE);
+            disableForm();
+        } else if (ex instanceof ResourceStatusChangedException) {
+            Notification.show(bundle.resourceStatusChangedException(), Notification.Type.WARNING_MESSAGE);
+        } else if (ex instanceof ResourceNotAssignedToTicketException) {
+            Notification.show(bundle.resourceNotAssignedToTicketException(((ResourceNotAssignedToTicketException) ex).getResource().getCallSign()), Notification.Type.WARNING_MESSAGE);
+        }
+    }
+
+    private void dispatchAssigned() {
+        ValidationUtils.setValidationErrors(fieldGroup, null);
+        try {
+            ticketBean.dispatchAssignedResources(getTicket());
+            Notification.show(bundle.dispatched(), Notification.Type.TRAY_NOTIFICATION);
+        } catch (ValidationFailedException | TicketClosedException | NoSuchTicketException | ResourceStatusChangedException ex) {
+            handleDispatchException(ex);
+        } finally {
+            dispatchAssigned.setEnabled(true);
+        }
+    }
+
+    private void dispatchSelected() {
+        try {
+            if (resources.getValue() != null) {
+                Set<Resource> resourcesToDispatch = new HashSet<>();
+                for (TicketResourceDTO selectedDTO : ((Collection<TicketResourceDTO>) resources.getValue())) {
+                    resourcesToDispatch.add(selectedDTO.getResource());
+                }
+                ValidationUtils.setValidationErrors(fieldGroup, null);
+                try {
+                    ticketBean.dispatchSelectedResources(getTicket(), resourcesToDispatch);
+                    Notification.show(bundle.dispatched(), Notification.Type.TRAY_NOTIFICATION);
+                } catch (ValidationFailedException | TicketClosedException | NoSuchTicketException | ResourceStatusChangedException | ResourceNotAssignedToTicketException ex) {
+                    handleDispatchException(ex);
+                }
+            }
+        } finally {
+            dispatchSelected.setEnabled(true);
         }
     }
 
