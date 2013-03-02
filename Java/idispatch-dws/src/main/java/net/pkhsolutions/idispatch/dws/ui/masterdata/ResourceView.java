@@ -4,6 +4,7 @@ import com.github.peholmst.i18n4vaadin.I18N;
 import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
+import com.vaadin.cdi.component.JaasTools;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.data.util.converter.Converter;
@@ -17,6 +18,7 @@ import java.util.Locale;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceTypeEJB;
@@ -24,7 +26,7 @@ import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceType;
 import org.apache.commons.lang.StringUtils;
 
-@VaadinView(ResourceView.VIEW_ID)
+@VaadinView(value = ResourceView.VIEW_ID, rolesAllowed = Roles.ADMIN)
 public class ResourceView extends AbstractMasterDataView<Resource> {
 
     public static final String VIEW_ID = "resourceMasterData";
@@ -132,7 +134,9 @@ public class ResourceView extends AbstractMasterDataView<Resource> {
         ResourceViewBundle bundle;
 
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
+            if (JaasTools.isUserInRole(Roles.ADMIN)) {
+                event.getMenu().addMenuItem(bundle.title(), VIEW_ID, null, 4, "admin");
+            }
         }
     }
 }

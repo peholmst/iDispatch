@@ -4,6 +4,7 @@ import com.github.peholmst.i18n4vaadin.I18N;
 import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
+import com.vaadin.cdi.component.JaasTools;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Table;
@@ -11,6 +12,7 @@ import com.vaadin.ui.TextField;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
 import net.pkhsolutions.idispatch.ejb.masterdata.MunicipalityEJB;
 import net.pkhsolutions.idispatch.entity.Municipality;
@@ -20,7 +22,7 @@ import org.apache.commons.lang.StringUtils;
  *
  * @author peholmst
  */
-@VaadinView(MunicipalityView.VIEW_ID)
+@VaadinView(value = MunicipalityView.VIEW_ID, rolesAllowed = Roles.ADMIN)
 public class MunicipalityView extends AbstractMasterDataView<Municipality> {
 
     public static final String VIEW_ID = "municipalityMasterData";
@@ -89,7 +91,9 @@ public class MunicipalityView extends AbstractMasterDataView<Municipality> {
         MunicipalityViewBundle bundle;
 
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
+            if (JaasTools.isUserInRole(Roles.ADMIN)) {
+                event.getMenu().addMenuItem(bundle.title(), VIEW_ID, null, 2, "admin");
+            }
         }
     }
 }

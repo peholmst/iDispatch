@@ -3,6 +3,7 @@ package net.pkhsolutions.idispatch.dws.ui.masterdata;
 import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
+import com.vaadin.cdi.component.JaasTools;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Table;
@@ -10,6 +11,7 @@ import com.vaadin.ui.TextField;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
 import net.pkhsolutions.idispatch.ejb.masterdata.TicketTypeEJB;
 import net.pkhsolutions.idispatch.entity.TicketType;
@@ -18,7 +20,7 @@ import net.pkhsolutions.idispatch.entity.TicketType;
  *
  * @author Petter Holmström
  */
-@VaadinView(TicketTypeView.VIEW_ID)
+@VaadinView(value = TicketTypeView.VIEW_ID, rolesAllowed = Roles.ADMIN)
 public class TicketTypeView extends AbstractMasterDataView<TicketType> {
 
     public static final String VIEW_ID = "ticketTypeMasterData";
@@ -92,7 +94,9 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
         TicketTypeViewBundle bundle;
 
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
+            if (JaasTools.isUserInRole(Roles.ADMIN)) {
+                event.getMenu().addMenuItem(bundle.title(), VIEW_ID, null, 5, "admin");
+            }
         }
     }
 }
