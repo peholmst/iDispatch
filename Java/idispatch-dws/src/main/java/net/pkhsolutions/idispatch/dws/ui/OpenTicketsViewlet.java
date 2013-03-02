@@ -4,19 +4,18 @@ import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.github.wolfie.refresher.Refresher;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ItemClickEvent;
+import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.tickets.TicketView;
+import net.pkhsolutions.idispatch.dws.ui.utils.CalendarConverter;
 import net.pkhsolutions.idispatch.ejb.tickets.OpenTicketDTO;
 import net.pkhsolutions.idispatch.ejb.tickets.TicketEJB;
 
@@ -57,26 +56,24 @@ public class OpenTicketsViewlet extends CustomComponent implements Refresher.Ref
         ticketsTable.setSelectable(false);
         ticketsTable.setSortEnabled(false);
         ticketsTable.setContainerDataSource(ticketsContainer);
-        ticketsTable.addGeneratedColumn("ticketOpenedFormatted", new Table.ColumnGenerator() {
+        ticketsTable.addGeneratedColumn("ticketIdLink", new Table.ColumnGenerator() {
             @Override
-            public Object generateCell(Table source, Object itemId, Object columnId) {
-                Calendar cal = (Calendar) source.getItem(itemId).getItemProperty("ticketOpened").getValue();
-                return new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
+            public Object generateCell(Table source, final Object itemId, Object columnId) {
+                final Long ticketId = ((OpenTicketDTO) itemId).getTicketId();
+                Button button = new Button(ticketId.toString(), new Button.ClickListener() {
+                    @Override
+                    public void buttonClick(Button.ClickEvent event) {
+                        getUI().getNavigator().navigateTo(TicketView.VIEW_ID + "/" + ticketId);
+                    }
+                });
+                button.addStyleName(Reindeer.BUTTON_LINK);
+                return button;
             }
         });
-        ticketsTable.setVisibleColumns(new Object[]{"ticketId", "ticketOpenedFormatted", "ticketType"});
+        ticketsTable.setConverter("ticketOpened", CalendarConverter.time());
+        ticketsTable.setVisibleColumns(new Object[]{"ticketIdLink", "ticketOpened", "ticketType"});
         ticketsTable.setColumnHeaders(new String[]{bundle.ticketNo(), bundle.ticketOpened(), bundle.ticketType()});
         ticketsTable.setSortContainerPropertyId("ticketOpened");
-        ticketsTable.addItemClickListener(new ItemClickEvent.ItemClickListener() {
-            @Override
-            public void itemClick(ItemClickEvent event) {
-                if (event.isDoubleClick()) {
-                    Long ticketId = (Long) event.getItem().getItemProperty("ticketId").getValue();
-                    getUI().getNavigator().navigateTo(TicketView.VIEW_ID + "/" + ticketId);
-                }
-            }
-        });
-
         ticketsTable.setSizeFull();
         layout.addComponent(ticketsTable);
         refresh();
