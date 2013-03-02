@@ -55,16 +55,22 @@ public class MenuViewlet extends CustomComponent {
     }
 
     public void addMenuItem(final String caption, final String viewId) {
-        addMenuItem(caption, viewId, null, 0);
+        addMenuItem(caption, viewId, null, 0, null);
+    }
+    public void addMenuItem(final String caption, final String viewId, final Resource icon, final int order) {
+        addMenuItem(caption, viewId, icon, order, null);
     }
 
-    public void addMenuItem(final String caption, final String viewId, final Resource icon, final int order) {
+    public void addMenuItem(final String caption, final String viewId, final Resource icon, final int order, final String styleName) {
         if (!initializing) {
             throw new IllegalStateException("Menu items can currently only be added when the menu is being initialized");
         }
         VerticalLayout menuItem = new VerticalLayout();
         menuItem.setWidth("100%");
         menuItem.addStyleName("menu-item");
+        if (styleName != null) {
+            menuItem.addStyleName(styleName);
+        }
         if (icon != null) {
             menuItem.addComponent(new Image(null, icon));
         }

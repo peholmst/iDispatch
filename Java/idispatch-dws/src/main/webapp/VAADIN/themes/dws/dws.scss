@@ -27,6 +27,17 @@
         text-transform: uppercase;
         text-shadow: rgba(0, 0, 0, 0.498039) 0px 1px 0px;
       }
+
+      .v-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 5px;
+      }
+    }
+
+    .admin {
+      background: -webkit-linear-gradient(left, #aa0000, #660000);
     }
 
     .menu-item:hover {
@@ -108,16 +119,16 @@
     background-color: #F6CECE;
   }
 
-/* Insert your theme rules here */
   .header {
     padding: 3px;
-    background: -webkit-linear-gradient(top, #fff, #999);
+     background: -webkit-linear-gradient(top, #505355, #2B2B2B);
     line-height: 25px;
 
     .title {
       font: {
         size: 20px;
       }
+      color: #ffffff;
       line-height: 25px;
       padding: {
         top: 3px;
@@ -125,8 +136,12 @@
       }
     }
 
-    .v-button {
-      margin: 5px;
+    .current-user {
+      color: #ffffff;
+      padding: {
+        top: 5px;
+        right: 10px;
+      }
     }
   }
 }
