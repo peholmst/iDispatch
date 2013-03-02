@@ -5,6 +5,7 @@ import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.github.wolfie.refresher.Refresher;
 import com.vaadin.cdi.VaadinView;
+import com.vaadin.cdi.component.JaasTools;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
 import com.vaadin.data.Property;
@@ -12,6 +13,7 @@ import com.vaadin.data.util.converter.Converter;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Extension;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
 import java.util.Locale;
@@ -23,10 +25,11 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
 import net.pkhsolutions.idispatch.dws.ui.utils.CalendarConverter;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
 import net.pkhsolutions.idispatch.entity.Resource;
 
-@VaadinView(value = ResourceStatusView.VIEW_ID)
+@VaadinView(value = ResourceStatusView.VIEW_ID, rolesAllowed = Roles.DISPATCHER)
 public class ResourceStatusView extends CustomComponent implements View, Refresher.RefreshListener {
 
     public static final String VIEW_ID = "resourceStatus";
@@ -312,7 +315,9 @@ public class ResourceStatusView extends CustomComponent implements View, Refresh
         private ResourceStatusViewBundle bundle;
 
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem(bundle.title(), VIEW_ID);
+            if (JaasTools.isUserInRole(Roles.DISPATCHER)) {
+                event.getMenu().addMenuItem(bundle.title(), VIEW_ID, new ThemeResource("icons/resource_status.png"), 1);
+            }
         }
     }
 }

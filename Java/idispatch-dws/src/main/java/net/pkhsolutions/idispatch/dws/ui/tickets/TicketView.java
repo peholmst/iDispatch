@@ -5,6 +5,7 @@ import com.github.peholmst.i18n4vaadin.annotations.Message;
 import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.github.wolfie.refresher.Refresher;
 import com.vaadin.cdi.VaadinView;
+import com.vaadin.cdi.component.JaasTools;
 import com.vaadin.data.Property;
 import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.data.util.BeanItem;
@@ -13,6 +14,7 @@ import com.vaadin.event.FieldEvents;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.server.Extension;
+import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.ui.combobox.FilteringMode;
 import com.vaadin.ui.*;
 import com.vaadin.ui.themes.Reindeer;
@@ -26,6 +28,7 @@ import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
 import net.pkhsolutions.idispatch.dws.ui.utils.CalendarConverter;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.masterdata.MunicipalityEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceEJB;
 import net.pkhsolutions.idispatch.ejb.masterdata.TicketTypeEJB;
@@ -42,7 +45,7 @@ import net.pkhsolutions.idispatch.entity.TicketType;
 import net.pkhsolutions.idispatch.entity.TicketUrgency;
 import org.apache.commons.lang.StringUtils;
 
-@VaadinView(value = TicketView.VIEW_ID)
+@VaadinView(value = TicketView.VIEW_ID, rolesAllowed = Roles.DISPATCHER)
 public class TicketView extends CustomComponent implements View, Refresher.RefreshListener {
 
     public static final String VIEW_ID = "ticket";
@@ -490,7 +493,9 @@ public class TicketView extends CustomComponent implements View, Refresher.Refre
 
         @Message(key = "menuCaption", value = "Nytt uppdrag")
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
-            event.getMenu().addMenuItem(bundle.menuCaption(), VIEW_ID);
+            if (JaasTools.isUserInRole(Roles.DISPATCHER)) {
+                event.getMenu().addMenuItem(bundle.menuCaption(), VIEW_ID, new ThemeResource("icons/new_ticket.png"), 0);
+            }
         }
     }
 }
