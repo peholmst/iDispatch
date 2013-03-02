@@ -5,6 +5,7 @@ import com.github.peholmst.i18n4vaadin.annotations.Messages;
 import com.vaadin.cdi.VaadinView;
 import com.vaadin.cdi.component.JaasTools;
 import com.vaadin.data.fieldgroup.FieldGroup;
+import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TextField;
@@ -13,76 +14,86 @@ import javax.inject.Inject;
 import net.pkhsolutions.idispatch.dws.ui.MenuViewlet;
 import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.masterdata.Backend;
-import net.pkhsolutions.idispatch.ejb.masterdata.TicketTypeEJB;
-import net.pkhsolutions.idispatch.entity.TicketType;
+import net.pkhsolutions.idispatch.ejb.masterdata.DispatchNotificationReceiverEJB;
+import net.pkhsolutions.idispatch.entity.DispatchNotificationReceiver;
 
 /**
  *
  * @author Petter Holmström
  */
-@VaadinView(value = TicketTypeView.VIEW_ID, rolesAllowed = Roles.ADMIN)
-public class TicketTypeView extends AbstractMasterDataView<TicketType> {
+@VaadinView(value = ReceiverView.VIEW_ID, rolesAllowed = Roles.ADMIN)
+public class ReceiverView extends AbstractMasterDataView<DispatchNotificationReceiver> {
 
-    public static final String VIEW_ID = "ticketTypeMasterData";
+    public static final String VIEW_ID = "dispatchNotificationReceiverMasterData";
     @Inject
-    private TicketTypeEJB ticketType;
+    private DispatchNotificationReceiverEJB receiver;
     @Inject
-    private TicketTypeViewBundle bundle;
+    private ReceiverViewBundle bundle;
 
     @Override
-    protected Backend<TicketType> getBackend() {
-        return ticketType;
+    protected Backend<DispatchNotificationReceiver> getBackend() {
+        return receiver;
     }
 
     @Messages({
-        @Message(key = "code", value = "Kod"),
-        @Message(key = "descriptionFi", value = "Beskrivning (finska)"),
-        @Message(key = "descriptionSv", value = "Beskrivning (svenska)")
+        @Message(key = "receiverId", value = "Mottagar-ID"),
+        @Message(key = "securityCode", value = "Säkerhetskod"),
+        @Message(key = "active", value = "Aktiv")
     })
     @Override
     protected void setUpFormFields(FormLayout formLayout, FieldGroup fieldGroup) {
-        TextField code = new TextField(bundle.code());
-        code.setWidth("100px");
-        code.setNullRepresentation("");
-        fieldGroup.bind(code, "code");
-        formLayout.addComponent(code);
+        TextField receiverId = new TextField(bundle.receiverId());
+        receiverId.setWidth("200px");
+        receiverId.setNullRepresentation("");
+        fieldGroup.bind(receiverId, "receiverId");
+        formLayout.addComponent(receiverId);
 
-        TextField descriptionFi = new TextField(bundle.descriptionFi());
-        descriptionFi.setWidth("200px");
-        descriptionFi.setNullRepresentation("");
-        fieldGroup.bind(descriptionFi, "descriptionFi");
-        formLayout.addComponent(descriptionFi);
+        TextField securityCode = new TextField(bundle.securityCode());
+        securityCode.setWidth("200px");
+        securityCode.setNullRepresentation("");
+        fieldGroup.bind(securityCode, "securityCode");
+        formLayout.addComponent(securityCode);
 
-        TextField descriptionSv = new TextField(bundle.descriptionSv());
-        descriptionSv.setWidth("200px");
-        descriptionSv.setNullRepresentation("");
-        fieldGroup.bind(descriptionSv, "descriptionSv");
-        formLayout.addComponent(descriptionSv);
+        CheckBox active = new CheckBox(bundle.active());
+        fieldGroup.bind(active, "active");
+        formLayout.addComponent(active);
     }
 
     @Override
     protected void setUpTable(Table table) {
-        table.setVisibleColumns(new String[]{"code", "descriptionFi", "descriptionSv"});
-        table.setColumnHeaders(new String[]{bundle.code(), bundle.descriptionFi(), bundle.descriptionSv()});
-        table.setSortContainerPropertyId("code");
+        table.setVisibleColumns(new String[]{"receiverId", "securityCode"});
+        table.setColumnHeaders(new String[]{bundle.receiverId(), bundle.securityCode()});
+        table.setCellStyleGenerator(new Table.CellStyleGenerator() {
+            @Override
+            public String getStyle(Table source, Object itemId, Object propertyId) {
+                DispatchNotificationReceiver receiver = (DispatchNotificationReceiver) itemId;
+                if (!receiver.isActive()) {
+                    return "not-active";
+                } else {
+                    return null;
+                }
+            }
+        });
+
+        table.setSortContainerPropertyId("receiverId");
     }
 
     @Override
-    protected Class<TicketType> getEntityClass() {
-        return TicketType.class;
+    protected Class<DispatchNotificationReceiver> getEntityClass() {
+        return DispatchNotificationReceiver.class;
     }
 
     @Override
-    protected TicketType createNewEntity() {
-        return new TicketType.Builder().build();
+    protected DispatchNotificationReceiver createNewEntity() {
+        return new DispatchNotificationReceiver.Builder().withGeneratedSecurityCode().build();
     }
 
     @Override
-    protected TicketType createCopyOfEntity(TicketType entity) {
-        return new TicketType.Builder(entity).build();
+    protected DispatchNotificationReceiver createCopyOfEntity(DispatchNotificationReceiver entity) {
+        return new DispatchNotificationReceiver.Builder(entity).build();
     }
 
-    @Message(key = "title", value = "Administrera uppdragstyper")
+    @Message(key = "title", value = "Administrera larmmottagare")
     @Override
     protected String getTitle() {
         return bundle.title();
@@ -91,11 +102,11 @@ public class TicketTypeView extends AbstractMasterDataView<TicketType> {
     public static class MenuItemRegistrar {
 
         @Inject
-        TicketTypeViewBundle bundle;
+        ReceiverViewBundle bundle;
 
         public void register(@Observes MenuViewlet.MenuItemRegistrationEvent event) {
             if (JaasTools.isUserInRole(Roles.ADMIN)) {
-                event.getMenu().addMenuItem(bundle.title(), VIEW_ID, null, 5, "admin");
+                event.getMenu().addMenuItem(bundle.title(), VIEW_ID, null, 6, "admin");
             }
         }
     }
