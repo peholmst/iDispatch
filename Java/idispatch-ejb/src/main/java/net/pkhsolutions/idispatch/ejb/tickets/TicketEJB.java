@@ -3,10 +3,13 @@ package net.pkhsolutions.idispatch.ejb.tickets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -18,6 +21,7 @@ import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.validation.Validator;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
 import net.pkhsolutions.idispatch.ejb.resources.NoStatusInformationFoundException;
 import net.pkhsolutions.idispatch.ejb.resources.ResourceStatusChangedException;
@@ -25,6 +29,7 @@ import net.pkhsolutions.idispatch.ejb.resources.ResourceStatusEJB;
 import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ArchivedResourceStatus;
 import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
+import net.pkhsolutions.idispatch.entity.DispatchNotification;
 import net.pkhsolutions.idispatch.entity.ResourceState;
 import net.pkhsolutions.idispatch.entity.Ticket;
 import net.pkhsolutions.idispatch.entity.TicketType;
@@ -37,7 +42,7 @@ import net.pkhsolutions.idispatch.entity.TicketUrgency;
  */
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-// TODO Security
+@RolesAllowed(Roles.DISPATCHER)
 public class TicketEJB {
 
     @PersistenceContext
@@ -147,7 +152,7 @@ public class TicketEJB {
     }
 
     public List<TicketResourceDTO> findResourcesForTicket(Ticket ticket) throws NoSuchTicketException {
-        List<ArchivedResourceStatus> statuses = resourceStatusBean.getStatusesForTicket(findPersistentTicket(ticket));
+        List<ArchivedResourceStatus> statuses = resourceStatusBean.getArchivedStatusesForTicket(findPersistentTicket(ticket));
         return new ArchivedResourceStatusToDTOMapper(statuses).getDtos();
     }
 
@@ -208,44 +213,63 @@ public class TicketEJB {
         try {
             status = resourceStatusBean.getCurrentStatus(resource);
         } catch (NoStatusInformationFoundException ex) {
-            throw new ResourceNotAvailableException(ex);
+            throw new ResourceNotAvailableException(resource, ex);
         }
 
         if (!Arrays.asList(ResourceState.AT_STATION, ResourceState.AVAILABLE).contains(status.getResourceState())) {
-            throw new ResourceNotAvailableException();
+            throw new ResourceNotAvailableException(resource);
         }
         status.setTicket(ticket);
         status.setResourceState(ResourceState.ASSIGNED);
         try {
             status = resourceStatusBean.updateStatus(status);
         } catch (ResourceStatusChangedException ex) {
-            throw new ResourceNotAvailableException(ex);
+            throw new ResourceNotAvailableException(resource, ex);
         }
         return new TicketResourceDTO(resource.getCallSign(), status.getStateChangeTimestamp(), null, null, null, null, null);
     }
 
-    public void dispatchAllResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException {
+    public void dispatchAllResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException, ResourceStatusChangedException {
         verifyThatTicketExistsAndIsOpen(ticket);
         validateTicketForDispatching(ticket);
-        // TODO Implement me!
+        dispatchResources(ticket, resourceStatusBean.getCurrentStatusesForTicket(ticket, null));
     }
 
-    public void dispatchAssignedResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException {
+    public void dispatchAssignedResources(Ticket ticket) throws ValidationFailedException, TicketClosedException, NoSuchTicketException, ResourceStatusChangedException {
         verifyThatTicketExistsAndIsOpen(ticket);
         validateTicketForDispatching(ticket);
-        // TODO Implement me!
+        dispatchResources(ticket, resourceStatusBean.getCurrentStatusesForTicket(ticket, ResourceState.ASSIGNED));
     }
 
-    public void dispatchSelectedResources(Ticket ticket, Set<Resource> resources) throws ValidationFailedException, TicketClosedException, NoSuchTicketException {
+    public void dispatchSelectedResources(Ticket ticket, Set<Resource> resources) throws ValidationFailedException, TicketClosedException, NoSuchTicketException, ResourceNotAssignedToTicketException, ResourceStatusChangedException {
         verifyThatTicketExistsAndIsOpen(ticket);
         validateTicketForDispatching(ticket);
-        // TODO Implement me!
-        /*
-         DispatchNotification notification = new DispatchNotification.Builder().fromTicket(ticket).withResources(resources).build();
+        Set<CurrentResourceStatus> statuses = new HashSet<>();
+        for (Resource r : resources) {
+            try {
+                CurrentResourceStatus status = resourceStatusBean.getCurrentStatus(r);
+                if (ticket.equals(status.getTicket())) {
+                    statuses.add(status);
+                } else {
+                    throw new ResourceNotAssignedToTicketException(r);
+                }
+            } catch (NoStatusInformationFoundException ex) {
+                throw new ResourceNotAssignedToTicketException(r, ex);
+            }
+        }
+        dispatchResources(ticket, statuses);
+    }
+
+    private void dispatchResources(Ticket ticket, Collection<CurrentResourceStatus> resources) throws ResourceStatusChangedException {
+        for (CurrentResourceStatus status : resources) {
+            status.setTicket(ticket);
+            status.setResourceState(ResourceState.DISPATCHED);
+            resourceStatusBean.updateStatus(status);
+        }
+        DispatchNotification notification = new DispatchNotification.Builder().fromTicket(ticket).withResourceStatuses(resources).build();
         entityManager.persist(notification);
         entityManager.flush();
-
-         dispatchNotificationCreatedEventBus.fire(new DispatchNotificationCreatedEvent(notification));*/
+        dispatchNotificationCreatedEventBus.fire(new DispatchNotificationCreatedEvent(notification));
     }
 
     private void validateTicketForDispatching(Ticket ticket) throws ValidationFailedException {

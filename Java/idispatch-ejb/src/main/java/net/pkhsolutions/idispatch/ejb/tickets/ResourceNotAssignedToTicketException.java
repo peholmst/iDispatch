@@ -4,15 +4,15 @@ import javax.ejb.ApplicationException;
 import net.pkhsolutions.idispatch.entity.Resource;
 
 @ApplicationException(rollback = true)
-public class ResourceNotAvailableException extends Exception {
+public class ResourceNotAssignedToTicketException extends Exception {
 
     private final Resource resource;
 
-    public ResourceNotAvailableException(Resource resource) {
+    public ResourceNotAssignedToTicketException(Resource resource) {
         this.resource = resource;
     }
 
-    public ResourceNotAvailableException(Resource resource, Throwable cause) {
+    public ResourceNotAssignedToTicketException(Resource resource, Throwable cause) {
         super(cause);
         this.resource = resource;
     }
