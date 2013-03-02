@@ -4,10 +4,11 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.persistence.TypedQuery;
 import net.pkhsolutions.idispatch.ejb.common.ConcurrentModificationException;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.common.SaveFailedException;
 import net.pkhsolutions.idispatch.ejb.common.ValidationFailedException;
 import net.pkhsolutions.idispatch.entity.ArchivedResourceStatus;
@@ -21,7 +22,7 @@ import net.pkhsolutions.idispatch.entity.ResourceState;
  * @author Petter Holmström
  */
 @Stateless
-@PermitAll // TODO Replace with admin role
+@RolesAllowed(Roles.ADMIN)
 public class ResourceEJB extends Backend<Resource> {
 
     private static final Logger log = Logger.getLogger(ResourceEJB.class.getCanonicalName());
@@ -49,14 +50,17 @@ public class ResourceEJB extends Backend<Resource> {
     }
 
     @Override
+    @RolesAllowed({Roles.ADMIN, Roles.DISPATCHER})
     public List<Resource> findAll() {
         return em().createQuery("SELECT r FROM Resource r ORDER BY r.callSign", Resource.class).getResultList();
     }
 
+    @RolesAllowed({Roles.ADMIN, Roles.DISPATCHER})
     public List<Resource> findActive() {
         return em().createQuery("SELECT r FROM Resource r WHERE r.active = true ORDER BY r.callSign", Resource.class).getResultList();
     }
 
+    @RolesAllowed({Roles.ADMIN, Roles.DISPATCHER})
     public List<Resource> findActiveAndAvailable() {
         TypedQuery<Resource> query = em().createQuery("SELECT crs.resource FROM CurrentResourceStatus crs WHERE crs.resource.active = TRUE AND crs.resourceState IN :states ORDER BY crs.resource.callSign", Resource.class);
         query.setParameter("states", Arrays.asList(ResourceState.AT_STATION, ResourceState.AVAILABLE));

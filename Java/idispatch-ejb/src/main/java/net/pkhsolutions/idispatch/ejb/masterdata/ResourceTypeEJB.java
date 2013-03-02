@@ -2,8 +2,9 @@ package net.pkhsolutions.idispatch.ejb.masterdata;
 
 import java.util.List;
 import java.util.logging.Logger;
-import javax.annotation.security.PermitAll;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.entity.ResourceType;
 
 /**
@@ -12,7 +13,7 @@ import net.pkhsolutions.idispatch.entity.ResourceType;
  * @author Petter Holmström
  */
 @Stateless
-@PermitAll // TODO Replace with admin role
+@RolesAllowed(Roles.ADMIN)
 public class ResourceTypeEJB extends Backend<ResourceType> {
 
     private static final Logger log = Logger.getLogger(ResourceTypeEJB.class.getCanonicalName());
@@ -23,6 +24,7 @@ public class ResourceTypeEJB extends Backend<ResourceType> {
     }
 
     @Override
+    @RolesAllowed({Roles.ADMIN, Roles.DISPATCHER})
     public List<ResourceType> findAll() {
         return em().createQuery("SELECT rt FROM ResourceType rt", ResourceType.class).getResultList();
     }

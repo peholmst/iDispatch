@@ -3,6 +3,7 @@ package net.pkhsolutions.idispatch.ejb.resources;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -12,6 +13,7 @@ import javax.persistence.NoResultException;
 import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import net.pkhsolutions.idispatch.ejb.common.Roles;
 import net.pkhsolutions.idispatch.ejb.masterdata.ResourceEJB;
 import net.pkhsolutions.idispatch.entity.ArchivedResourceStatus;
 import net.pkhsolutions.idispatch.entity.CurrentResourceStatus;
@@ -21,7 +23,7 @@ import net.pkhsolutions.idispatch.entity.Ticket;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-// TODO Security
+@RolesAllowed(Roles.DISPATCHER)
 public class ResourceStatusEJB {
 
     @PersistenceContext
@@ -35,7 +37,7 @@ public class ResourceStatusEJB {
         try {
             return query.getSingleResult();
         } catch (NoResultException e) {
-            throw new NoStatusInformationFoundException();
+            throw new NoStatusInformationFoundException(resource);
         }
     }
 
@@ -44,8 +46,20 @@ public class ResourceStatusEJB {
         return query.getResultList();
     }
 
-    public List<ArchivedResourceStatus> getStatusesForTicket(Ticket ticket) {
+    public List<ArchivedResourceStatus> getArchivedStatusesForTicket(Ticket ticket) {
         TypedQuery<ArchivedResourceStatus> query = em.createQuery("SELECT ars FROM ArchivedResourceStatus ars WHERE ars.ticket = :ticket ORDER BY ars.stateChangeTimestamp", ArchivedResourceStatus.class);
+        query.setParameter("ticket", ticket);
+        return query.getResultList();
+    }
+
+    public List<CurrentResourceStatus> getCurrentStatusesForTicket(Ticket ticket, ResourceState state) {
+        TypedQuery<CurrentResourceStatus> query;
+        if (state == null) {
+            query = em.createQuery("SELECT crs FROM CurrentResourceStatus crs WHERE crs.ticket = :ticket", CurrentResourceStatus.class);
+        } else {
+            query = em.createQuery("SELECT crs FROM CurrentResourceStatus crs WHERE crs.ticket = :ticket AND crs.resourceState = :state", CurrentResourceStatus.class);
+            query.setParameter("state", state);
+        }
         query.setParameter("ticket", ticket);
         return query.getResultList();
     }
