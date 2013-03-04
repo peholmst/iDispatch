@@ -23,7 +23,7 @@ public class DispatchNotification extends AbstractEntity {
     @XmlAttribute(name = "timestamp")
     private Calendar dispatchTimestamp;
     @ElementCollection
-    @XmlElement
+    @XmlElement(name = "resource")
     private Set<String> resourceCallSigns = new HashSet<>();
     @XmlElement
     private String municipalitySv;
