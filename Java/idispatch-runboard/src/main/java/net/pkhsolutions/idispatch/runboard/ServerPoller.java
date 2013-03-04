@@ -4,6 +4,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.pkhsolutions.idispatch.runboard.rest.DispatcherClient;
 import net.pkhsolutions.idispatch.runboard.rest.DispatcherClientException;
 import net.pkhsolutions.idispatch.runboard.rest.Notifications;
@@ -14,6 +16,7 @@ import net.pkhsolutions.idispatch.runboard.rest.Notifications;
  */
 public class ServerPoller {
 
+    private static final Logger LOG = Logger.getLogger(ServerPoller.class.getName());
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private Model model;
     private int pollIntervalMilliseconds;
@@ -24,6 +27,7 @@ public class ServerPoller {
             try {
                 Notifications notifications = client.retrieveNotifications();
                 if (notifications != null) {
+                    LOG.log(Level.INFO, "Received notifications {0}", notifications);
                     model.addNotifications(notifications);
                 }
             } catch (DispatcherClientException ex) {

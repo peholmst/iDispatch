@@ -38,4 +38,9 @@ public class Notifications {
         }
         return result;
     }
+
+    @Override
+    public String toString() {
+        return String.format("Notifications[count = %d]", notifications.size());
+    }
 }
