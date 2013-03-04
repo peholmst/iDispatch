@@ -23,6 +23,7 @@
         <module>../idispatch-common-ui</module>
         <module>../idispatch-ear</module>
         <module>../idispatch-rest</module>
+        <module>../idispatch-runboard</module>
     </modules>
 
     <dependencyManagement>
@@ -91,6 +92,11 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>1.7</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>1.17</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
