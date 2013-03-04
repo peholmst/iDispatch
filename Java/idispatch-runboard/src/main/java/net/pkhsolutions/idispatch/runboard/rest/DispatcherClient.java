@@ -24,14 +24,14 @@ public class DispatcherClient {
     private String receiverId;
     private String securityCode;
 
-    public DispatcherClient(String contextUrl, String receiverId, String securityCode, boolean verifySslCertificate) {
+    public DispatcherClient(String url, String receiverId, String securityCode, boolean verifySslCertificate) {
         this.receiverId = receiverId;
         this.securityCode = securityCode;
         client = Client.create();
-        if (contextUrl.endsWith("/")) {
-            dispatcher = client.resource(contextUrl + "dispatcher");
+        if (url.endsWith("/")) {
+            dispatcher = client.resource(url + "dispatcher");
         } else {
-            dispatcher = client.resource(contextUrl + "/dispatcher");
+            dispatcher = client.resource(url + "/dispatcher");
         }
         if (!verifySslCertificate) {
             TrustManager[] trustAllCerts = new TrustManager[]{
