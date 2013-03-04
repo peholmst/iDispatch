@@ -1,9 +1,14 @@
 package net.pkhsolutions.idispatch.rest;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -31,6 +36,25 @@ public class DispatchNotificationREST {
             } else {
                 return Response.ok(new DispatchNotificationsDTO(result)).build();
             }
+        } catch (NoSuchReceiverException ex) {
+            throw new WebApplicationException(Response.Status.FORBIDDEN);
+        }
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void markAsSeen(@FormParam("id") String receiverId, @FormParam("sc") String securityCode, @FormParam("ids") String seenNotifications) {
+        String[] seenIds = seenNotifications.split(":");
+        Set<Long> ids = new HashSet<>();
+        for (String idAsString : seenIds) {
+            try {
+                ids.add(Long.parseLong(idAsString));
+            } catch (NumberFormatException e) {
+                throw new WebApplicationException(Response.Status.BAD_REQUEST);
+            }
+        }
+        try {
+            bean.markNotificationsAsSeen(receiverId, securityCode, ids);
         } catch (NoSuchReceiverException ex) {
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
