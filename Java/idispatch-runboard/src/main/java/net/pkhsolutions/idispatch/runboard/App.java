@@ -20,6 +20,7 @@ public class App {
         poller = new ServerPoller(client, model, Configuration.getPollingIntervalMilliseconds());
         mainView = new MainView(Configuration.getLanguage());
         mainView.setModel(model);
+        // TODO Make mainView undecorated if specified by a system property
     }
 
     void start() {
