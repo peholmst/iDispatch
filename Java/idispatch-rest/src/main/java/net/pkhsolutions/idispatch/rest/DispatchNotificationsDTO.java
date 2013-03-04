@@ -7,7 +7,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import net.pkhsolutions.idispatch.entity.DispatchNotification;
 
-@XmlRootElement
+@XmlRootElement(name = "notifications")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class DispatchNotificationsDTO {
 

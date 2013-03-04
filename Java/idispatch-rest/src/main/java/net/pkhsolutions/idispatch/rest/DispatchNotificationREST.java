@@ -23,9 +23,9 @@ public class DispatchNotificationREST {
 
     @GET
     @Produces(MediaType.APPLICATION_XML)
-    public Response fetchUnseenDispatchNotifications(@QueryParam("id") String receiverId, @QueryParam("pw") String receiverPassword) {
+    public Response fetchUnseenDispatchNotifications(@QueryParam("id") String receiverId, @QueryParam("sc") String securityCode) {
         try {
-            List<DispatchNotification> result = bean.findUnseenNotifications(receiverId, receiverPassword);
+            List<DispatchNotification> result = bean.findUnseenNotifications(receiverId, securityCode);
             if (result.isEmpty()) {
                 return Response.noContent().build();
             } else {
