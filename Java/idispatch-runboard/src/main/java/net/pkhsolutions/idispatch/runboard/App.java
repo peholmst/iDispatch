@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.runboard;
 
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import net.pkhsolutions.idispatch.runboard.rest.DispatcherClient;
@@ -15,12 +16,14 @@ public class App {
         client = new DispatcherClient(Configuration.getUrl(),
                 Configuration.getReceiverId(),
                 Configuration.getSecurityCode(),
-                !Configuration.isIgnoringSslVerification());
+                Configuration.isVerifyingSslCertificate());
         model = new Model(Configuration.getConcernedResources());
         poller = new ServerPoller(client, model, Configuration.getPollingIntervalMilliseconds());
         mainView = new MainView(Configuration.getLanguage());
         mainView.setModel(model);
-        // TODO Make mainView undecorated if specified by a system property
+        mainView.setUndecorated(Configuration.isUndecorated());
+        mainView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        model.addObserver(new Alarm());
     }
 
     void start() {

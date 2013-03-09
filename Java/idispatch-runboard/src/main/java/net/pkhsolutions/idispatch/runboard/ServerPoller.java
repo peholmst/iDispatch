@@ -30,6 +30,7 @@ public class ServerPoller {
                     LOG.log(Level.INFO, "Received notifications {0}", notifications);
                     model.addNotifications(notifications);
                 }
+                model.setErrorCode(null);
             } catch (DispatcherClientException ex) {
                 model.setErrorCode(ex.getCode());
             }

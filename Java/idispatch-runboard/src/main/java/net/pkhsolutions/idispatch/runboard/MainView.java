@@ -1,6 +1,7 @@
 package net.pkhsolutions.idispatch.runboard;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
@@ -11,13 +12,18 @@ import java.util.Observer;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.Timer;
 import net.pkhsolutions.idispatch.runboard.rest.DispatcherClientException;
 import net.pkhsolutions.idispatch.runboard.rest.Notification;
 
 public class MainView extends JFrame implements Observer {
+
     private static final Logger LOG = Logger.getLogger(MainView.class.getName());
     private final Timer cardFlipperTimer;
     private final Map<Notification, NotificationView> views = new HashMap<>();
@@ -56,14 +62,37 @@ public class MainView extends JFrame implements Observer {
         }
         update(model, null);
     }
+    private JDialog errorDialog;
 
     private void showErrorMessage(DispatcherClientException.ErrorCode errorCode) {
-        // TODO Implement me
+        if (errorDialog != null) {
+            clearErrorMessage();
+        }
+
         System.out.println(errorCode);
+        JPanel errorPanel = new JPanel();
+        errorPanel.setBackground(Color.RED);
+        errorPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        JLabel errorLabel = new JLabel(errorCode.name());
+        errorLabel.setFont(errorPanel.getFont().deriveFont(20.0f));
+        errorPanel.add(errorLabel);
+
+        errorDialog = new JDialog(this);
+        errorDialog.setAlwaysOnTop(true);
+        errorDialog.setModal(false);
+        errorDialog.setUndecorated(true);
+        errorDialog.add(errorPanel);
+        errorDialog.pack();
+        errorDialog.setLocationRelativeTo(this);
+        errorDialog.setVisible(true);
     }
 
     private void clearErrorMessage() {
-        // TODO Implement me
+        if (errorDialog != null) {
+            errorDialog.setVisible(false);
+            errorDialog.dispose();
+            errorDialog = null;
+        }
     }
 
     @Override
@@ -99,5 +128,4 @@ public class MainView extends JFrame implements Observer {
         views.put(notification, view);
         notifications.addTab(String.format("Ticket %d (Notification %d)", notification.getTicketId(), notification.getId()), view);
     }
-
 }

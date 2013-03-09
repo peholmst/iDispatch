@@ -2,19 +2,13 @@ package net.pkhsolutions.idispatch.runboard;
 
 import java.awt.BorderLayout;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.SwingUtilities;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 import net.pkhsolutions.idispatch.runboard.rest.Notification;
-import net.pkhsolutions.idispatch.runboard.rest.Urgency;
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class NotificationView extends JPanel {
@@ -90,7 +84,7 @@ public class NotificationView extends JPanel {
         sb.append("</div>");
 
         sb.append("<div class=\"resources\">");
-        for (Iterator<String> resource = notification.getResources().iterator(); resource.hasNext();) {
+        for (Iterator<String> resource = notification.getTicketResources().iterator(); resource.hasNext();) {
             sb.append(StringEscapeUtils.escapeHtml(resource.next()));
             if (resource.hasNext()) {
                 sb.append(", ");
@@ -106,28 +100,28 @@ public class NotificationView extends JPanel {
         return sb.toString();
     }
 
-    public static void main(String[] args) {
-        Set<String> resources = new HashSet<>();
-        resources.add("RVSItä30");
-        resources.add("RVSPg11");
-        resources.add("RVSPg21");
-        resources.add("RVSPg31");
-        resources.add("EVS5211");
-        resources.add("EVS5213");
-        resources.add("EVS1218");
-        resources.add("EFH20");
-        resources.add("EVS01");
-        Notification exampleNotification = new Notification(1L, Calendar.getInstance(), resources, "Pargas", "Parainen", 102L, "Skärgårdsvägen, 2 km från Nagu färjfäste på Pargas-sidan", "203", "Trafikolycka: medelstor", "Liikenneonnettomuus: keskisuuri", Urgency.A, "Frontalkrock personbil-lastbil, två personer fastklämda i personbilen, medvetslösa, lastbilschauffören ute");
+    /*public static void main(String[] args) {
+     Set<String> resources = new HashSet<>();
+     resources.add("RVSItä30");
+     resources.add("RVSPg11");
+     resources.add("RVSPg21");
+     resources.add("RVSPg31");
+     resources.add("EVS5211");
+     resources.add("EVS5213");
+     resources.add("EVS1218");
+     resources.add("EFH20");
+     resources.add("EVS01");
+     Notification exampleNotification = new Notification(1L, Calendar.getInstance(), resources, "Pargas", "Parainen", 102L, "Skärgårdsvägen, 2 km från Nagu färjfäste på Pargas-sidan", "203", "Trafikolycka: medelstor", "Liikenneonnettomuus: keskisuuri", Urgency.A, "Frontalkrock personbil-lastbil, två personer fastklämda i personbilen, medvetslösa, lastbilschauffören ute");
 
-        final JFrame frame = new JFrame("NotificationView Demo");
-        frame.setUndecorated(true);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setContentPane(new NotificationView(exampleNotification, Language.FINNISH));
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                frame.setVisible(true);
-            }
-        });
-    }
+     final JFrame frame = new JFrame("NotificationView Demo");
+     frame.setUndecorated(true);
+     frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+     frame.setContentPane(new NotificationView(exampleNotification, Language.FINNISH));
+     SwingUtilities.invokeLater(new Runnable() {
+     @Override
+     public void run() {
+     frame.setVisible(true);
+     }
+     });
+     }*/
 }

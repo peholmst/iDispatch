@@ -266,7 +266,11 @@ public class TicketEJB {
             status.setResourceState(ResourceState.DISPATCHED);
             resourceStatusBean.updateStatus(status);
         }
-        DispatchNotification notification = new DispatchNotification.Builder().fromTicket(ticket).withResourceStatuses(resources).build();
+        DispatchNotification notification = new DispatchNotification.Builder()
+                .fromTicket(ticket)
+                .withResourceStatuses(resources)
+                .withTicketResources(resourceStatusBean.getArchivedStatusesForTicket(ticket))
+                .build();
         entityManager.persist(notification);
         entityManager.flush();
         dispatchNotificationCreatedEventBus.fire(new DispatchNotificationCreatedEvent(notification));

@@ -22,6 +22,8 @@ public class Notification {
     private Calendar timestamp;
     @XmlElement(name = "resource")
     private Set<String> resources;
+    @XmlElement(name = "ticketResource")
+    private Set<String> ticketResources;
     @XmlElement
     private String municipalitySv;
     @XmlElement
@@ -44,21 +46,20 @@ public class Notification {
     protected Notification() {
     }
 
-    public Notification(Long id, Calendar timestamp, Set<String> resources, String municipalitySv, String municipalityFi, Long ticketId, String address, String ticketTypeCode, String ticketTypeDescriptionSv, String ticketTypeDescriptionFi, Urgency urgency, String description) {
-        this.id = id;
-        this.timestamp = timestamp;
-        this.resources = resources;
-        this.municipalitySv = municipalitySv;
-        this.municipalityFi = municipalityFi;
-        this.ticketId = ticketId;
-        this.address = address;
-        this.ticketTypeCode = ticketTypeCode;
-        this.ticketTypeDescriptionSv = ticketTypeDescriptionSv;
-        this.ticketTypeDescriptionFi = ticketTypeDescriptionFi;
-        this.urgency = urgency;
-        this.description = description;
-    }
-
+    /*    public Notification(Long id, Calendar timestamp, Set<String> resources, String municipalitySv, String municipalityFi, Long ticketId, String address, String ticketTypeCode, String ticketTypeDescriptionSv, String ticketTypeDescriptionFi, Urgency urgency, String description) {
+     this.id = id;
+     this.timestamp = timestamp;
+     this.resources = resources;
+     this.municipalitySv = municipalitySv;
+     this.municipalityFi = municipalityFi;
+     this.ticketId = ticketId;
+     this.address = address;
+     this.ticketTypeCode = ticketTypeCode;
+     this.ticketTypeDescriptionSv = ticketTypeDescriptionSv;
+     this.ticketTypeDescriptionFi = ticketTypeDescriptionFi;
+     this.urgency = urgency;
+     this.description = description;
+     }*/
     public Long getId() {
         return id;
     }
@@ -69,6 +70,12 @@ public class Notification {
 
     public Collection<String> getResources() {
         ArrayList<String> sortedResources = new ArrayList<>(resources);
+        Collections.sort(sortedResources);
+        return sortedResources;
+    }
+
+    public Collection<String> getTicketResources() {
+        ArrayList<String> sortedResources = new ArrayList<>(ticketResources);
         Collections.sort(sortedResources);
         return sortedResources;
     }
@@ -125,7 +132,6 @@ public class Notification {
     public String toString() {
         return String.format("Notification[id = %s]", id);
     }
-
 
     @Override
     public int hashCode() {

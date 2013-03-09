@@ -12,8 +12,10 @@ import java.security.cert.X509Certificate;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
@@ -50,10 +52,17 @@ public class DispatcherClient {
                     }
                 }
             };
+            HostnameVerifier trustAllhosts = new HostnameVerifier() {
+                @Override
+                public boolean verify(String string, SSLSession ssls) {
+                    return true;
+                }
+            };
             try {
                 SSLContext sc = SSLContext.getInstance("SSL");
                 sc.init(null, trustAllCerts, new java.security.SecureRandom());
                 HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+                HttpsURLConnection.setDefaultHostnameVerifier(trustAllhosts);
             } catch (KeyManagementException | NoSuchAlgorithmException ex) {
                 LOG.log(Level.WARNING, "Error installing all accepting trust manager", ex);
             }

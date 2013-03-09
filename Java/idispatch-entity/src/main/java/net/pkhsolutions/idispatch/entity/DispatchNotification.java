@@ -25,6 +25,9 @@ public class DispatchNotification extends AbstractEntity {
     @ElementCollection
     @XmlElement(name = "resource")
     private Set<String> resourceCallSigns = new HashSet<>();
+    @ElementCollection
+    @XmlElement(name = "ticketResource")
+    private Set<String> ticketResourceCallSigns = new HashSet<>();
     @XmlElement
     private String municipalitySv;
     @XmlElement
@@ -54,6 +57,10 @@ public class DispatchNotification extends AbstractEntity {
 
     public Set<String> getResourceCallSigns() {
         return resourceCallSigns;
+    }
+
+    public Set<String> getTicketResourceCallSigns() {
+        return ticketResourceCallSigns;
     }
 
     public String getMunicipalitySv() {
@@ -145,6 +152,13 @@ public class DispatchNotification extends AbstractEntity {
         public Builder withResourceStatuses(Collection<CurrentResourceStatus> resources) {
             for (CurrentResourceStatus r : resources) {
                 entity.resourceCallSigns.add(r.getResource().getCallSign());
+            }
+            return this;
+        }
+
+        public Builder withTicketResources(Collection<ArchivedResourceStatus> resources) {
+            for (ArchivedResourceStatus r : resources) {
+                entity.ticketResourceCallSigns.add(r.getResource().getCallSign());
             }
             return this;
         }

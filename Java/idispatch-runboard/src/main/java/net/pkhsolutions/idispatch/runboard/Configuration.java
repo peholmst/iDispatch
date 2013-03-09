@@ -50,8 +50,13 @@ public final class Configuration {
         return Integer.parseInt(interval);
     }
 
-    public static boolean isIgnoringSslVerification() {
-        String value = System.getProperty("idispatch.ssl.verify.ignore", "false");
+    public static boolean isVerifyingSslCertificate() {
+        String value = System.getProperty("idispatch.ssl.verify", "true");
+        return Boolean.parseBoolean(value);
+    }
+
+    public static boolean isUndecorated() {
+        String value = System.getProperty("idispatch.undecorated", "true");
         return Boolean.parseBoolean(value);
     }
 }
