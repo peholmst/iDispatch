@@ -29,14 +29,22 @@ public class NotificationView extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
 
         StyleSheet css = kit.getStyleSheet();
-        css.addRule("body {background:white; font-family:sans-serif; margin:15px}");
-        css.addRule(".ticketTypeCode {color:red; font-size:50pt; font-weight:bold}");
-        css.addRule(".ticketTypeDescription {color:red; font-size:40pt}");
-        css.addRule(".municipality {font-size:40pt; font-weight:bold; margin-top:15px; margin-bottom:5px}");
-        css.addRule(".address {font-size:30pt; font-weight: bold; margin-bottom:15px}");
-        css.addRule(".description {font-size:30pt}");
-        css.addRule(".resources {font-size:30pt; margin-top:25px; margin-bottom:20px; color:blue}");
-        css.addRule(".timestamp {font-size:20pt; font-style:italic}");
+        css.addRule(String.format("body {background:white; font-family:sans-serif; margin:%dpx}",
+                normalizePixel(15)));
+        css.addRule(String.format(".ticketTypeCode {color:red; font-size:%dpx; font-weight:bold}",
+                normalizePixel(50)));
+        css.addRule(String.format(".ticketTypeDescription {color:red; font-size:%dpx}",
+                normalizePixel(40)));
+        css.addRule(String.format(".municipality {font-size:%dpx; font-weight:bold; margin-top:%dpx; margin-bottom:%dpx}",
+                normalizePixel(40), normalizePixel(15), normalizePixel(5)));
+        css.addRule(String.format(".address {font-size:%dpx; font-weight: bold; margin-bottom:%dpx}",
+                normalizePixel(30), normalizePixel(15)));
+        css.addRule(String.format(".description {font-size:%dpx}",
+                normalizePixel(30)));
+        css.addRule(String.format(".resources {font-size:%dpx; margin-top:%dpx; margin-bottom:%dpx; color:blue}",
+                normalizePixel(30), normalizePixel(25), normalizePixel(20)));
+        css.addRule(String.format(".timestamp {font-size:%dpx; font-style:italic}",
+                normalizePixel(20)));
 
         this.notification = notification;
         this.language = language;
@@ -44,6 +52,14 @@ public class NotificationView extends JPanel {
         htmlViewer.setText(generateHtml());
 
         // TODO Add feature for automatically scrolling if the text does not fit on the screen
+    }
+
+    private int normalizePixel(int pixel) {
+        if (Configuration.isLowResolution()) {
+            return (int) (pixel * 0.4);
+        } else {
+            return pixel;
+        }
     }
 
     private String generateHtml() {

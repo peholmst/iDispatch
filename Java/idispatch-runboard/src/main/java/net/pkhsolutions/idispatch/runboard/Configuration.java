@@ -59,4 +59,9 @@ public final class Configuration {
         String value = System.getProperty("idispatch.undecorated", "true");
         return Boolean.parseBoolean(value);
     }
+
+    public static Boolean isLowResolution() {
+        String value = System.getProperty("idispatch.lowres", "false");
+        return Boolean.parseBoolean(value);
+    }
 }
