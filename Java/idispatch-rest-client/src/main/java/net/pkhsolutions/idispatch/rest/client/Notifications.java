@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.runboard.rest;
+package net.pkhsolutions.idispatch.rest.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;

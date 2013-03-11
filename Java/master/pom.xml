@@ -24,6 +24,8 @@
         <module>../idispatch-ear</module>
         <module>../idispatch-rest</module>
         <module>../idispatch-runboard</module>
+        <module>../idispatch-rest-client</module>
+        <module>../idispatch-smsgateway</module>
     </modules>
 
     <dependencyManagement>
@@ -69,6 +71,21 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>idispatch-rest-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>idispatch-smsgateway</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>idispatch-runboard</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>com.vaadin</groupId>
                 <artifactId>vaadin-cdi</artifactId>
                 <version>${vaadin.version}</version>
@@ -109,6 +126,7 @@
                 <configuration>
                     <source>${project.build.source}</source>
                     <target>${project.build.target}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>

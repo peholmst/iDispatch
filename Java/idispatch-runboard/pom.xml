@@ -14,12 +14,8 @@
     <name>iDispatch Runboard</name>
     <dependencies>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>idispatch-rest-client</artifactId>
         </dependency>
     </dependencies>
     <build>

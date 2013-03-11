@@ -12,7 +12,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
-import net.pkhsolutions.idispatch.runboard.rest.Notification;
+import net.pkhsolutions.idispatch.rest.client.Notification;
 
 public class Alarm implements Observer {
 

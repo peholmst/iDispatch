@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.runboard.rest;
+package net.pkhsolutions.idispatch.rest.client;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientHandlerException;
@@ -28,17 +28,19 @@ public class DispatcherClient {
     private WebResource dispatcher;
     private String receiverId;
     private String securityCode;
+    private Configuration configuration;
 
-    public DispatcherClient(String url, String receiverId, String securityCode, boolean verifySslCertificate) {
-        this.receiverId = receiverId;
-        this.securityCode = securityCode;
+    public DispatcherClient(Configuration configuration) {
+        this.configuration = configuration;
+        this.receiverId = configuration.getReceiverId();
+        this.securityCode = configuration.getSecurityCode();
         client = Client.create();
-        if (url.endsWith("/")) {
-            dispatcher = client.resource(url + "dispatcher");
+        if (configuration.getUrl().endsWith("/")) {
+            dispatcher = client.resource(configuration.getUrl() + "dispatcher");
         } else {
-            dispatcher = client.resource(url + "/dispatcher");
+            dispatcher = client.resource(configuration.getUrl() + "/dispatcher");
         }
-        if (!verifySslCertificate) {
+        if (!configuration.isVerifyingSslCertificate()) {
             TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
                     @Override public java.security.cert.X509Certificate[] getAcceptedIssuers() {
@@ -67,6 +69,10 @@ public class DispatcherClient {
                 LOG.log(Level.WARNING, "Error installing all accepting trust manager", ex);
             }
         }
+    }
+
+    public Configuration getConfiguration() {
+        return configuration;
     }
 
     public Notifications retrieveNotifications() throws DispatcherClientException {
@@ -110,15 +116,5 @@ public class DispatcherClient {
         }
         formData.add("ids", ids.toString());
         dispatcher.type(MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(formData);
-    }
-
-    public static void main(String[] args) {
-        // For testing only
-        DispatcherClient client = new DispatcherClient("https://localhost:8181/idispatch-rest", "gsm", "6ffbqnv4LZDQrOA", false);
-        try {
-            System.out.println(client.retrieveNotifications());
-        } catch (DispatcherClientException ex) {
-            System.out.println("Error code: " + ex.getCode().name());
-        }
     }
 }

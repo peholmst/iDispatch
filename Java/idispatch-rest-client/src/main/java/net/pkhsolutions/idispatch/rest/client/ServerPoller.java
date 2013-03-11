@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.runboard;
+package net.pkhsolutions.idispatch.rest.client;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -6,21 +6,22 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.pkhsolutions.idispatch.runboard.rest.DispatcherClient;
-import net.pkhsolutions.idispatch.runboard.rest.DispatcherClientException;
-import net.pkhsolutions.idispatch.runboard.rest.Notifications;
 
-/**
- *
- * @author peholmst
- */
 public class ServerPoller {
 
+    public interface Callback {
+
+        void clearErrorCode();
+
+        void setErrorCode(DispatcherClientException.ErrorCode errorCode);
+
+        void notificationsReceived(Notifications notifications);
+    }
     private static final Logger LOG = Logger.getLogger(ServerPoller.class.getName());
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private Model model;
     private int pollIntervalMilliseconds;
     private DispatcherClient client;
+    private Callback callback;
     private Runnable checkForNotifications = new Runnable() {
         @Override
         public void run() {
@@ -28,20 +29,20 @@ public class ServerPoller {
                 Notifications notifications = client.retrieveNotifications();
                 if (notifications != null) {
                     LOG.log(Level.INFO, "Received notifications {0}", notifications);
-                    model.addNotifications(notifications);
+                    callback.notificationsReceived(notifications);
                 }
-                model.setErrorCode(null);
+                callback.clearErrorCode();
             } catch (DispatcherClientException ex) {
-                model.setErrorCode(ex.getCode());
+                callback.setErrorCode(ex.getCode());
             }
         }
     };
     private ScheduledFuture<?> handle;
 
-    public ServerPoller(DispatcherClient client, Model model, int pollIntervalMilliseconds) {
+    public ServerPoller(DispatcherClient client, Callback callback) {
         this.client = client;
-        this.model = model;
-        this.pollIntervalMilliseconds = pollIntervalMilliseconds;
+        this.callback = callback;
+        this.pollIntervalMilliseconds = client.getConfiguration().getPollingIntervalMilliseconds();
     }
 
     public void start() {

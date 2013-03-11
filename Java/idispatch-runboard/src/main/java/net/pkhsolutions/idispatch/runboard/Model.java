@@ -13,11 +13,13 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import net.pkhsolutions.idispatch.runboard.rest.DispatcherClientException;
-import net.pkhsolutions.idispatch.runboard.rest.Notification;
-import net.pkhsolutions.idispatch.runboard.rest.Notifications;
+import net.pkhsolutions.idispatch.rest.client.DispatcherClientException;
+import net.pkhsolutions.idispatch.rest.client.Notification;
+import net.pkhsolutions.idispatch.rest.client.Notifications;
+import net.pkhsolutions.idispatch.rest.client.ServerPoller;
 
-public class Model extends Observable {
+public class Model extends Observable implements ServerPoller.Callback {
+
     private static final Logger LOG = Logger.getLogger(Model.class.getName());
     private DispatcherClientException.ErrorCode errorCode;
     private final List<Notification> notifications = new ArrayList<>();
@@ -60,6 +62,7 @@ public class Model extends Observable {
         return now.after(expirationDate);
     }
 
+    @Override
     public synchronized void setErrorCode(DispatcherClientException.ErrorCode errorCode) {
         if (!Objects.equals(this.errorCode, errorCode)) {
             LOG.log(Level.INFO, "Setting error code to {0}", errorCode);
@@ -77,7 +80,7 @@ public class Model extends Observable {
         return errorCode != null;
     }
 
-    public synchronized void addNotifications(Notifications notifications) {
+    private void addNotifications(Notifications notifications) {
         for (Iterator<Notification> it = notifications.getNotificationsForResources(concernedResources).iterator(); it.hasNext();) {
             Notification notificationToAdd = it.next();
             if (!seenNotifications.contains(notificationToAdd.getId())) {
@@ -92,5 +95,15 @@ public class Model extends Observable {
 
     public synchronized List<Notification> getVisibleNotifications() {
         return Collections.unmodifiableList(notifications);
+    }
+
+    @Override
+    public void clearErrorCode() {
+        setErrorCode(null);
+    }
+
+    @Override
+    public synchronized void notificationsReceived(Notifications notifications) {
+        addNotifications(notifications);
     }
 }

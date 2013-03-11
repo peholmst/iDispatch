@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.runboard.rest;
+package net.pkhsolutions.idispatch.rest.client;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -81,11 +81,11 @@ public class Notification {
     }
 
     public String getMunicipalitySv() {
-        return municipalitySv;
+        return nullToEmptyString(municipalitySv);
     }
 
     public String getMunicipalityFi() {
-        return municipalityFi;
+        return nullToEmptyString(municipalityFi);
     }
 
     public Long getTicketId() {
@@ -93,19 +93,19 @@ public class Notification {
     }
 
     public String getAddress() {
-        return address;
+        return nullToEmptyString(address);
     }
 
     public String getTicketTypeCode() {
-        return ticketTypeCode;
+        return nullToEmptyString(ticketTypeCode);
     }
 
     public String getTicketTypeDescriptionSv() {
-        return ticketTypeDescriptionSv;
+        return nullToEmptyString(ticketTypeDescriptionSv);
     }
 
     public String getTicketTypeDescriptionFi() {
-        return ticketTypeDescriptionFi;
+        return nullToEmptyString(ticketTypeDescriptionFi);
     }
 
     public Urgency getUrgency() {
@@ -113,7 +113,7 @@ public class Notification {
     }
 
     public String getDescription() {
-        return description;
+        return nullToEmptyString(description);
     }
 
     public boolean concernsAnyOf(Collection<String> resources) {
@@ -126,6 +126,10 @@ public class Notification {
             }
         }
         return false;
+    }
+
+    private static String nullToEmptyString(String s) {
+        return s == null ? "" : s;
     }
 
     @Override

@@ -3,7 +3,8 @@ package net.pkhsolutions.idispatch.runboard;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import net.pkhsolutions.idispatch.runboard.rest.DispatcherClient;
+import net.pkhsolutions.idispatch.rest.client.DispatcherClient;
+import net.pkhsolutions.idispatch.rest.client.ServerPoller;
 
 public class App {
 
@@ -13,15 +14,13 @@ public class App {
     private Model model;
 
     private App() {
-        client = new DispatcherClient(Configuration.getUrl(),
-                Configuration.getReceiverId(),
-                Configuration.getSecurityCode(),
-                Configuration.isVerifyingSslCertificate());
-        model = new Model(Configuration.getConcernedResources());
-        poller = new ServerPoller(client, model, Configuration.getPollingIntervalMilliseconds());
-        mainView = new MainView(Configuration.getLanguage());
+        Configuration configuration = new Configuration();
+        client = new DispatcherClient(configuration);
+        model = new Model(configuration.getConcernedResources());
+        poller = new ServerPoller(client, model);
+        mainView = new MainView(configuration.getLanguage(), configuration.isLowResolution());
         mainView.setModel(model);
-        mainView.setUndecorated(Configuration.isUndecorated());
+        mainView.setUndecorated(configuration.isUndecorated());
         mainView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         model.addObserver(new Alarm());
     }

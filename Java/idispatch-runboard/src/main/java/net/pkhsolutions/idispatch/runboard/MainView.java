@@ -19,8 +19,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.Timer;
-import net.pkhsolutions.idispatch.runboard.rest.DispatcherClientException;
-import net.pkhsolutions.idispatch.runboard.rest.Notification;
+import net.pkhsolutions.idispatch.rest.client.DispatcherClientException;
+import net.pkhsolutions.idispatch.rest.client.Notification;
 
 public class MainView extends JFrame implements Observer {
 
@@ -30,9 +30,11 @@ public class MainView extends JFrame implements Observer {
     private final Language language;
     private Model model;
     private JTabbedPane notifications;
+    private final boolean lowRes;
 
-    public MainView(Language language) {
+    public MainView(Language language, boolean lowRes) {
         super("iDispatch Runboard");
+        this.lowRes = lowRes;
         setExtendedState(MAXIMIZED_BOTH);
         this.language = language;
         notifications = new JTabbedPane();
@@ -124,7 +126,7 @@ public class MainView extends JFrame implements Observer {
 
     private void addCard(Notification notification) {
         LOG.log(Level.INFO, "Adding card for notification {0}", notification);
-        NotificationView view = new NotificationView(notification, language);
+        NotificationView view = new NotificationView(notification, language, lowRes);
         views.put(notification, view);
         notifications.addTab(String.format("Ticket %d (Notification %d)", notification.getTicketId(), notification.getId()), view);
     }

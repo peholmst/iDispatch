@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
-import net.pkhsolutions.idispatch.runboard.rest.Notification;
+import net.pkhsolutions.idispatch.rest.client.Notification;
 import org.apache.commons.lang.StringEscapeUtils;
 
 public class NotificationView extends JPanel {
@@ -18,9 +18,11 @@ public class NotificationView extends JPanel {
     private final HTMLEditorKit kit = new HTMLEditorKit();
     private final Notification notification;
     private final Language language;
+    private final boolean lowRes;
 
-    public NotificationView(Notification notification, Language language) {
+    public NotificationView(Notification notification, Language language, boolean lowRes) {
         setLayout(new BorderLayout());
+        this.lowRes = lowRes;
         htmlViewer = new JEditorPane();
         htmlViewer.setEditorKit(kit);
         htmlViewer.setDocument(kit.createDefaultDocument());
@@ -55,7 +57,7 @@ public class NotificationView extends JPanel {
     }
 
     private int normalizePixel(int pixel) {
-        if (Configuration.isLowResolution()) {
+        if (lowRes) {
             return (int) (pixel * 0.4);
         } else {
             return pixel;
@@ -115,29 +117,4 @@ public class NotificationView extends JPanel {
         sb.append("</body></html>");
         return sb.toString();
     }
-
-    /*public static void main(String[] args) {
-     Set<String> resources = new HashSet<>();
-     resources.add("RVSItä30");
-     resources.add("RVSPg11");
-     resources.add("RVSPg21");
-     resources.add("RVSPg31");
-     resources.add("EVS5211");
-     resources.add("EVS5213");
-     resources.add("EVS1218");
-     resources.add("EFH20");
-     resources.add("EVS01");
-     Notification exampleNotification = new Notification(1L, Calendar.getInstance(), resources, "Pargas", "Parainen", 102L, "Skärgårdsvägen, 2 km från Nagu färjfäste på Pargas-sidan", "203", "Trafikolycka: medelstor", "Liikenneonnettomuus: keskisuuri", Urgency.A, "Frontalkrock personbil-lastbil, två personer fastklämda i personbilen, medvetslösa, lastbilschauffören ute");
-
-     final JFrame frame = new JFrame("NotificationView Demo");
-     frame.setUndecorated(true);
-     frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-     frame.setContentPane(new NotificationView(exampleNotification, Language.FINNISH));
-     SwingUtilities.invokeLater(new Runnable() {
-     @Override
-     public void run() {
-     frame.setVisible(true);
-     }
-     });
-     }*/
 }

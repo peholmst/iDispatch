@@ -1,9 +1,5 @@
-package net.pkhsolutions.idispatch.runboard.rest;
+package net.pkhsolutions.idispatch.rest.client;
 
-/**
- *
- * @author peholmst
- */
 public class DispatcherClientException extends Exception {
 
     public enum ErrorCode {
