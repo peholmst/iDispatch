@@ -25,4 +25,9 @@ public class Configuration extends net.pkhsolutions.idispatch.rest.client.Config
         String baudrate = System.getProperty("idispatch.modem.baudrate", "115200");
         return Integer.parseInt(baudrate);
     }
+
+    public String getModemManufacturer() {
+        String manufacturer = System.getProperty("idispatch.modem.manufacturer", "Huawei");
+        return manufacturer;
+    }
 }

@@ -28,7 +28,7 @@ public class SmsSender implements ServerPoller.Callback {
 
     public SmsSender(Configuration configuration) throws GatewayException {
         this.configuration = configuration;
-        gateway = new SerialModemGateway("modem", configuration.getPort(), configuration.getBaudrate(), "Huawei", "");
+        gateway = new SerialModemGateway("modem", configuration.getPort(), configuration.getBaudrate(), configuration.getModemManufacturer(), "");
         gateway.setOutbound(true);
         gateway.setInbound(false);
 
