@@ -5,17 +5,18 @@
     <parent>
         <artifactId>master</artifactId>
         <groupId>net.pkhsolutions.idispatch</groupId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.1</version>
         <relativePath>../master</relativePath>
     </parent>
 
     <artifactId>idispatch-runboard</artifactId>
-
     <name>iDispatch Runboard</name>
+    
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>idispatch-rest-client</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     <build>

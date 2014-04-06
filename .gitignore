@@ -7,3 +7,5 @@ rebel.xml
 nb-configuration.xml
 nbactions.xml
 
+/Java/idispatch-web/src/main/webapp/VAADIN/gwt-unitCache/
+/Java/idispatch-web/src/main/webapp/VAADIN/widgetsets/
