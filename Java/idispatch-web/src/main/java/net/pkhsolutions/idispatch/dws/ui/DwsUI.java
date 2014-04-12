@@ -21,7 +21,7 @@ import net.pkhsolutions.idispatch.ejb.common.Roles;
  *
  * @author peholmst
  */
-@CDIUI
+@CDIUI("/dws")
 @Theme("dws")
 @Widgetset("net.pkhsolutions.idispatch.dws.ui.DwsWidgetset")
 public class DwsUI extends UI {
