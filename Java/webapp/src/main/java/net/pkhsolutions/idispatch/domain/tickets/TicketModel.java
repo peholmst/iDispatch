@@ -1,72 +1,59 @@
 package net.pkhsolutions.idispatch.domain.tickets;
 
 import net.pkhsolutions.idispatch.domain.Municipality;
-import net.pkhsolutions.idispatch.domain.tickets.events.TicketCreatedEvent;
-import net.pkhsolutions.idispatch.domain.tickets.events.TicketUpdatedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.spring.events.EventBus;
-import org.vaadin.spring.events.EventBusScope;
-import org.vaadin.spring.events.EventScope;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.Date;
 
 /**
  * Model for showing and editing a single {@link Ticket}. Changes are directly propagated to the database.
  */
-@Service
-@Scope(value = "prototype", proxyMode = ScopedProxyMode.TARGET_CLASS)
+@Component
+@Scope(value = "prototype")
 public class TicketModel {
 
-    @Autowired
-    TicketRepository ticketRepository;
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
+    // TODO Make the model observable and notify observers when the ticket is changed elsewhere.
 
     @Autowired
-    @EventBusScope(EventScope.APPLICATION)
-    EventBus eventBus;
+    TicketService ticketService;
 
     private Ticket ticket;
 
-    /**
-     * Attempts to load the ticket with the specified ID. Returns true if found, false if not.
-     */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public boolean load(long ticketId) {
-        ticket = ticketRepository.findOne(ticketId);
-        return ticket != null;
-    }
-
-    /**
-     * Creates a new ticket and stores it.
-     */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void create() {
-        ticket = ticketRepository.saveAndFlush(new Ticket.Builder().build());
-        eventBus.publish(this, new TicketCreatedEvent(ticket));
-    }
-
     protected Ticket getTicket() {
         if (ticket == null) {
-            throw new IllegalStateException("No ticket loaded");
+            throw new IllegalStateException("No ticket set");
         }
         return ticket;
     }
 
-    @FunctionalInterface
-    protected interface TicketOperation {
-        void perform(Ticket.Builder builder);
+    public void setTicket(Ticket ticket) {
+        Assert.notNull(ticket, "Cannot specify a null ticket");
+        this.ticket = ticket;
     }
 
     protected void perform(TicketOperation operation) {
-        Ticket.Builder builder = new Ticket.Builder(getTicket());
-        operation.perform(builder);
-        ticket = ticketRepository.saveAndFlush(builder.build());
-        // TODO Handle optimistic locking errors
-        eventBus.publish(this, new TicketUpdatedEvent(ticket));
+        if (isEditable()) {
+            Ticket.Builder builder = new Ticket.Builder(getTicket());
+            operation.perform(builder);
+            ticket = ticketService.updateTicket(builder.build());
+        } else {
+            logger.warn("Attempted to modify a closed ticket");
+        }
+    }
+
+    public boolean isEditable() {
+        return !getTicket().isClosed();
+    }
+
+    public Long getId() {
+        return getTicket().getId();
     }
 
     public Date getTicketOpened() {
@@ -81,7 +68,6 @@ public class TicketModel {
         return getTicket().getUrgency();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void setUrgency(TicketUrgency urgency) {
         perform((builder) -> builder.withUrgency(urgency));
     }
@@ -90,7 +76,6 @@ public class TicketModel {
         return getTicket().getTicketType();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void setTicketType(TicketType ticketType) {
         perform((builder) -> builder.withTicketType(ticketType));
     }
@@ -99,7 +84,6 @@ public class TicketModel {
         return getTicket().getDescription();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void setDescription(String description) {
         perform((builder) -> builder.withDescription(description));
     }
@@ -108,7 +92,6 @@ public class TicketModel {
         return getTicket().getMunicipality();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void setMunicipality(Municipality municipality) {
         perform((builder) -> builder.withMunicipality(municipality));
     }
@@ -117,8 +100,12 @@ public class TicketModel {
         return getTicket().getAddress();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void setAddress(String address) {
         perform((builder) -> builder.withAddress(address));
+    }
+
+    @FunctionalInterface
+    protected interface TicketOperation {
+        void perform(Ticket.Builder builder);
     }
 }

@@ -8,7 +8,8 @@ import java.util.Optional;
 public interface TicketService {
 
     /**
-     * Attempts to load the ticket with the specified ID.
+     * Attempts to load the ticket with the specified ID. If the ID is {@code null}, an empty
+     * {@code Optional} is returned.
      */
     Optional<Ticket> loadTicket(Long id);
 

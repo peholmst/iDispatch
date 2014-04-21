@@ -32,6 +32,9 @@ public class TicketServiceBean implements TicketService {
 
     @Override
     public Optional<Ticket> loadTicket(Long id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         final Ticket ticket = ticketRepository.findOne(id);
         return Optional.ofNullable(ticket);
     }
