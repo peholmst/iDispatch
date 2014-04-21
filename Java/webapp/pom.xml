@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>master</artifactId>
@@ -11,6 +11,7 @@
 
     <groupId>net.pkhsolutions.idispatch</groupId>
     <artifactId>webapp</artifactId>
+    <name>iDispatch Web Application</name>
 
     <dependencies>
         <dependency>
@@ -18,9 +19,36 @@
             <artifactId>spring-boot-vaadin</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.vaadin.spring</groupId>
-            <artifactId>spring-security-vaadin</artifactId>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-server</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiled</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-themes</artifactId>
+        </dependency>
+
+        <!--        <dependency>
+                    <groupId>org.vaadin.spring</groupId>
+                    <artifactId>spring-security-vaadin</artifactId>
+                </dependency>-->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
