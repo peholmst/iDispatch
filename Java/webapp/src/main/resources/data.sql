@@ -12,3 +12,14 @@ insert into ticket_types (version, code, description) values (1, '421', 'Terrän
 insert into ticket_types (version, code, description) values (1, '422', 'Terrängbrand: medelstor');
 insert into ticket_types (version, code, description) values (1, '431', 'Annan brand: liten');
 insert into ticket_types (version, code, description) values (1, '432', 'Annan brand: medelstor');
+
+insert into resource_types (version, code, description) values (1, 'R2x', 'Jourhavande chef');
+insert into resource_types (version, code, description) values (1, 'R3x', 'Jourhavande befäl');
+insert into resource_types (version, code, description) values (1, 'Rxx1', 'Släckningsbil');
+insert into resource_types (version, code, description) values (1, 'Rxx2', 'Tank-släckningsbil');
+insert into resource_types (version, code, description) values (1, 'Rxx3', 'Tankbil');
+insert into resource_types (version, code, description) values (1, 'Rxx7', 'Manskapsbil');
+insert into resource_types (version, code, description) values (1, 'Ex0', 'Läkarenhet');
+insert into resource_types (version, code, description) values (1, 'Ex1', 'Akutvårdens fältchef');
+insert into resource_types (version, code, description) values (1, 'Ex2x', 'Ambulans vårdnivå');
+insert into resource_types (version, code, description) values (1, 'Ex3x', 'Ambulans grundnivå');
