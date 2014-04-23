@@ -4,7 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import static net.pkhsolutions.idispatch.utils.StringUtils.nullToEmpty;
+import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * Entity representing a municipality.

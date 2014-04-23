@@ -7,8 +7,8 @@ import javax.persistence.*;
 import java.util.Calendar;
 import java.util.Date;
 
-import static net.pkhsolutions.idispatch.utils.EnumUtils.nullToDefault;
-import static net.pkhsolutions.idispatch.utils.StringUtils.nullToEmpty;
+import static com.google.common.base.Objects.firstNonNull;
+import static com.google.common.base.Strings.nullToEmpty;
 
 /**
  * Entity representing a ticket.
@@ -99,7 +99,7 @@ public class Ticket extends AbstractLockableEntity {
         }
 
         public Builder withUrgency(TicketUrgency urgency) {
-            entity.urgency = nullToDefault(urgency, TicketUrgency.UNKNOWN);
+            entity.urgency = firstNonNull(urgency, TicketUrgency.UNKNOWN);
             return this;
         }
 

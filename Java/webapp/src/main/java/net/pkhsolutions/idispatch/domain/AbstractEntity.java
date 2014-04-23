@@ -9,8 +9,6 @@ import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Base class for persistable entities.
@@ -30,13 +28,13 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
         return id;
     }
 
+    protected void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public boolean isNew() {
         return id == null;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
     }
 
     @Override
@@ -60,6 +58,7 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
 
     /**
      * Base class for builders of persistable entities.
+     *
      * @param <E> the entity that is being built.
      * @param <B> the builder type, to be used for chaining method calls.
      */
@@ -82,15 +81,6 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
             entity.setId(original.getId());
         }
 
-        public E build() {
-            return entity;
-        }
-
-        public B clearIdentityInfo() {
-            entity.setId(null);
-            return (B) this;
-        }
-
         protected static <T> T clone(T original) {
             if (original == null) {
                 return null;
@@ -104,6 +94,15 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
             } else {
                 throw new IllegalArgumentException("Object is not cloneable");
             }
+        }
+
+        public E build() {
+            return entity;
+        }
+
+        public B clearIdentityInfo() {
+            entity.setId(null);
+            return (B) this;
         }
     }
 }
