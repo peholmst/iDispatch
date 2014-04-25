@@ -1,6 +1,10 @@
-package net.pkhsolutions.idispatch.domain.tickets;
+package net.pkhsolutions.idispatch.common.ui.tickets;
 
 import net.pkhsolutions.idispatch.domain.Municipality;
+import net.pkhsolutions.idispatch.domain.tickets.Ticket;
+import net.pkhsolutions.idispatch.domain.tickets.TicketService;
+import net.pkhsolutions.idispatch.domain.tickets.TicketType;
+import net.pkhsolutions.idispatch.domain.tickets.TicketUrgency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +15,7 @@ import org.springframework.util.Assert;
 import java.util.Date;
 
 /**
- * Model for showing and editing a single {@link Ticket}. Changes are directly propagated to the database.
+ * Model for showing and editing a single {@link net.pkhsolutions.idispatch.domain.tickets.Ticket}. Changes are directly propagated to the database.
  */
 @Component
 @Scope(value = "prototype")
@@ -73,11 +77,11 @@ public class TicketModel {
     }
 
     public TicketType getTicketType() {
-        return getTicket().getTicketType();
+        return getTicket().getType();
     }
 
     public void setTicketType(TicketType ticketType) {
-        perform((builder) -> builder.withTicketType(ticketType));
+        perform((builder) -> builder.withType(ticketType));
     }
 
     public String getDescription() {

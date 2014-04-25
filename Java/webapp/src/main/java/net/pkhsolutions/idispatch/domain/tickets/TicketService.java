@@ -8,10 +8,10 @@ import java.util.Optional;
 public interface TicketService {
 
     /**
-     * Attempts to load the ticket with the specified ID. If the ID is {@code null}, an empty
-     * {@code Optional} is returned.
+     * Attempts to retrieve the ticket with the specified ID. If the ID is {@code null}, or the ticket
+     * does not exist, an empty {@code Optional} is returned.
      */
-    Optional<Ticket> loadTicket(Long id);
+    Optional<Ticket> retrieveTicket(Long id);
 
     /**
      * Creates a new ticket, stores it, fires a {@link net.pkhsolutions.idispatch.domain.tickets.events.TicketCreatedEvent}

@@ -28,7 +28,7 @@ public class Ticket extends AbstractLockableEntity {
     private TicketUrgency urgency = TicketUrgency.UNKNOWN;
     @ManyToOne
     @JoinColumn(name = "type_id")
-    private TicketType ticketType;
+    private TicketType type;
     @Column(name = "description", nullable = false)
     private String description = "";
     @ManyToOne
@@ -56,8 +56,8 @@ public class Ticket extends AbstractLockableEntity {
         return urgency;
     }
 
-    public TicketType getTicketType() {
-        return ticketType;
+    public TicketType getType() {
+        return type;
     }
 
     public String getDescription() {
@@ -89,7 +89,7 @@ public class Ticket extends AbstractLockableEntity {
             entity.municipality = original.municipality;
             entity.ticketClosed = clone(original.ticketClosed);
             entity.ticketOpened = clone(original.ticketOpened);
-            entity.ticketType = original.ticketType;
+            entity.type = original.type;
             entity.urgency = original.urgency;
         }
 
@@ -103,8 +103,8 @@ public class Ticket extends AbstractLockableEntity {
             return this;
         }
 
-        public Builder withTicketType(TicketType ticketType) {
-            entity.ticketType = ticketType;
+        public Builder withType(TicketType type) {
+            entity.type = type;
             return this;
         }
 

@@ -6,7 +6,7 @@ import net.pkhsolutions.idispatch.domain.tickets.Ticket;
  * Event published when a new ticket is created.
  */
 public class TicketCreatedEvent extends TicketEvent {
-    public TicketCreatedEvent(Ticket ticket) {
-        super(ticket);
+    public TicketCreatedEvent(Object source, Ticket ticket) {
+        super(source, ticket);
     }
 }

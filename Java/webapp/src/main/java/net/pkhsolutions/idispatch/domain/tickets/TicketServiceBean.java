@@ -5,12 +5,10 @@ import net.pkhsolutions.idispatch.domain.tickets.events.TicketUpdatedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.vaadin.spring.events.EventBus;
-import org.vaadin.spring.events.EventBusScope;
-import org.vaadin.spring.events.EventScope;
 
 import java.util.Optional;
 
@@ -27,11 +25,10 @@ public class TicketServiceBean implements TicketService {
     TicketRepository ticketRepository;
 
     @Autowired
-    @EventBusScope(EventScope.APPLICATION)
-    EventBus eventBus;
+    ApplicationEventPublisher eventPublisher;
 
     @Override
-    public Optional<Ticket> loadTicket(Long id) {
+    public Optional<Ticket> retrieveTicket(Long id) {
         if (id == null) {
             return Optional.empty();
         }
@@ -43,7 +40,7 @@ public class TicketServiceBean implements TicketService {
     public Long createTicket() {
         logger.info("Creating new ticket");
         final Ticket createdTicket = ticketRepository.saveAndFlush(new Ticket.Builder().build());
-        eventBus.publish(this, new TicketCreatedEvent(createdTicket));
+        eventPublisher.publishEvent(new TicketCreatedEvent(this, createdTicket));
         logger.info("Created new ticket with ID {}", createdTicket.getId());
         return createdTicket.getId();
     }
@@ -52,7 +49,7 @@ public class TicketServiceBean implements TicketService {
     public Ticket updateTicket(Ticket ticket) {
         logger.info("Updating ticket with ID {}", ticket.getId());
         final Ticket updatedTicket = ticketRepository.saveAndFlush(ticket);
-        eventBus.publish(this, new TicketUpdatedEvent(updatedTicket));
+        eventPublisher.publishEvent(new TicketUpdatedEvent(this, updatedTicket));
         return updatedTicket;
     }
 }
