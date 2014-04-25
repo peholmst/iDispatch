@@ -7,7 +7,7 @@ import javax.persistence.Version;
  * Base class for persistable entities that use optimistic locking to prevent accidental overwrites.
  */
 @MappedSuperclass
-public class AbstractLockableEntity extends AbstractEntity {
+public abstract class AbstractLockableEntity extends AbstractEntity {
 
     @Version
     private Long version;
@@ -25,16 +25,17 @@ public class AbstractLockableEntity extends AbstractEntity {
 
     /**
      * Base class for builders of persistable entities that use optimistic locking.
+     *
      * @param <E> the entity that is being built.
      * @param <B> the builder type, to be used for chaining method calls.
      */
     public static abstract class AbstractLockableEntityBuilder<E extends AbstractLockableEntity, B extends AbstractLockableEntityBuilder<E, B>> extends AbstractEntityBuilder<E, B> {
 
-        public AbstractLockableEntityBuilder(Class<E> entityClass) {
+        protected AbstractLockableEntityBuilder(Class<E> entityClass) {
             super(entityClass);
         }
 
-        public AbstractLockableEntityBuilder(Class<E> entityClass, AbstractLockableEntity original) {
+        protected AbstractLockableEntityBuilder(Class<E> entityClass, AbstractLockableEntity original) {
             super(entityClass, original);
             entity.setVersion(original.getVersion());
         }

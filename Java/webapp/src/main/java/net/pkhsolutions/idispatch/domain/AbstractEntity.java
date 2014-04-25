@@ -14,7 +14,7 @@ import java.lang.reflect.Method;
  * Base class for persistable entities.
  */
 @MappedSuperclass
-public class AbstractEntity implements Persistable<Long>, Serializable {
+public abstract class AbstractEntity implements Persistable<Long>, Serializable {
 
     @Id
     @GeneratedValue
@@ -66,7 +66,7 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
 
         protected E entity;
 
-        public AbstractEntityBuilder(Class<E> entityClass) {
+        protected AbstractEntityBuilder(Class<E> entityClass) {
             try {
                 final Constructor<E> constructor = entityClass.getDeclaredConstructor();
                 constructor.setAccessible(true);
@@ -76,7 +76,7 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
             }
         }
 
-        public AbstractEntityBuilder(Class<E> entityClass, AbstractEntity original) {
+        protected AbstractEntityBuilder(Class<E> entityClass, AbstractEntity original) {
             this(entityClass);
             entity.setId(original.getId());
         }
@@ -100,6 +100,7 @@ public class AbstractEntity implements Persistable<Long>, Serializable {
             return entity;
         }
 
+        @SuppressWarnings("unchecked")
         public B clearIdentityInfo() {
             entity.setId(null);
             return (B) this;
