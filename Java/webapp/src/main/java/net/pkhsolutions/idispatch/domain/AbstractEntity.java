@@ -81,6 +81,7 @@ public abstract class AbstractEntity implements Persistable<Long>, Serializable 
             entity.setId(original.getId());
         }
 
+        @SuppressWarnings("unchecked")
         protected static <T> T clone(T original) {
             if (original == null) {
                 return null;
