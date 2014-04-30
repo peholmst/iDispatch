@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.domain.tickets;
 
+import net.pkhsolutions.idispatch.domain.tickets.events.TicketClosedEvent;
 import net.pkhsolutions.idispatch.domain.tickets.events.TicketCreatedEvent;
 import net.pkhsolutions.idispatch.domain.tickets.events.TicketUpdatedEvent;
 import org.slf4j.Logger;
@@ -38,18 +39,28 @@ public class TicketServiceBean implements TicketService {
 
     @Override
     public Long createTicket() {
-        logger.info("Creating new ticket");
+        logger.debug("Creating new ticket");
         final Ticket createdTicket = ticketRepository.saveAndFlush(new Ticket.Builder().build());
         eventPublisher.publishEvent(new TicketCreatedEvent(this, createdTicket));
-        logger.info("Created new ticket with ID {}", createdTicket.getId());
+        logger.debug("Created new ticket with ID {}", createdTicket.getId());
         return createdTicket.getId();
     }
 
     @Override
     public Ticket updateTicket(Ticket ticket) {
-        logger.info("Updating ticket with ID {}", ticket.getId());
+        logger.debug("Updating ticket with ID {}", ticket.getId());
         final Ticket updatedTicket = ticketRepository.saveAndFlush(ticket);
         eventPublisher.publishEvent(new TicketUpdatedEvent(this, updatedTicket));
         return updatedTicket;
+    }
+
+    @Override
+    public void closeTicket(Ticket ticket) {
+        logger.debug("Closing ticket with ID {}", ticket.getId());
+        if (ticket.isClosed()) {
+            logger.debug("Ticket with ID {} is already closed, ignoring", ticket.getId());
+        }
+        final Ticket closedTicket = ticketRepository.saveAndFlush(new Ticket.Builder(ticket).close().build());
+        eventPublisher.publishEvent(new TicketClosedEvent(this, closedTicket));
     }
 }

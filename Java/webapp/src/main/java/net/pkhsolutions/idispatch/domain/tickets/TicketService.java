@@ -24,4 +24,9 @@ public interface TicketService {
      * and returns the updated ticket instance.
      */
     Ticket updateTicket(Ticket ticket);
+
+    /**
+     * Closes the ticket and fires a {@link net.pkhsolutions.idispatch.domain.tickets.events.TicketClosedEvent}.
+     */
+    void closeTicket(Ticket ticket);
 }

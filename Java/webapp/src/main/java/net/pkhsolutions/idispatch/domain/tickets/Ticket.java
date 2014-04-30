@@ -93,7 +93,11 @@ public class Ticket extends AbstractLockableEntity {
             entity.urgency = original.urgency;
         }
 
-        public Builder close() {
+        /**
+         * This method should only be called by {@link net.pkhsolutions.idispatch.domain.tickets.TicketServiceBean}.
+         * Therefore, it has package visibility.
+         */
+        Builder close() {
             entity.ticketClosed = Calendar.getInstance().getTime();
             return this;
         }
