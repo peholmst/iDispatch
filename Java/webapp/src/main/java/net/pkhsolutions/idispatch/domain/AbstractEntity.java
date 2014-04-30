@@ -16,6 +16,8 @@ import java.lang.reflect.Method;
 @MappedSuperclass
 public abstract class AbstractEntity implements Persistable<Long>, Serializable {
 
+    public static final String PROP_ID = "id";
+
     @Id
     @GeneratedValue
     private Long id;

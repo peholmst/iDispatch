@@ -13,6 +13,8 @@ import static com.google.common.base.Strings.nullToEmpty;
 @Table(name = "municipalities")
 public class Municipality extends AbstractLockableEntity {
 
+    public static final String PROP_NAME = "name";
+
     @Column(name = "name", nullable = false, unique = true)
     private String name = "";
 

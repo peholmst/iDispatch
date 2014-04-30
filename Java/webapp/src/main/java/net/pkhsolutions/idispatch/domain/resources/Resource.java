@@ -13,11 +13,15 @@ import static com.google.common.base.Strings.nullToEmpty;
 @Table(name = "resources")
 public class Resource extends AbstractLockableEntity {
 
+    public static final String PROP_CALL_SIGN = "callSign";
+    public static final String PROP_TYPE = "type";
+    public static final String PROP_ACTIVE = "active";
+
     @Column(name = "call_sign", unique = true, nullable = false)
     private String callSign = "";
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id", nullable = false)
-    private ResourceType resourceType;
+    private ResourceType type;
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
@@ -28,8 +32,8 @@ public class Resource extends AbstractLockableEntity {
         return callSign;
     }
 
-    public ResourceType getResourceType() {
-        return resourceType;
+    public ResourceType getType() {
+        return type;
     }
 
     public boolean isActive() {
@@ -48,7 +52,7 @@ public class Resource extends AbstractLockableEntity {
         public Builder(Resource original) {
             super(Resource.class, original);
             entity.callSign = original.callSign;
-            entity.resourceType = original.resourceType;
+            entity.type = original.type;
             entity.active = original.active;
         }
 
@@ -67,8 +71,8 @@ public class Resource extends AbstractLockableEntity {
             return this;
         }
 
-        public Builder withResourceType(ResourceType resourceType) {
-            entity.resourceType = resourceType;
+        public Builder withType(ResourceType type) {
+            entity.type = type;
             return this;
         }
     }

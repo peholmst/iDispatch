@@ -17,6 +17,14 @@ import static com.google.common.base.Strings.nullToEmpty;
 @Table(name = "tickets")
 public class Ticket extends AbstractLockableEntity {
 
+    public static final String PROP_TICKET_OPENED = "ticketOpened";
+    public static final String PROP_TICKET_CLOSED = "ticketClosed";
+    public static final String PROP_URGENCY = "urgency";
+    public static final String PROP_TYPE = "type";
+    public static final String PROP_DESCRIPTION = "description";
+    public static final String PROP_MUNICIPALITY = "municipality";
+    public static final String PROP_ADDRESS = "address";
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "opened", nullable = false)
     private Date ticketOpened;
