@@ -14,6 +14,10 @@ import static com.google.common.base.Objects.firstNonNull;
 @Table(name = "resource_state_changes")
 public class ResourceStateChange extends AbstractTimestampedEntity {
 
+    public static final String PROP_STATE = "state";
+    public static final String PROP_RESOURCE = "resource";
+    public static final String PROP_TICKET = "ticket";
+
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
     private ResourceState state = ResourceState.UNAVAILABLE;

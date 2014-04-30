@@ -10,6 +10,8 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class AbstractTimestampedEntity extends AbstractEntity {
 
+    public static final String PROP_TIMESTAMP = "timestamp";
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "ts", nullable = false)
     private Date timestamp;
