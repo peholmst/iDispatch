@@ -8,6 +8,7 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import net.pkhsolutions.idispatch.common.ui.ErrorView;
+import net.pkhsolutions.idispatch.dws.ui.resources.ShowResourceTableCommand;
 import net.pkhsolutions.idispatch.dws.ui.tickets.NewTicketCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.VaadinUI;
@@ -26,6 +27,9 @@ public class DwsUI extends UI {
 
     @Autowired
     NewTicketCommand newTicketCommand;
+
+    @Autowired
+    ShowResourceTableCommand showResourceTableCommand;
 
     private MenuBar menuBar;
 
@@ -58,7 +62,7 @@ public class DwsUI extends UI {
 
         final MenuBar.MenuItem viewMenu = menuBar.addItem("View", null);
         viewMenu.addItem("Tickets", null);
-        viewMenu.addItem("Resources", null);
+        viewMenu.addItem("Resource Table", showResourceTableCommand);
         viewMenu.addSeparator();
         viewMenu.addItem("Open New Browser Window", null);
 
