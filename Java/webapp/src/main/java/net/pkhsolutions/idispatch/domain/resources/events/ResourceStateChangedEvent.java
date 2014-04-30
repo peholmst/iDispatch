@@ -4,7 +4,7 @@ import net.pkhsolutions.idispatch.domain.resources.ResourceStateChange;
 import org.springframework.context.ApplicationEvent;
 
 /**
- * Event publish when the state of a resource is changed.
+ * Event published when the state of a resource is changed.
  */
 public class ResourceStateChangedEvent extends ApplicationEvent {
 
