@@ -17,5 +17,5 @@ public interface ResourceRepository extends JpaRepository<Resource, Long> {
     /**
      * Finds and returns all active resources.
      */
-    List<Resource> findByActiveTrue();
+    List<Resource> findByActiveTrueOrderByCallSignAsc();
 }
