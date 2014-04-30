@@ -2,12 +2,15 @@ package net.pkhsolutions.idispatch.common.ui.resources;
 
 import com.vaadin.data.util.converter.Converter;
 import net.pkhsolutions.idispatch.domain.resources.Resource;
+import org.vaadin.spring.VaadinComponent;
 
 import java.util.Locale;
 
 /**
- * A one-way converter for converting a {@link net.pkhsolutions.idispatch.domain.resources.Resource} to a string.
+ * A one-way converter for converting a {@link net.pkhsolutions.idispatch.domain.resources.Resource} to a string. This
+ * is a singleton bean since it is completely stateless.
  */
+@VaadinComponent
 public class ResourceToStringConverter implements Converter<String, Resource> {
     @Override
     public Resource convertToModel(String value, Class<? extends Resource> targetType, Locale locale) throws ConversionException {
