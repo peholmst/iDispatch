@@ -1,0 +1,31 @@
+package net.pkhsolutions.idispatch.common.ui.resources;
+
+import com.vaadin.data.util.converter.Converter;
+import net.pkhsolutions.idispatch.domain.resources.Resource;
+
+import java.util.Locale;
+
+/**
+ * A one-way converter for converting a {@link net.pkhsolutions.idispatch.domain.resources.Resource} to a string.
+ */
+public class ResourceToStringConverter implements Converter<String, Resource> {
+    @Override
+    public Resource convertToModel(String value, Class<? extends Resource> targetType, Locale locale) throws ConversionException {
+        throw new UnsupportedOperationException("Cannot convert to Resource");
+    }
+
+    @Override
+    public String convertToPresentation(Resource value, Class<? extends String> targetType, Locale locale) throws ConversionException {
+        return value == null ? null : value.getCallSign();
+    }
+
+    @Override
+    public Class<Resource> getModelType() {
+        return Resource.class;
+    }
+
+    @Override
+    public Class<String> getPresentationType() {
+        return String.class;
+    }
+}
