@@ -12,12 +12,12 @@ import org.vaadin.spring.VaadinComponent;
 import org.vaadin.spring.events.Event;
 import org.vaadin.spring.events.EventBusListener;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 
 /**
  * Container for the current states of all active resources. To make the container update itself automatically
  * when the state of a resource is changed, it needs to be subscribed to the application scoped {@link org.vaadin.spring.events.EventBus}.
+ * Also remember to call {@link #refresh()} once you have everything set up.
  */
 @VaadinComponent
 @Scope("prototype")
@@ -52,7 +52,6 @@ public class CurrentResourceStateContainer extends BeanItemContainer<ResourceSta
     /**
      * Populates the container with fresh data from the {@link net.pkhsolutions.idispatch.domain.resources.ResourceService}.
      */
-    @PostConstruct
     public void refresh() {
         final Set<ResourceStateChange> itemsToRemove = new HashSet<>(getAllItemIds());
         List<ResourceStateChange> newItems;
