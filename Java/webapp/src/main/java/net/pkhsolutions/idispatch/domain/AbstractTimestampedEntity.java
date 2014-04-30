@@ -45,11 +45,15 @@ public abstract class AbstractTimestampedEntity extends AbstractEntity {
 
         protected AbstractTimestampedEntityBuilder(Class<E> entityClass) {
             super(entityClass);
+            entity.setTimestamp(new Date());
         }
 
+        /**
+         * This constructor clears the identity information and resets the timestamp.
+         */
         protected AbstractTimestampedEntityBuilder(Class<E> entityClass, AbstractTimestampedEntity original) {
             super(entityClass, original);
-            entity.setTimestamp(original.getTimestamp());
+            entity.setTimestamp(new Date());
             clearIdentityInfo();
         }
 
