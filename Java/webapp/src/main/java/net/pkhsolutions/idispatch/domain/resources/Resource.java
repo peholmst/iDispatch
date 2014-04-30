@@ -11,7 +11,7 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 @Entity
 @Table(name = "resources")
-public class Resource extends AbstractLockableEntity implements Comparable<Resource> {
+public class Resource extends AbstractLockableEntity {
 
     @Column(name = "call_sign", unique = true, nullable = false)
     private String callSign = "";
@@ -34,11 +34,6 @@ public class Resource extends AbstractLockableEntity implements Comparable<Resou
 
     public boolean isActive() {
         return active;
-    }
-
-    @Override
-    public int compareTo(Resource o) {
-        return callSign.compareTo(o.callSign);
     }
 
     /**
