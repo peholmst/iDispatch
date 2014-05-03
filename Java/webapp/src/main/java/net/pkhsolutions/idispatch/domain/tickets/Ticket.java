@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.domain.tickets;
 
+import com.google.common.base.Objects;
 import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
 import net.pkhsolutions.idispatch.domain.Municipality;
 
@@ -102,5 +103,12 @@ public class Ticket extends AbstractLockableEntity {
 
     public void setAddress(String address) {
         this.address = nullToEmpty(address);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add(PROP_ID, getId())
+                .toString();
     }
 }
