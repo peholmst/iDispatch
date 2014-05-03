@@ -20,40 +20,19 @@ public class ResourceType extends AbstractLockableEntity {
     @Column(name = "description", nullable = false)
     private String description;
 
-    protected ResourceType() {
-    }
-
     public String getCode() {
         return code;
+    }
+
+    public void setCode(String code) {
+        this.code = nullToEmpty(code);
     }
 
     public String getDescription() {
         return description;
     }
 
-    /**
-     * Builder for creating instances of {@link net.pkhsolutions.idispatch.domain.resources.ResourceType}.
-     */
-    public static final class Builder extends AbstractLockableEntityBuilder<ResourceType, Builder> {
-
-        public Builder() {
-            super(ResourceType.class);
-        }
-
-        public Builder(ResourceType original) {
-            super(ResourceType.class, original);
-            entity.code = original.code;
-            entity.description = original.description;
-        }
-
-        public Builder withCode(String code) {
-            entity.code = nullToEmpty(code);
-            return this;
-        }
-
-        public Builder withDescription(String description) {
-            entity.description = nullToEmpty(description);
-            return this;
-        }
+    public void setDescription(String description) {
+        this.description = nullToEmpty(description);
     }
 }

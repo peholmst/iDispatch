@@ -23,44 +23,23 @@ public class TicketType extends AbstractLockableEntity {
     @Column(name = "description", nullable = false)
     private String description = "";
 
-    protected TicketType() {
-    }
-
     public String getCode() {
         return code;
+    }
+
+    public void setCode(String code) {
+        this.code = nullToEmpty(code);
     }
 
     public String getDescription() {
         return description;
     }
 
-    public String getFormattedDescription() {
-        return String.format("%s - %s", code, description);
+    public void setDescription(String description) {
+        this.description = nullToEmpty(description);
     }
 
-    /**
-     * Builder for creating instances of {@link TicketType}.
-     */
-    public static final class Builder extends AbstractLockableEntityBuilder<TicketType, Builder> {
-
-        public Builder() {
-            super(TicketType.class);
-        }
-
-        public Builder(TicketType original) {
-            super(TicketType.class, original);
-            entity.code = original.code;
-            entity.description = original.description;
-        }
-
-        public Builder withCode(String code) {
-            entity.code = nullToEmpty(code);
-            return this;
-        }
-
-        public Builder withDescription(String description) {
-            entity.description = nullToEmpty(description);
-            return this;
-        }
+    public String getFormattedDescription() {
+        return String.format("%s - %s", code, description);
     }
 }

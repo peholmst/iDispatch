@@ -4,7 +4,6 @@ import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
 import net.pkhsolutions.idispatch.domain.Municipality;
 
 import javax.persistence.*;
-import java.util.Calendar;
 import java.util.Date;
 
 import static com.google.common.base.Objects.firstNonNull;
@@ -45,7 +44,8 @@ public class Ticket extends AbstractLockableEntity {
     @Column(name = "address", nullable = false)
     private String address = "";
 
-    protected Ticket() {
+    public Ticket() {
+        ticketOpened = new Date();
     }
 
     public Date getTicketOpened() {
@@ -56,6 +56,10 @@ public class Ticket extends AbstractLockableEntity {
         return ticketClosed;
     }
 
+    void close() {
+        ticketClosed = new Date();
+    }
+
     public boolean isClosed() {
         return ticketClosed != null;
     }
@@ -64,75 +68,39 @@ public class Ticket extends AbstractLockableEntity {
         return urgency;
     }
 
+    public void setUrgency(TicketUrgency urgency) {
+        this.urgency = firstNonNull(urgency, TicketUrgency.UNKNOWN);
+    }
+
     public TicketType getType() {
         return type;
+    }
+
+    public void setType(TicketType type) {
+        this.type = type;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = nullToEmpty(description);
+    }
+
     public Municipality getMunicipality() {
         return municipality;
+    }
+
+    public void setMunicipality(Municipality municipality) {
+        this.municipality = municipality;
     }
 
     public String getAddress() {
         return address;
     }
 
-    /**
-     * Builder for creating instances of {@link Ticket}.
-     */
-    public static class Builder extends AbstractLockableEntityBuilder<Ticket, Builder> {
-
-        public Builder() {
-            super(Ticket.class);
-            entity.ticketOpened = Calendar.getInstance().getTime();
-        }
-
-        public Builder(Ticket original) {
-            super(Ticket.class, original);
-            entity.description = original.description;
-            entity.address = original.address;
-            entity.municipality = original.municipality;
-            entity.ticketClosed = clone(original.ticketClosed);
-            entity.ticketOpened = clone(original.ticketOpened);
-            entity.type = original.type;
-            entity.urgency = original.urgency;
-        }
-
-        /**
-         * This method should only be called by {@link net.pkhsolutions.idispatch.domain.tickets.TicketServiceBean}.
-         * Therefore, it has package visibility.
-         */
-        Builder close() {
-            entity.ticketClosed = Calendar.getInstance().getTime();
-            return this;
-        }
-
-        public Builder withUrgency(TicketUrgency urgency) {
-            entity.urgency = firstNonNull(urgency, TicketUrgency.UNKNOWN);
-            return this;
-        }
-
-        public Builder withType(TicketType type) {
-            entity.type = type;
-            return this;
-        }
-
-        public Builder withDescription(String description) {
-            entity.description = nullToEmpty(description);
-            return this;
-        }
-
-        public Builder withMunicipality(Municipality municipality) {
-            entity.municipality = municipality;
-            return this;
-        }
-
-        public Builder withAddress(String address) {
-            entity.address = nullToEmpty(address);
-            return this;
-        }
+    public void setAddress(String address) {
+        this.address = nullToEmpty(address);
     }
 }

@@ -22,23 +22,7 @@ public class Municipality extends AbstractLockableEntity {
         return name;
     }
 
-    /**
-     * Builder for creating instances of {@link net.pkhsolutions.idispatch.domain.Municipality}.
-     */
-    public static final class Builder extends AbstractLockableEntityBuilder<Municipality, Builder> {
-
-        public Builder() {
-            super(Municipality.class);
-        }
-
-        public Builder(Municipality original) {
-            super(Municipality.class, original);
-            entity.name = original.name;
-        }
-
-        public Builder withName(String name) {
-            entity.name = nullToEmpty(name);
-            return this;
-        }
+    public void setName(String name) {
+        this.name = nullToEmpty(name);
     }
 }

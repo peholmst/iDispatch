@@ -25,55 +25,27 @@ public class Resource extends AbstractLockableEntity {
     @Column(name = "active", nullable = false)
     private boolean active = true;
 
-    protected Resource() {
-    }
-
     public String getCallSign() {
         return callSign;
+    }
+
+    public void setCallSign(String callSign) {
+        this.callSign = nullToEmpty(callSign);
     }
 
     public ResourceType getType() {
         return type;
     }
 
+    public void setType(ResourceType type) {
+        this.type = type;
+    }
+
     public boolean isActive() {
         return active;
     }
 
-    /**
-     * Builder for creating instances of {@link net.pkhsolutions.idispatch.domain.resources.Resource}.
-     */
-    public static final class Builder extends AbstractLockableEntityBuilder<Resource, Builder> {
-
-        public Builder() {
-            super(Resource.class);
-        }
-
-        public Builder(Resource original) {
-            super(Resource.class, original);
-            entity.callSign = original.callSign;
-            entity.type = original.type;
-            entity.active = original.active;
-        }
-
-        public Builder withCallSign(String callSign) {
-            entity.callSign = nullToEmpty(callSign);
-            return this;
-        }
-
-        public Builder active() {
-            entity.active = true;
-            return this;
-        }
-
-        public Builder inactive() {
-            entity.active = false;
-            return this;
-        }
-
-        public Builder withType(ResourceType type) {
-            entity.type = type;
-            return this;
-        }
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }
