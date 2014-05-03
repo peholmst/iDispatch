@@ -24,17 +24,8 @@
         </dependency>
         <dependency>
             <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-client-compiled</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
         </dependency>
-
-        <!--        <dependency>
-                    <groupId>org.vaadin.spring</groupId>
-                    <artifactId>spring-security-vaadin</artifactId>
-                </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -58,6 +49,61 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.vaadin.tapio</groupId>
+            <artifactId>googlemaps</artifactId>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>build-widgetset</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.vaadin</groupId>
+                        <artifactId>vaadin-maven-plugin</artifactId>
+                        <configuration>
+                            <extraJvmArgs>-Xmx1g -Xss1024k</extraJvmArgs>
+                            <webappDirectory>${basedir}/src/main/resources/public/VAADIN/widgetsets</webappDirectory>
+                            <hostedWebapp>${basedir}/src/main/resources/public/VAADIN/widgetsets</hostedWebapp>
+                            <noServer>true</noServer>
+                            <persistentunitcachedir>${project.build.directory}/gwtdirt</persistentunitcachedir>
+                            <compileReport>true</compileReport>
+                            <style>OBF</style>
+                            <strict>true</strict>
+                            <deploy>${project.build.directory}/gwt-deploy</deploy>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>compile-widgetset</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>resources</goal>
+                                    <goal>compile</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>clean-widgetset</id>
+                                <phase>clean</phase>
+                                <goals>
+                                    <goal>clean</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
 </project>

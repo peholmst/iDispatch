@@ -15,7 +15,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>7.1.13</vaadin.version>
+        <vaadin.version>7.1.14</vaadin.version>
         <spring.vaadin.version>0.0.2-SNAPSHOT</spring.vaadin.version>
     </properties>
 
@@ -84,6 +84,11 @@
                 <artifactId>guava</artifactId>
                 <version>17.0</version>
             </dependency>
+            <dependency>
+                <groupId>com.vaadin.tapio</groupId>
+                <artifactId>googlemaps</artifactId>
+                <version>0.8.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -122,6 +127,11 @@
                     <artifactId>maven-ear-plugin</artifactId>
                     <version>2.9</version>
                 </plugin>
+                <plugin>
+                    <groupId>com.vaadin</groupId>
+                    <artifactId>vaadin-maven-plugin</artifactId>
+                    <version>${vaadin.version}</version>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
@@ -133,6 +143,10 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
+        </repository>
+        <repository>
+            <id>vaadin-addons</id>
+            <url>http://maven.vaadin.com/vaadin-addons</url>
         </repository>
     </repositories>
 </project>

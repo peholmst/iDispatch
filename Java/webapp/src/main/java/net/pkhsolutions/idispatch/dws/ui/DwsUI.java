@@ -1,6 +1,7 @@
 package net.pkhsolutions.idispatch.dws.ui;
 
 import com.vaadin.annotations.Theme;
+import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.MenuBar;
@@ -20,6 +21,7 @@ import org.vaadin.spring.navigator.SpringViewProvider;
  */
 @VaadinUI(path = "/dws")
 @Theme(DwsTheme.THEME_NAME)
+@Widgetset("net.pkhsolutions.idispatch.dws.ui.DwsWidgetset")
 public class DwsUI extends UI {
 
     @Autowired
