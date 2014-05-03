@@ -40,7 +40,7 @@ public class TicketServiceBean implements TicketService {
     @Override
     public Long createTicket() {
         logger.debug("Creating new ticket");
-        final Ticket createdTicket = ticketRepository.saveAndFlush(new Ticket.Builder().build());
+        final Ticket createdTicket = ticketRepository.saveAndFlush(new Ticket());
         eventPublisher.publishEvent(new TicketCreatedEvent(this, createdTicket));
         logger.debug("Created new ticket with ID {}", createdTicket.getId());
         return createdTicket.getId();
@@ -48,7 +48,11 @@ public class TicketServiceBean implements TicketService {
 
     @Override
     public Ticket updateTicket(Ticket ticket) {
-        logger.debug("Updating ticket with ID {}", ticket.getId());
+        logger.debug("Updating ticket {}", ticket);
+        if (ticket.isClosed()) {
+            logger.debug("Ticket {} is closed, cannot update", ticket);
+            return ticket;
+        }
         final Ticket updatedTicket = ticketRepository.saveAndFlush(ticket);
         eventPublisher.publishEvent(new TicketUpdatedEvent(this, updatedTicket));
         return updatedTicket;
@@ -56,11 +60,13 @@ public class TicketServiceBean implements TicketService {
 
     @Override
     public void closeTicket(Ticket ticket) {
-        logger.debug("Closing ticket with ID {}", ticket.getId());
+        logger.debug("Closing ticket {}", ticket);
         if (ticket.isClosed()) {
-            logger.debug("Ticket with ID {} is already closed, ignoring", ticket.getId());
+            logger.debug("Ticket {} is already closed, ignoring", ticket);
+            return;
         }
-        final Ticket closedTicket = ticketRepository.saveAndFlush(new Ticket.Builder(ticket).close().build());
+        ticket.close();
+        final Ticket closedTicket = ticketRepository.saveAndFlush(ticket);
         eventPublisher.publishEvent(new TicketClosedEvent(this, closedTicket));
     }
 }

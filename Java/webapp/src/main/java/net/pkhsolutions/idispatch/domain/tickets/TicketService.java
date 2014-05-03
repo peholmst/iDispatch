@@ -21,12 +21,14 @@ public interface TicketService {
 
     /**
      * Saves the existing ticket, fires a {@link net.pkhsolutions.idispatch.domain.tickets.events.TicketUpdatedEvent}
-     * and returns the updated ticket instance.
+     * and returns the updated ticket instance. If the ticket is closed, the passed in ticket instance
+     * will be returned immediately and no actions will be taken.
      */
     Ticket updateTicket(Ticket ticket);
 
     /**
-     * Closes the ticket and fires a {@link net.pkhsolutions.idispatch.domain.tickets.events.TicketClosedEvent}.
+     * Closes the ticket and fires a {@link net.pkhsolutions.idispatch.domain.tickets.events.TicketClosedEvent}. If
+     * the ticket is already closed, nothing will happen.
      */
     void closeTicket(Ticket ticket);
 }
