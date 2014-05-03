@@ -1,88 +1,56 @@
-package net.pkhsolutions.idispatch.common.ui;
+package net.pkhsolutions.idispatch.dws.ui.tickets;
 
-import com.vaadin.data.fieldgroup.BeanFieldGroup;
-import com.vaadin.data.fieldgroup.PropertyId;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.*;
+import net.pkhsolutions.idispatch.common.ui.DateToStringConverter;
 import net.pkhsolutions.idispatch.domain.Municipality;
-import net.pkhsolutions.idispatch.domain.tickets.TicketModel;
+import net.pkhsolutions.idispatch.domain.MunicipalityRepository;
 import net.pkhsolutions.idispatch.domain.tickets.TicketType;
+import net.pkhsolutions.idispatch.domain.tickets.TicketTypeRepository;
 import net.pkhsolutions.idispatch.domain.tickets.TicketUrgency;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.util.Assert;
 import org.vaadin.spring.VaadinComponent;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Optional;
 
 /**
- * Form for viewing/editing a {@link net.pkhsolutions.idispatch.domain.tickets.TicketModel}.
+ * Form for viewing/editing a {@link TicketModel}.
  */
 @VaadinComponent
 @Scope("prototype")
-public class TicketForm extends CustomComponent {
+class TicketForm extends CustomComponent {
 
-    @PropertyId("description")
+    @Autowired
+    MunicipalityRepository municipalityRepository;
+    @Autowired
+    TicketTypeRepository ticketTypeRepository;
+
     private TextArea description;
-    @PropertyId("urgency")
     private ComboBox urgency;
-    @PropertyId("ticketType")
     private ComboBox type;
-    @PropertyId("municipality")
     private ComboBox municipality;
-    @PropertyId("address")
     private TextField address;
-    @PropertyId("id")
     private TextField ticketNo;
-    @PropertyId("ticketOpened")
     private TextField ticketOpened;
-    @PropertyId("ticketClosed")
     private TextField ticketClosed;
-    private BeanFieldGroup<TicketModel> binder;
 
     protected TicketForm() {
     }
 
-    public Optional<TicketModel> getModel() {
-        return Optional.ofNullable(binder.getItemDataSource().getBean());
-    }
-
-    public void setModel(Optional<TicketModel> model) {
-        setReadOnly(false);
-        if (model.isPresent()) {
-            binder.setItemDataSource(model.get());
-            binder.bindMemberFields(this);
-        } else {
-            throw new UnsupportedOperationException("Not implemented: specifying an empty model");
-            // TODO Implement support for specifying an empty model
-        }
-        setReadOnly(!model.isPresent() || !model.get().isEditable());
-    }
-
-    public void setMunicipalities(Collection<Municipality> municipalities) {
-        municipality.setContainerDataSource(new BeanItemContainer<>(Municipality.class, municipalities));
-        municipality.setItemCaptionPropertyId("name");
-    }
-
-    public void setTicketTypes(Collection<TicketType> ticketTypes) {
-        type.setContainerDataSource(new BeanItemContainer<>(TicketType.class, ticketTypes));
-        type.setItemCaptionPropertyId("formattedDescription");
-    }
-
-    @Override
-    public boolean isReadOnly() {
-        return binder.isReadOnly();
-    }
-
-    public void setReadOnly(boolean readOnly) {
-        binder.setReadOnly(readOnly);
-        if (!readOnly) {
-            // These fields are always read only
-            ticketNo.setReadOnly(true);
-            ticketOpened.setReadOnly(true);
-            ticketClosed.setReadOnly(true);
-        }
+    void setTicketModel(TicketModel ticketModel) {
+        Assert.notNull(ticketModel, "TicketModel must not be null");
+        ticketNo.setPropertyDataSource(ticketModel.id());
+        ticketOpened.setPropertyDataSource(ticketModel.ticketOpened());
+        ticketClosed.setPropertyDataSource(ticketModel.ticketClosed());
+        description.setPropertyDataSource(ticketModel.description());
+        urgency.setPropertyDataSource(ticketModel.urgency());
+        type.setPropertyDataSource(ticketModel.ticketType());
+        municipality.setPropertyDataSource(ticketModel.municipality());
+        address.setPropertyDataSource(ticketModel.address());
     }
 
     @PostConstruct
@@ -134,7 +102,17 @@ public class TicketForm extends CustomComponent {
         address.setWidth("100%");
         layout.addComponent(address, 0, 4, 2, 4);
 
-        binder = new BeanFieldGroup<>(TicketModel.class);
-        binder.setBuffered(false);
+        setMunicipalities(municipalityRepository.findAll());
+        setTicketTypes(ticketTypeRepository.findAll());
+    }
+
+    private void setMunicipalities(Collection<Municipality> municipalities) {
+        municipality.setContainerDataSource(new BeanItemContainer<>(Municipality.class, municipalities));
+        municipality.setItemCaptionPropertyId("name");
+    }
+
+    private void setTicketTypes(Collection<TicketType> ticketTypes) {
+        type.setContainerDataSource(new BeanItemContainer<>(TicketType.class, ticketTypes));
+        type.setItemCaptionPropertyId("formattedDescription");
     }
 }
