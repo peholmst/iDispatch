@@ -1,168 +1,150 @@
 package net.pkhsolutions.idispatch.domain.resources;
 
-import net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent;
+import net.pkhsolutions.idispatch.domain.resources.events.ResourceStatusChangedEvent;
 import net.pkhsolutions.idispatch.domain.tickets.Ticket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Persistable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
+import javax.persistence.EntityManager;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Strings.isNullOrEmpty;
+import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Collections.emptySet;
 
 /**
  * Implementation of {@link net.pkhsolutions.idispatch.domain.resources.ResourceService}.
  */
 @Service
-@Transactional(propagation = Propagation.REQUIRES_NEW)
 public class ResourceServiceBean implements ResourceService {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     ResourceRepository resourceRepository;
-
     @Autowired
-    ResourceStateChangeRepository resourceStateChangeRepository;
-
+    ResourceStatusRepository resourceStatusRepository;
     @Autowired
-    CurrentResourceStateRepository currentResourceStateRepository;
-
+    ArchivedResourceStatusRepository archivedResourceStatusRepository;
     @Autowired
     ApplicationEventPublisher eventPublisher;
+    @Autowired
+    EntityManager entityManager;
 
-    @Override
-    public ResourceStateChange getCurrentState(Resource resource) {
-        final ResourceStateChange stateChange = currentResourceStateRepository.findCurrentStateByResource(checkNotNull(resource));
-        if (stateChange != null) {
-            return stateChange;
+    @SuppressWarnings("unchecked")
+    private <T extends Persistable<?>> T reattach(T detached) {
+        if (entityManager.contains(detached)) {
+            return detached;
         } else {
-            logger.debug("No state information stored for resource {}", resource);
-            return new ResourceStateChange.Builder().withResource(resource).build();
+            return (T) entityManager.getReference(detached.getClass(), detached.getId());
         }
     }
 
     @Override
-    public List<ResourceStateChange> getCurrentStatesOfActiveResources() {
-        return addActiveResourcesWithoutStoredStates(currentResourceStateRepository.findCurrentStatesOfAllActiveResources());
-    }
-
-    /**
-     * Without this method, resources that have no stored state information yet would be completely excluded from
-     * {@link #getCurrentStatesOfActiveResources()}.
-     */
-    private <T extends Collection<ResourceStateChange>> T addActiveResourcesWithoutStoredStates(T resourceStateChanges) {
-        final List<Resource> activeResources = getActiveResources();
-        final Set<Resource> resourcesWithStates = resourceStateChanges.stream().map(ResourceStateChange::getResource).collect(Collectors.toSet());
-        final List<Resource> resourcesWithoutStates = activeResources.stream().filter(resource -> !resourcesWithStates.contains(resource)).collect(Collectors.toList());
-        resourceStateChanges.addAll(resourcesWithoutStates.stream().map((resource) -> new ResourceStateChange.Builder().withResource(resource).build()).collect(Collectors.toList()));
-        return resourceStateChanges;
-    }
-
-    @Override
-    public List<ResourceStateChange> getCurrentStatesOfResourcesAssignedToTicket(Ticket ticket) {
-        return currentResourceStateRepository.findCurrentStatesOfActiveResourcesAssignedToTicket(checkNotNull(ticket));
-    }
-
-    @Override
-    public List<Resource> getActiveResources() {
-        return resourceRepository.findByActiveTrueOrderByCallSignAsc();
-    }
-
-    @Override
-    public List<Resource> getAssignableResources() {
-        return currentResourceStateRepository.findAssignableResources();
-    }
-
-    @Override
-    public Optional<Resource> findByCallSign(String callSign) {
-        if (isNullOrEmpty(callSign)) {
-            return Optional.empty();
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public ResourceStatus getCurrentStatus(Resource resource) {
+        logger.debug("Looking up current status of resource {}", resource);
+        final ResourceStatus status = resourceStatusRepository.findByResource(checkNotNull(resource));
+        if (status == null) {
+            logger.debug("No status information stored for resource {}", resource);
+            return new ResourceStatus(resource, ResourceState.UNAVAILABLE);
+        } else {
+            return status;
         }
-        final Resource resource = resourceRepository.findByCallSign(callSign);
-        return Optional.ofNullable(resource);
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<ResourceStatus> getCurrentStatusOfActiveResources() {
+        logger.debug("Looking up current status of all active resources");
+        // TODO this method could be implemented with less queries
+        return resourceRepository.findByActiveTrueOrderByCallSignAsc().stream().map(resource -> getCurrentStatus(resource)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<ResourceStatus> getCurrentStatusOfResourcesAssignedToTicket(Ticket ticket) {
+        return resourceStatusRepository.findByTicket(checkNotNull(ticket));
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public List<ResourceStatus> getCurrentStatusOfActiveAssignableResources() {
+        return resourceStatusRepository.findActiveAssignableResources();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public boolean assignResource(Resource resource, Ticket ticket, boolean force) {
-        final ResourceStateChange currentState = getCurrentState(resource);
-        if (currentState.getTicket() != null && !force) {
+        resource = reattach(checkNotNull(resource));
+        ticket = reattach(checkNotNull(ticket));
+
+        logger.debug("Attempting to assign resource {} to ticket {}", resource, ticket);
+        final ResourceStatus status = getCurrentStatus(resource);
+        if (status.getTicket() != null && !force) {
+            logger.debug("Resource {} is already assigned to another ticket and force is false", resource);
             return false;
         }
-        logger.debug("Assigning resource {} to ticket {}", resource, ticket);
-        save(new ResourceStateChange.Builder(currentState)
-                .withTicket(checkNotNull(ticket))
-                .withState(ResourceState.ASSIGNED)
-                .build());
+        status.setState(ResourceState.ASSIGNED);
+        status.setTicket(ticket);
+        save(status);
         return true;
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void freeResource(Resource resource) {
-        final ResourceStateChange currentState = getCurrentState(resource);
+        throw new UnsupportedOperationException("Not implemented yet");
+/*
+        final AbstractResourceStateChange currentState = getCurrentStatus(resource);
         if (currentState.getTicket() != null) {
+            // TODO This implementation is wrong
             logger.debug("Freeing resource {} from ticket {} without changing the state", resource, currentState.getTicket());
-            save(new ResourceStateChange.Builder(currentState).withTicket(null).build());
+            save(new AbstractResourceStateChange.Builder(currentState).withTicket(null).build());
+        }*/
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW, readOnly = true)
+    public Set<ResourceState> getPossibleResourceStateTransitions(Resource resource) {
+        final ResourceStatus status = getCurrentStatus(resource);
+        switch (status.getState()) {
+            case AVAILABLE:
+                return newHashSet(ResourceState.AT_STATION, ResourceState.UNAVAILABLE);
+            case AT_STATION:
+                return newHashSet(ResourceState.AVAILABLE, ResourceState.UNAVAILABLE);
+            case DISPATCHED:
+                return newHashSet(ResourceState.EN_ROUTE, ResourceState.AVAILABLE, ResourceState.AT_STATION);
+            case EN_ROUTE:
+                return newHashSet(ResourceState.ON_SCENE, ResourceState.AVAILABLE, ResourceState.AT_STATION);
+            case ON_SCENE:
+                return newHashSet(ResourceState.AVAILABLE, ResourceState.UNAVAILABLE, ResourceState.AT_STATION);
+        }
+        return emptySet();
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void setResourceState(Resource resource, ResourceState state) {
+        resource = reattach(checkNotNull(resource));
+        if (getPossibleResourceStateTransitions(resource).contains(state)) {
+            final ResourceStatus status = getCurrentStatus(resource);
+            status.setState(checkNotNull(state));
+            save(status);
         }
     }
 
-    @Override
-    public void resourceEnRoute(Resource resource) {
-        updateStateIfAssignedToOpenTicket(resource, ResourceState.EN_ROUTE);
-    }
-
-    @Override
-    public void resourceOnScene(Resource resource) {
-        updateStateIfAssignedToOpenTicket(resource, ResourceState.ON_SCENE);
-    }
-
-    @Override
-    public void resourceAvailable(Resource resource) {
-        updateState(resource, ResourceState.AVAILABLE, false);
-    }
-
-    @Override
-    public void resourceAtStation(Resource resource) {
-        updateState(resource, ResourceState.AT_STATION, true);
-    }
-
-    @Override
-    public void resourceUnavailable(Resource resource) {
-        updateState(resource, ResourceState.UNAVAILABLE, false);
-    }
-
-    private void updateStateIfAssignedToOpenTicket(Resource resource, ResourceState state) {
-        final ResourceStateChange currentState = getCurrentState(resource);
-        if (currentState.getTicket() != null && !currentState.getTicket().isClosed()) {
-            logger.debug("Setting state of assigned resource {} to {}", resource, state);
-            save(new ResourceStateChange.Builder(currentState)
-                    .withState(state)
-                    .build());
-        }
-    }
-
-    private void updateState(Resource resource, ResourceState state, boolean resetTicket) {
-        logger.debug("Setting state of resource {} to {}, resetTicket = {}", resource, state, resetTicket);
-        final ResourceStateChange currentState = getCurrentState(resource);
-        final ResourceStateChange.Builder builder = new ResourceStateChange.Builder(currentState)
-                .withState(state);
-        if (resetTicket) {
-            builder.withTicket(null);
-        }
-        save(builder.build());
-    }
-
-    private void save(ResourceStateChange stateChange) {
-        eventPublisher.publishEvent(new ResourceStateChangedEvent(this,
-                resourceStateChangeRepository.saveAndFlush(stateChange)));
+    private void save(ResourceStatus resourceStatus) {
+        final ResourceStatus updated = resourceStatusRepository.saveAndFlush(resourceStatus);
+        archivedResourceStatusRepository.saveAndFlush(updated.toArchived());
+        eventPublisher.publishEvent(new ResourceStatusChangedEvent(this, updated));
     }
 }

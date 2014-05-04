@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.domain.resources;
 
+import com.google.common.base.Objects;
 import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 @Entity
 @Table(name = "resources")
-public class Resource extends AbstractLockableEntity {
+public class Resource extends AbstractLockableEntity implements Comparable<Resource> {
 
     public static final String PROP_CALL_SIGN = "callSign";
     public static final String PROP_TYPE = "type";
@@ -47,5 +48,18 @@ public class Resource extends AbstractLockableEntity {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add(PROP_ID, getId())
+                .add(PROP_CALL_SIGN, callSign)
+                .toString();
+    }
+
+    @Override
+    public int compareTo(Resource o) {
+        return callSign.compareTo(o.callSign);
     }
 }

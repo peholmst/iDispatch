@@ -19,6 +19,14 @@ public class ResourceStatus extends AbstractResourceStateChange {
     @Version
     private Long version;
 
+    protected ResourceStatus() {
+    }
+
+    public ResourceStatus(Resource resource, ResourceState state) {
+        this.resource = resource;
+        setState(state);
+    }
+
     public Long getVersion() {
         return version;
     }

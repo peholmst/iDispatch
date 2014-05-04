@@ -3,7 +3,7 @@ package net.pkhsolutions.idispatch.domain.resources;
 import net.pkhsolutions.idispatch.domain.tickets.Ticket;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 /**
  * Service interface for resource operations.
@@ -11,79 +11,48 @@ import java.util.Optional;
 public interface ResourceService {
 
     /**
-     * Retrieves the current state of the specified resource (active or not).
+     * Retrieves the current status of the specified resource (active or not).
      */
-    ResourceStateChange getCurrentState(Resource resource);
+    ResourceStatus getCurrentStatus(Resource resource);
 
     /**
-     * Retrieves the current states of all active resources.
+     * Retrieves all the states that the specified resource currently can transition into without assigning or freeing the resource.
      */
-    List<ResourceStateChange> getCurrentStatesOfActiveResources();
+    Set<ResourceState> getPossibleResourceStateTransitions(Resource resource);
 
     /**
-     * Retrieves the current states of all active resources that are assigned to the specified ticket.
+     * Sets the state of the specified resource, firing a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStatusChangedEvent}.
+     * If the resource cannot transition into the state, nothing happens.
      */
-    List<ResourceStateChange> getCurrentStatesOfResourcesAssignedToTicket(Ticket ticket);
+    void setResourceState(Resource resource, ResourceState state);
 
     /**
-     * Retrieves all active resources.
+     * Retrieves the current status of all active resources.
      */
-    List<Resource> getActiveResources();
+    List<ResourceStatus> getCurrentStatusOfActiveResources();
 
     /**
-     * Retrieves all resources that can currently be assigned to a ticket.
+     * Retrieves the current status of all resources currently assigned to the specified ticket.
      */
-    List<Resource> getAssignableResources();
+    List<ResourceStatus> getCurrentStatusOfResourcesAssignedToTicket(Ticket ticket);
 
     /**
-     * Attempts to retrieve the resource with the specified call sign. If the call sign is {@code null} or empty,
-     * or no such resource exists, an empty {@code Optional} is returned.
+     * Retrieves the current status of all active resources that are free to be assigned to a ticket.
      */
-    Optional<Resource> findByCallSign(String callSign);
+    List<ResourceStatus> getCurrentStatusOfActiveAssignableResources();
 
     /**
      * Assigns the specified resource to the specified ticket, sets its state to {@link net.pkhsolutions.idispatch.domain.resources.ResourceState#ASSIGNED},
-     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent} and returns true. If the resource is not assignable (i.e. it is assigned to another ticket),
-     * this method does nothing and returns false. By setting the {@code force} parameter to true, an unassignable resource can be assigned to
-     * the ticket anyway.
+     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStatusChangedEvent} and returns true. If the resource is not assignable (i.e. it is assigned to another ticket),
+     * or the ticket is closed, this method does nothing and returns false. By setting the {@code force} parameter to true,
+     * an unassignable resource can be assigned to the ticket anyway. The {@code force} parameter will not have any effect if the ticket is closed, though.
      */
     boolean assignResource(Resource resource, Ticket ticket, boolean force);
 
     /**
-     * Removes the specified resource from its current ticket without changing its state and fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent}.
-     * If the resource is not assigned to any ticket, this method does nothing.
+     * Removes the specified resource from its current ticket, changes its state to what it was just before the resource was assigned and fires a
+     * {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStatusChangedEvent}. If the resource is not assigned to any ticket, this method does nothing.
      */
     void freeResource(Resource resource);
 
-    /**
-     * Sets the state of the specified resource to {@link net.pkhsolutions.idispatch.domain.resources.ResourceState#EN_ROUTE} and
-     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent}. If the resource is
-     * not assigned to any ticket, this method does nothing.
-     */
-    void resourceEnRoute(Resource resource);
-
-    /**
-     * Sets the state of the specified resource to {@link net.pkhsolutions.idispatch.domain.resources.ResourceState#ON_SCENE} and
-     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent}. If the resource is
-     * not assigned to any ticket, this method does nothing.
-     */
-    void resourceOnScene(Resource resource);
-
-    /**
-     * Sets the state of the specified resource to {@link net.pkhsolutions.idispatch.domain.resources.ResourceState#AVAILABLE} and
-     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent}.
-     */
-    void resourceAvailable(Resource resource);
-
-    /**
-     * Sets the state of the specified resource to {@link net.pkhsolutions.idispatch.domain.resources.ResourceState#AT_STATION} and
-     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent}.
-     */
-    void resourceAtStation(Resource resource);
-
-    /**
-     * Sets the state of the specified resource to {@link net.pkhsolutions.idispatch.domain.resources.ResourceState#UNAVAILABLE} and
-     * fires a {@link net.pkhsolutions.idispatch.domain.resources.events.ResourceStateChangedEvent}.
-     */
-    void resourceUnavailable(Resource resource);
 }
