@@ -52,12 +52,12 @@ public class ResourceServiceBean implements ResourceService {
     @Override
     public ResourceStatus getCurrentStatus(Resource resource) {
         logger.debug("Looking up current status of resource {}", resource);
-        final ResourceStatus status = resourceStatusRepository.findByResource(checkNotNull(resource));
-        if (status == null) {
+        final ResourceStatus resourceStatus = resourceStatusRepository.findByResource(checkNotNull(resource));
+        if (resourceStatus == null) {
             logger.debug("No status information stored for resource {}", resource);
-            return new ResourceStatus(resource, ResourceState.UNAVAILABLE);
+            return transactionTemplate.execute(status -> resourceStatusRepository.saveAndFlush(new ResourceStatus(resource, ResourceState.UNAVAILABLE)));
         } else {
-            return status;
+            return resourceStatus;
         }
     }
 
