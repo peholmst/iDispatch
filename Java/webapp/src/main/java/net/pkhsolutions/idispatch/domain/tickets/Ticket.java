@@ -109,6 +109,9 @@ public class Ticket extends AbstractLockableEntity {
     public String toString() {
         return Objects.toStringHelper(this)
                 .add(PROP_ID, getId())
+                .add(PROP_TICKET_OPENED, ticketOpened)
+                .add(PROP_TICKET_CLOSED, ticketClosed)
+                .add(PROP_TYPE, type)
                 .toString();
     }
 }

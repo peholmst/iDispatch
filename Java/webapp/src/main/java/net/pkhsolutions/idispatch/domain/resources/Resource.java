@@ -54,6 +54,7 @@ public class Resource extends AbstractLockableEntity implements Comparable<Resou
     public String toString() {
         return Objects.toStringHelper(this)
                 .add(PROP_ID, getId())
+                .add(PROP_VERSION, getVersion())
                 .add(PROP_CALL_SIGN, callSign)
                 .toString();
     }

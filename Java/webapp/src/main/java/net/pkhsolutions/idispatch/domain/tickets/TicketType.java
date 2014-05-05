@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.domain.tickets;
 
+import com.google.common.base.Objects;
 import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
 
 import javax.persistence.Column;
@@ -41,5 +42,14 @@ public class TicketType extends AbstractLockableEntity {
 
     public String getFormattedDescription() {
         return String.format("%s - %s", code, description);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add(PROP_ID, getId())
+                .add(PROP_VERSION, getVersion())
+                .add(PROP_CODE, code)
+                .toString();
     }
 }

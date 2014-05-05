@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.domain.resources;
 
+import com.google.common.base.Objects;
 import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
 
 import javax.persistence.Column;
@@ -14,6 +15,9 @@ import static com.google.common.base.Strings.nullToEmpty;
 @Entity
 @Table(name = "resource_types")
 public class ResourceType extends AbstractLockableEntity {
+
+    public static final String PROP_CODE = "code";
+    public static final String PROP_DESCRIPTION = "description";
 
     @Column(name = "code", unique = true, nullable = false)
     private String code = "";
@@ -34,5 +38,14 @@ public class ResourceType extends AbstractLockableEntity {
 
     public void setDescription(String description) {
         this.description = nullToEmpty(description);
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add(PROP_ID, getId())
+                .add(PROP_VERSION, getVersion())
+                .add(PROP_CODE, code)
+                .toString();
     }
 }
