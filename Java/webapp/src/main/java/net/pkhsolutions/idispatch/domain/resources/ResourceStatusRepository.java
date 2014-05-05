@@ -4,6 +4,7 @@ import net.pkhsolutions.idispatch.domain.tickets.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,7 +16,7 @@ public interface ResourceStatusRepository extends JpaRepository<ResourceStatus, 
 
     List<ResourceStatus> findByTicket(Ticket ticket);
 
-    @Query("SELECT rs FROM ResourceStatus rs WHERE rs.resource.active = TRUE AND rs.state = AT_STATION OR rs.state = AVAILABLE")
-    List<ResourceStatus> findActiveAssignableResources();
+    @Query("SELECT rs FROM ResourceStatus rs WHERE rs.resource.active = TRUE AND rs.state IN ?1")
+    List<ResourceStatus> findActiveResourcesInStates(Collection<ResourceState> states);
 
 }
