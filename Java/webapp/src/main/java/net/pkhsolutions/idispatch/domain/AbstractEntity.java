@@ -2,6 +2,7 @@ package net.pkhsolutions.idispatch.domain;
 
 import org.springframework.data.domain.Persistable;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
@@ -20,6 +21,7 @@ public abstract class AbstractEntity implements Persistable<Long>, Serializable 
 
     @Id
     @GeneratedValue
+    @Column(name = "id", nullable = false)
     private Long id;
 
     protected AbstractEntity() {

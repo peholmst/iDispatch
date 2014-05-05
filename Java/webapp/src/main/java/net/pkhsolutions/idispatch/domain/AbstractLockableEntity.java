@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.domain;
 
+import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Version;
 
@@ -9,7 +10,10 @@ import javax.persistence.Version;
 @MappedSuperclass
 public abstract class AbstractLockableEntity extends AbstractEntity {
 
+    public static final String PROP_VERSION = "version";
+
     @Version
+    @Column(name = "version", nullable = false)
     private Long version;
 
     protected AbstractLockableEntity() {
