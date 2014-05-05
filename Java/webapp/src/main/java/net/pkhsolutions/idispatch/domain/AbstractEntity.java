@@ -66,6 +66,7 @@ public abstract class AbstractEntity implements Persistable<Long>, Serializable 
      * @param <E> the entity that is being built.
      * @param <B> the builder type, to be used for chaining method calls.
      */
+    @Deprecated
     public static abstract class AbstractEntityBuilder<E extends AbstractEntity, B extends AbstractEntityBuilder<E, B>> {
 
         protected E entity;

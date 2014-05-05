@@ -43,6 +43,7 @@ public abstract class AbstractTimestampedEntity extends AbstractEntity {
      * @param <E> the entity that is being built.
      * @param <B> the builder type, to be used for chaining method calls.
      */
+    @Deprecated
     public static abstract class AbstractTimestampedEntityBuilder<E extends AbstractTimestampedEntity, B extends AbstractTimestampedEntityBuilder<E, B>> extends AbstractEntityBuilder<E, B> {
 
         protected AbstractTimestampedEntityBuilder(Class<E> entityClass) {

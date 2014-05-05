@@ -33,6 +33,7 @@ public abstract class AbstractLockableEntity extends AbstractEntity {
      * @param <E> the entity that is being built.
      * @param <B> the builder type, to be used for chaining method calls.
      */
+    @Deprecated
     public static abstract class AbstractLockableEntityBuilder<E extends AbstractLockableEntity, B extends AbstractLockableEntityBuilder<E, B>> extends AbstractEntityBuilder<E, B> {
 
         protected AbstractLockableEntityBuilder(Class<E> entityClass) {
