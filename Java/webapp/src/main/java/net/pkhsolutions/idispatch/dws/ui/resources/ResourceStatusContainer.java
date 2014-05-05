@@ -34,6 +34,6 @@ public class ResourceStatusContainer extends AbstractResourceStatusContainer {
 
     @EventBusListenerMethod
     void onResourceStatusChangedEvent(ResourceStatusChangedEvent event) {
-        updateItem(event.getResourceStatus());
+        refresh();
     }
 }
