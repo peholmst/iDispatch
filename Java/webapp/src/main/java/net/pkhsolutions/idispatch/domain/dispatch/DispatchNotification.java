@@ -57,7 +57,7 @@ public class DispatchNotification extends AbstractTimestampedEntity {
     protected DispatchNotification() {
     }
 
-    public DispatchNotification(Ticket ticket, Collection<Resource> resources, Set<Destination> destinations) {
+    public DispatchNotification(Ticket ticket, Collection<Resource> resources, Collection<Destination> destinations) {
         this.resources = newHashSet(checkNotNull(resources));
         this.destinations = newHashSet(checkNotNull(destinations));
         this.ticket = checkNotNull(ticket);
