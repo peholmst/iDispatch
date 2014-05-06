@@ -1,6 +1,6 @@
-package net.pkhsolutions.idispatch.domain.resources.events;
+package net.pkhsolutions.idispatch.domain.status.events;
 
-import net.pkhsolutions.idispatch.domain.resources.ResourceStatus;
+import net.pkhsolutions.idispatch.domain.status.ResourceStatus;
 import org.springframework.context.ApplicationEvent;
 
 /**

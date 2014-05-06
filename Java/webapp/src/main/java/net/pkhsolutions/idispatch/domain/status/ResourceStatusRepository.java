@@ -1,5 +1,6 @@
-package net.pkhsolutions.idispatch.domain.resources;
+package net.pkhsolutions.idispatch.domain.status;
 
+import net.pkhsolutions.idispatch.domain.resources.Resource;
 import net.pkhsolutions.idispatch.domain.tickets.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,7 +9,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Repository of {@link net.pkhsolutions.idispatch.domain.resources.ResourceStatus}es.
+ * Repository of {@link ResourceStatus}es.
  */
 public interface ResourceStatusRepository extends JpaRepository<ResourceStatus, Long> {
 
@@ -19,4 +20,7 @@ public interface ResourceStatusRepository extends JpaRepository<ResourceStatus, 
     @Query("SELECT rs FROM ResourceStatus rs WHERE rs.resource.active = TRUE AND rs.state IN ?1")
     List<ResourceStatus> findActiveResourcesInStates(Collection<ResourceState> states);
 
+    List<ResourceStatus> findByAvailableTrue();
+
+    List<ResourceStatus> findByTicketAndDetachedFalse(Ticket ticket);
 }

@@ -1,4 +1,6 @@
-package net.pkhsolutions.idispatch.domain.resources;
+package net.pkhsolutions.idispatch.domain.status;
+
+import net.pkhsolutions.idispatch.domain.resources.Resource;
 
 import javax.persistence.*;
 
