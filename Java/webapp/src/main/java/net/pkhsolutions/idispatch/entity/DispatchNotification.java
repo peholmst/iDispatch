@@ -9,6 +9,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableSet;
 
+/**
+ * TODO Document me
+ */
 @Entity
 @Table(name = "dispatch_notifications")
 public class DispatchNotification extends AbstractTimestampedEntity {
@@ -17,7 +20,7 @@ public class DispatchNotification extends AbstractTimestampedEntity {
     @JoinTable(name = "dispatched_notification_resources",
             joinColumns = @JoinColumn(name = "dispatch_notification_id"),
             inverseJoinColumns = @JoinColumn(name = "resource_id"))
-    private Set<Resource> resources;
+    private Set<Resource> assignedResources;
 
     @ManyToMany
     @JoinTable(name = "dispatch_notification_destinations",
@@ -26,43 +29,43 @@ public class DispatchNotification extends AbstractTimestampedEntity {
     private Set<Destination> destinations;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ticket_id", nullable = false)
-    private Ticket ticket;
+    @JoinColumn(name = "assignment_id", nullable = false)
+    private Assignment assignment;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ticket_municipality_id", nullable = false)
+    @JoinColumn(name = "assignment_municipality_id", nullable = false)
     private Municipality municipality;
 
-    @Column(name = "ticket_address", nullable = false)
+    @Column(name = "assignment_address", nullable = false)
     private String address;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "ticket_type_id", nullable = false)
-    private TicketType ticketType;
+    @JoinColumn(name = "assignment_type_id", nullable = false)
+    private AssignmentType assignmentType;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "ticket_urgency", nullable = false)
-    private TicketUrgency urgency;
+    @Column(name = "assignment_urgency", nullable = false)
+    private AssignmentUrgency urgency;
 
-    @Column(name = "ticket_description", nullable = false)
+    @Column(name = "assignment_description", nullable = false)
     private String description;
 
     protected DispatchNotification() {
     }
 
-    public DispatchNotification(Ticket ticket, Collection<Resource> resources, Collection<Destination> destinations) {
-        this.resources = newHashSet(checkNotNull(resources));
+    public DispatchNotification(Assignment assignment, Collection<Resource> assignedResources, Collection<Destination> destinations) {
+        this.assignedResources = newHashSet(checkNotNull(assignedResources));
         this.destinations = newHashSet(checkNotNull(destinations));
-        this.ticket = checkNotNull(ticket);
-        municipality = ticket.getMunicipality();
-        address = ticket.getAddress();
-        ticketType = ticket.getType();
-        urgency = ticket.getUrgency();
-        description = ticket.getDescription();
+        this.assignment = checkNotNull(assignment);
+        municipality = assignment.getMunicipality();
+        address = assignment.getAddress();
+        assignmentType = assignment.getType();
+        urgency = assignment.getUrgency();
+        description = assignment.getDescription();
     }
 
-    public Set<Resource> getResources() {
-        return unmodifiableSet(resources);
+    public Set<Resource> getAssignedResources() {
+        return unmodifiableSet(assignedResources);
     }
 
     public Set<Destination> getDestinations() {
@@ -73,8 +76,8 @@ public class DispatchNotification extends AbstractTimestampedEntity {
         return destinations.stream().filter(type::isInstance).map(type::cast).collect(Collectors.toSet());
     }
 
-    public Ticket getTicket() {
-        return ticket;
+    public Assignment getAssignment() {
+        return assignment;
     }
 
     public Municipality getMunicipality() {
@@ -85,11 +88,11 @@ public class DispatchNotification extends AbstractTimestampedEntity {
         return address;
     }
 
-    public TicketType getTicketType() {
-        return ticketType;
+    public AssignmentType getAssignmentType() {
+        return assignmentType;
     }
 
-    public TicketUrgency getUrgency() {
+    public AssignmentUrgency getUrgency() {
         return urgency;
     }
 

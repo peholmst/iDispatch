@@ -7,6 +7,9 @@ import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * TODO Document me!
+ */
 @Entity
 @Table(name = "sms_destinations")
 public class SmsDestination extends Destination {

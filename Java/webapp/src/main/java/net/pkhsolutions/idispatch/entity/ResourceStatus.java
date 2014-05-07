@@ -24,13 +24,13 @@ public class ResourceStatus extends AbstractResourceStateChange {
     public static final String PROP_DETACHED = "detached";
 
     private static final Map<ResourceState, Set<ResourceState>> TRANSITIONS = new HashMap<ResourceState, Set<ResourceState>>() {{
-        put(ResourceState.ASSIGNED, newHashSet(ResourceState.DISPATCHED, ResourceState.EN_ROUTE, ResourceState.ON_SCENE, ResourceState.AVAILABLE, ResourceState.UNAVAILABLE, ResourceState.AT_STATION));
-        put(ResourceState.DISPATCHED, newHashSet(ResourceState.EN_ROUTE, ResourceState.AVAILABLE, ResourceState.UNAVAILABLE, ResourceState.AT_STATION));
-        put(ResourceState.EN_ROUTE, newHashSet(ResourceState.ON_SCENE, ResourceState.AVAILABLE, ResourceState.UNAVAILABLE));
-        put(ResourceState.ON_SCENE, newHashSet(ResourceState.AVAILABLE, ResourceState.UNAVAILABLE));
-        put(ResourceState.AVAILABLE, newHashSet(ResourceState.AT_STATION, ResourceState.UNAVAILABLE, ResourceState.ASSIGNED));
-        put(ResourceState.AT_STATION, newHashSet(ResourceState.AVAILABLE, ResourceState.UNAVAILABLE, ResourceState.ASSIGNED));
-        put(ResourceState.UNAVAILABLE, newHashSet(ResourceState.AVAILABLE, ResourceState.AT_STATION));
+        put(ResourceState.RESERVED, newHashSet(ResourceState.DISPATCHED, ResourceState.EN_ROUTE, ResourceState.ON_SCENE, ResourceState.AVAILABLE, ResourceState.OUT_OF_SERVICE, ResourceState.AT_STATION));
+        put(ResourceState.DISPATCHED, newHashSet(ResourceState.EN_ROUTE, ResourceState.AVAILABLE, ResourceState.OUT_OF_SERVICE, ResourceState.AT_STATION));
+        put(ResourceState.EN_ROUTE, newHashSet(ResourceState.ON_SCENE, ResourceState.AVAILABLE, ResourceState.OUT_OF_SERVICE));
+        put(ResourceState.ON_SCENE, newHashSet(ResourceState.AVAILABLE, ResourceState.OUT_OF_SERVICE));
+        put(ResourceState.AVAILABLE, newHashSet(ResourceState.AT_STATION, ResourceState.OUT_OF_SERVICE, ResourceState.RESERVED));
+        put(ResourceState.AT_STATION, newHashSet(ResourceState.AVAILABLE, ResourceState.OUT_OF_SERVICE, ResourceState.RESERVED));
+        put(ResourceState.OUT_OF_SERVICE, newHashSet(ResourceState.AVAILABLE, ResourceState.AT_STATION));
     }};
 
     @OneToOne(optional = false)
@@ -40,8 +40,8 @@ public class ResourceStatus extends AbstractResourceStateChange {
     @Column(name = "available", nullable = false)
     private boolean available;
 
-    @Column(name = "detached", nullable = false)
-    private boolean detached;
+    @Column(name = "assigned", nullable = false)
+    private boolean assigned;
 
     @Version
     private Long version;
@@ -81,27 +81,34 @@ public class ResourceStatus extends AbstractResourceStateChange {
     public Set<ResourceState> getManualValidNextStates() {
         return getAllValidNextStates()
                 .stream()
-                .filter(state -> state != ResourceState.ASSIGNED && state != ResourceState.DISPATCHED)
+                .filter(state -> state != ResourceState.RESERVED && state != ResourceState.DISPATCHED)
                 .collect(Collectors.toSet());
     }
 
-    public boolean isDetached() {
-        return detached;
-    }
-
+    /**
+     * Returns whether the resource is currently available for new assignments.
+     */
     public boolean isAvailable() {
         return available;
     }
 
+    /**
+     * Returns whether the resource is currently assigned to another assignment. Please note that this method can
+     * return false even though {@link #getAssignment()} is not null.
+     */
+    public boolean isAssigned() {
+        return assigned;
+    }
+
     private void updateBooleanFlags() {
         final ResourceState state = getState();
-        detached = getTicket() == null || (state.isAvailableForNewTickets() || state == ResourceState.UNAVAILABLE);
-        available = state.isAvailableForNewTickets();
+        assigned = getAssignment() != null && !state.isAvailableForNewAssignments() && state != ResourceState.OUT_OF_SERVICE;
+        available = state.isAvailableForNewAssignments();
     }
 
     @Override
-    public void setTicket(Ticket ticket) {
-        super.setTicket(ticket);
+    public void setAssignment(Assignment lastAssignment) {
+        super.setAssignment(lastAssignment);
         setTimestamp(new Date());
         updateBooleanFlags();
     }
@@ -120,7 +127,7 @@ public class ResourceStatus extends AbstractResourceStateChange {
                 .add(PROP_VERSION, version)
                 .add(PROP_RESOURCE, resource)
                 .add(PROP_STATE, getState())
-                .add(PROP_TICKET, getTicket())
+                .add(PROP_ASSIGNMENT, getAssignment())
                 .add(PROP_TIMESTAMP, getTimestamp())
                 .toString();
     }

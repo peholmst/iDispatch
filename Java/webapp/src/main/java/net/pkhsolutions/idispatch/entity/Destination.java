@@ -6,6 +6,9 @@ import java.util.Set;
 
 import static com.google.common.base.Objects.firstNonNull;
 
+/**
+ * Base class for a destination that receives dispatch notifications.
+ */
 @Entity
 @Table(name = "destinations")
 @Inheritance(strategy = InheritanceType.JOINED)

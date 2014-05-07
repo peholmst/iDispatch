@@ -10,14 +10,14 @@ public abstract class AbstractResourceStateChange extends AbstractTimestampedEnt
 
     public static final String PROP_STATE = "state";
     public static final String PROP_RESOURCE = "resource";
-    public static final String PROP_TICKET = "ticket";
+    public static final String PROP_ASSIGNMENT = "assignment";
 
     @Enumerated(EnumType.STRING)
     @Column(name = "state", nullable = false)
-    private ResourceState state = ResourceState.UNAVAILABLE;
+    private ResourceState state = ResourceState.OUT_OF_SERVICE;
     @ManyToOne
-    @JoinColumn(name = "ticket_id")
-    private Ticket ticket;
+    @JoinColumn(name = "assignment_id")
+    private Assignment assignment;
 
     protected AbstractResourceStateChange() {
     }
@@ -32,15 +32,11 @@ public abstract class AbstractResourceStateChange extends AbstractTimestampedEnt
         this.state = state;
     }
 
-    /**
-     * Returns the ticket that the resource is assigned to, or {@code null} if
-     * the resource is not assigned to any ticket.
-     */
-    public Ticket getTicket() {
-        return ticket;
+    public Assignment getAssignment() {
+        return assignment;
     }
 
-    protected void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    protected void setAssignment(Assignment assignment) {
+        this.assignment = assignment;
     }
 }

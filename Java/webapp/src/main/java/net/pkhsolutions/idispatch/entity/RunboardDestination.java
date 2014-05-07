@@ -4,6 +4,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * TODO Document me!
+ */
 @Entity
 @Table(name = "runboard_destinations")
 public class RunboardDestination extends Destination {

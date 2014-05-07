@@ -1,8 +1,8 @@
 package net.pkhsolutions.idispatch.entity;
 
 /**
- * Enumeration of ticket urgency levels.
+ * Enumeration of assignment urgency levels.
  */
-public enum TicketUrgency {
+public enum AssignmentUrgency {
     A, B, C, D, UNKNOWN
 }

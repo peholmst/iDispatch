@@ -7,6 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
+/**
+ * Repository of {@link net.pkhsolutions.idispatch.entity.Destination}s.
+ */
 public interface DestinationRepository extends JpaRepository<Destination, Long> {
 
     @Query("select d from Destination d where d.active = TRUE and ?0 in d.resources")

@@ -4,15 +4,47 @@ package net.pkhsolutions.idispatch.entity;
  * Enumeration of the states a resource can be in.
  */
 public enum ResourceState {
-    ASSIGNED(false), DISPATCHED(false), EN_ROUTE(false), ON_SCENE(false), AVAILABLE(true), AT_STATION(true), UNAVAILABLE(false);
+    /**
+     * The resource is reserved for an assignment, but has not yet been dispatched.
+     */
+    RESERVED(false),
+    /**
+     * The resource has been dispatched to an assignment.
+     */
+    DISPATCHED(false),
+    /**
+     * The resource is en route to the scene.
+     */
+    EN_ROUTE(false),
+    /**
+     * The resource is on scene.
+     */
+    ON_SCENE(false),
+    /**
+     * The resource is available for new assignments.
+     */
+    AVAILABLE(true),
+    /**
+     * The resource is at its station, available for new assignments.
+     */
+    AT_STATION(true),
+    /**
+     * The resource is out of service.
+     */
+    OUT_OF_SERVICE(false);
 
-    private final boolean availableForNewTickets;
+    private final boolean availableForNewAssignments;
 
-    ResourceState(boolean availableForNewTickets) {
-        this.availableForNewTickets = availableForNewTickets;
+    ResourceState(boolean availableForNewAssignments) {
+        this.availableForNewAssignments = availableForNewAssignments;
     }
 
-    public boolean isAvailableForNewTickets() {
-        return availableForNewTickets;
+    /**
+     * TODO Document me
+     *
+     * @return
+     */
+    public boolean isAvailableForNewAssignments() {
+        return availableForNewAssignments;
     }
 }

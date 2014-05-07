@@ -2,6 +2,9 @@ package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.*;
 
+/**
+ * TODO Document me!
+ */
 @Entity
 @Table(name = "receipts", uniqueConstraints = @UniqueConstraint(columnNames = {"receiver_id", "notification_id"}))
 public class Receipt extends AbstractTimestampedEntity {

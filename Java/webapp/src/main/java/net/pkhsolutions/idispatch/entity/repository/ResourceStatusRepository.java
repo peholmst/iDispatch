@@ -1,9 +1,9 @@
 package net.pkhsolutions.idispatch.entity.repository;
 
+import net.pkhsolutions.idispatch.entity.Assignment;
 import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceState;
 import net.pkhsolutions.idispatch.entity.ResourceStatus;
-import net.pkhsolutions.idispatch.entity.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,12 +17,12 @@ public interface ResourceStatusRepository extends JpaRepository<ResourceStatus, 
 
     ResourceStatus findByResource(Resource resource);
 
-    List<ResourceStatus> findByTicket(Ticket ticket);
+    List<ResourceStatus> findByLastAssignment(Assignment assignment);
 
     @Query("SELECT rs FROM ResourceStatus rs WHERE rs.resource.active = TRUE AND rs.state IN ?1")
     List<ResourceStatus> findActiveResourcesInStates(Collection<ResourceState> states);
 
-    List<ResourceStatus> findByAvailableTrue();
+    List<ResourceStatus> findByActiveTrueAndAvailableTrue();
 
-    List<ResourceStatus> findByTicketAndDetachedFalse(Ticket ticket);
+    List<ResourceStatus> findByLastAssignmentAndAssignedTrue(Assignment assignment);
 }

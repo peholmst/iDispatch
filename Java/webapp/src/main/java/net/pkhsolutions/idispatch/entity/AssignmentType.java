@@ -12,8 +12,8 @@ import static com.google.common.base.Strings.nullToEmpty;
  * Entity representing a ticket type.
  */
 @Entity
-@Table(name = "ticket_types")
-public class TicketType extends AbstractLockableEntity {
+@Table(name = "assignment_types")
+public class AssignmentType extends AbstractLockableEntity {
 
     public static final String PROP_CODE = "code";
     public static final String PROP_DESCRIPTION = "description";
