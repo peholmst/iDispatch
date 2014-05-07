@@ -1,11 +1,12 @@
-package net.pkhsolutions.idispatch.domain.resources;
+package net.pkhsolutions.idispatch.entity.repository;
 
+import net.pkhsolutions.idispatch.entity.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
 /**
- * Repository of {@link net.pkhsolutions.idispatch.domain.resources.Resource}s.
+ * Repository of {@link net.pkhsolutions.idispatch.entity.Resource}s.
  */
 public interface ResourceRepository extends JpaRepository<Resource, Long> {
 

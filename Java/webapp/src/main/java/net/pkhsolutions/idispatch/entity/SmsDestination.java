@@ -1,6 +1,4 @@
-package net.pkhsolutions.idispatch.domain.dispatch.sms;
-
-import net.pkhsolutions.idispatch.domain.dispatch.Destination;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.ElementCollection;

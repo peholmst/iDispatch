@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.domain.tickets;
+package net.pkhsolutions.idispatch.entity;
 
 /**
  * Enumeration of ticket urgency levels.

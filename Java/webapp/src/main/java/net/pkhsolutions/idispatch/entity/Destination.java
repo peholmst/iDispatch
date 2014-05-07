@@ -1,7 +1,4 @@
-package net.pkhsolutions.idispatch.domain.dispatch;
-
-import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
-import net.pkhsolutions.idispatch.domain.resources.Resource;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.*;
 import java.util.HashSet;

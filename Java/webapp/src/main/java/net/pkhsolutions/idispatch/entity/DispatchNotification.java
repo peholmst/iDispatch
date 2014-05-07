@@ -1,11 +1,4 @@
-package net.pkhsolutions.idispatch.domain.dispatch;
-
-import net.pkhsolutions.idispatch.domain.AbstractTimestampedEntity;
-import net.pkhsolutions.idispatch.domain.Municipality;
-import net.pkhsolutions.idispatch.domain.resources.Resource;
-import net.pkhsolutions.idispatch.domain.tickets.Ticket;
-import net.pkhsolutions.idispatch.domain.tickets.TicketType;
-import net.pkhsolutions.idispatch.domain.tickets.TicketUrgency;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.*;
 import java.util.Collection;

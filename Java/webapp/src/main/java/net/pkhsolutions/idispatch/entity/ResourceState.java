@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.domain.status;
+package net.pkhsolutions.idispatch.entity;
 
 /**
  * Enumeration of the states a resource can be in.

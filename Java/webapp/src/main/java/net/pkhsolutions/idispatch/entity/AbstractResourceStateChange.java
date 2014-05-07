@@ -1,13 +1,9 @@
-package net.pkhsolutions.idispatch.domain.status;
-
-import net.pkhsolutions.idispatch.domain.AbstractTimestampedEntity;
-import net.pkhsolutions.idispatch.domain.resources.Resource;
-import net.pkhsolutions.idispatch.domain.tickets.Ticket;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.*;
 
 /**
- * Base entity that contains a state of a {@link net.pkhsolutions.idispatch.domain.resources.Resource}.
+ * Base entity that contains a state of a {@link net.pkhsolutions.idispatch.entity.Resource}.
  */
 @MappedSuperclass
 public abstract class AbstractResourceStateChange extends AbstractTimestampedEntity {

@@ -1,7 +1,6 @@
-package net.pkhsolutions.idispatch.domain.tickets;
+package net.pkhsolutions.idispatch.entity;
 
 import com.google.common.base.Objects;
-import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

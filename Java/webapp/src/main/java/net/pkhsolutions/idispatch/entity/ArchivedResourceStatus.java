@@ -1,11 +1,9 @@
-package net.pkhsolutions.idispatch.domain.status;
-
-import net.pkhsolutions.idispatch.domain.resources.Resource;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.*;
 
 /**
- * Entity that contains past states of a {@link net.pkhsolutions.idispatch.domain.resources.Resource}.
+ * Entity that contains past states of a {@link net.pkhsolutions.idispatch.entity.Resource}.
  */
 @Entity
 @Table(name = "resource_status_archive", indexes = @Index(columnList = "ts"))

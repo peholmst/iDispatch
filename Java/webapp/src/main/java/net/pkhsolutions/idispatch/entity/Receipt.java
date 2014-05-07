@@ -1,6 +1,4 @@
-package net.pkhsolutions.idispatch.domain.dispatch;
-
-import net.pkhsolutions.idispatch.domain.AbstractTimestampedEntity;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.*;
 

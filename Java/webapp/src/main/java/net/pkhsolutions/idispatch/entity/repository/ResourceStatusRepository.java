@@ -1,7 +1,9 @@
-package net.pkhsolutions.idispatch.domain.status;
+package net.pkhsolutions.idispatch.entity.repository;
 
-import net.pkhsolutions.idispatch.domain.resources.Resource;
-import net.pkhsolutions.idispatch.domain.tickets.Ticket;
+import net.pkhsolutions.idispatch.entity.Resource;
+import net.pkhsolutions.idispatch.entity.ResourceState;
+import net.pkhsolutions.idispatch.entity.ResourceStatus;
+import net.pkhsolutions.idispatch.entity.Ticket;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Repository of {@link ResourceStatus}es.
+ * Repository of {@link net.pkhsolutions.idispatch.entity.ResourceStatus}es.
  */
 public interface ResourceStatusRepository extends JpaRepository<ResourceStatus, Long> {
 

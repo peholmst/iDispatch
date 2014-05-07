@@ -1,6 +1,4 @@
-package net.pkhsolutions.idispatch.domain.dispatch.runboard;
-
-import net.pkhsolutions.idispatch.domain.dispatch.Destination;
+package net.pkhsolutions.idispatch.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

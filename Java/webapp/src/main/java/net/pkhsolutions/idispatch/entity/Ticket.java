@@ -1,8 +1,6 @@
-package net.pkhsolutions.idispatch.domain.tickets;
+package net.pkhsolutions.idispatch.entity;
 
 import com.google.common.base.Objects;
-import net.pkhsolutions.idispatch.domain.AbstractLockableEntity;
-import net.pkhsolutions.idispatch.domain.Municipality;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -57,7 +55,7 @@ public class Ticket extends AbstractLockableEntity {
         return ticketClosed;
     }
 
-    void close() {
+    public void close() {
         ticketClosed = new Date();
     }
 

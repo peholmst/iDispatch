@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.domain;
+package net.pkhsolutions.idispatch.entity;
 
 import org.springframework.data.domain.Persistable;
 

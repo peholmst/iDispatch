@@ -1,6 +1,7 @@
-package net.pkhsolutions.idispatch.domain.dispatch;
+package net.pkhsolutions.idispatch.entity.repository;
 
-import net.pkhsolutions.idispatch.domain.resources.Resource;
+import net.pkhsolutions.idispatch.entity.Destination;
+import net.pkhsolutions.idispatch.entity.Resource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,8 +1,6 @@
-package net.pkhsolutions.idispatch.domain.status;
+package net.pkhsolutions.idispatch.entity;
 
 import com.google.common.base.Objects;
-import net.pkhsolutions.idispatch.domain.resources.Resource;
-import net.pkhsolutions.idispatch.domain.tickets.Ticket;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -15,7 +13,7 @@ import static com.google.common.collect.Sets.newHashSet;
 import static java.util.Collections.unmodifiableSet;
 
 /**
- * Entity that contains the current state of a {@link net.pkhsolutions.idispatch.domain.resources.Resource}.
+ * Entity that contains the current state of a {@link net.pkhsolutions.idispatch.entity.Resource}.
  */
 @Entity
 @Table(name = "resource_status", indexes = @Index(columnList = "ts"))
