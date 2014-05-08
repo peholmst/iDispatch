@@ -1,13 +1,13 @@
-package net.pkhsolutions.idispatch.common.ui.resources;
+package net.pkhsolutions.idispatch.ui.common.resources;
 
 import com.vaadin.data.util.converter.Converter;
-import net.pkhsolutions.idispatch.domain.resources.ResourceState;
+import net.pkhsolutions.idispatch.entity.ResourceState;
 import org.vaadin.spring.VaadinComponent;
 
 import java.util.Locale;
 
 /**
- * A one-way converter for converting a {@link net.pkhsolutions.idispatch.domain.resources.ResourceState} to a string. This
+ * A one-way converter for converting a {@link net.pkhsolutions.idispatch.entity.ResourceState} to a string. This
  * is a singleton bean since it is completely stateless.
  */
 @VaadinComponent
@@ -24,8 +24,8 @@ public class ResourceStateToStringConverter implements Converter<String, Resourc
             switch (value) {
                 case AT_STATION:
                     return "At station";
-                case ASSIGNED:
-                    return "Assigned";
+                case RESERVED:
+                    return "Reserved (not dispatched yet)";
                 case DISPATCHED:
                     return "Dispatched";
                 case EN_ROUTE:
@@ -34,7 +34,7 @@ public class ResourceStateToStringConverter implements Converter<String, Resourc
                     return "On scene";
                 case AVAILABLE:
                     return "Available";
-                case UNAVAILABLE:
+                case OUT_OF_SERVICE:
                     return "Unavailable";
             }
         }

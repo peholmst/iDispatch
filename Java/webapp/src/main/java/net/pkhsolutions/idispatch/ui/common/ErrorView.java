@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.common.ui;
+package net.pkhsolutions.idispatch.ui.common;
 
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
