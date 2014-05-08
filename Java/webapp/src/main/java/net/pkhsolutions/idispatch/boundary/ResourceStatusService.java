@@ -23,24 +23,24 @@ public interface ResourceStatusService {
 
     /**
      * Attempts to set the state of the specified resource. If the requested state transition is not valid or the resource is not active,
-     * nothing happens and false is returned. Otherwise, a {@link net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged} event is fired and true is returned.
+     * nothing happens. Otherwise, the new state is saved and a {@link net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged} event is fired.
      *
      * @see net.pkhsolutions.idispatch.entity.ResourceStatus#getAllValidNextStates()
      * @see net.pkhsolutions.idispatch.entity.Resource#isActive()
      */
-    boolean setResourceState(Resource resource, ResourceState resourceState);
+    void setResourceState(Resource resource, ResourceState resourceState);
 
     /**
-     * Attempts to assign the resource to the specified assignment. If the resource is not active or not available, nothing
-     * happens and false is returned. Otherwise, a {@link net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged} event is fired and true is returned.
+     * Attempts to assign the resource to the specified assignment, settings its state to {@link ResourceState#RESERVED}. If the resource is not active or not available, nothing
+     * happens. Otherwise, the new state is saved and a {@link net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged} event is fired.
      *
      * @see net.pkhsolutions.idispatch.entity.ResourceStatus#isAvailable()
      * @see net.pkhsolutions.idispatch.entity.Resource#isActive()
      */
-    boolean setResourceAssignment(Resource resource, Assignment assignment);
+    void setResourceAssignment(Resource resource, Assignment assignment);
 
     /**
-     * Attempts to clear the assignment from the specified resource, fires a {@link net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged} event and returns true if successful.
+     * Attempts to clear the assignment from the specified resource, and stores the state and fires a {@link net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged} event if successful.
      * This can only happen if the resource is active and is in any of the following states:
      * <ul>
      * <li>{@link ResourceState#RESERVED}, in which case the state of the resource will change to whatever it was before the resource was reserved)</li>
@@ -48,11 +48,11 @@ public interface ResourceStatusService {
      * <li>{@link ResourceState#AT_STATION}</li>
      * <li>{@link ResourceState#OUT_OF_SERVICE}</li>
      * </ul>
-     * Otherwise, nothing will happen and false is returned.
+     * Otherwise, nothing happens.
      *
      * @see net.pkhsolutions.idispatch.entity.Resource#isActive()
      */
-    boolean clearResourceAssignment(Resource resource);
+    void clearResourceAssignment(Resource resource);
 
     /**
      * Finds all resources that are currently assigned to the specified assignment.
