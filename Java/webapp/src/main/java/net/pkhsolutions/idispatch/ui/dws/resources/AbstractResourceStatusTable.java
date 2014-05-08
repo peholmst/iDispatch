@@ -1,13 +1,13 @@
-package net.pkhsolutions.idispatch.dws.ui.resources;
+package net.pkhsolutions.idispatch.ui.dws.resources;
 
 import com.vaadin.ui.Table;
-import net.pkhsolutions.idispatch.common.ui.DateToStringConverter;
-import net.pkhsolutions.idispatch.common.ui.resources.*;
-import net.pkhsolutions.idispatch.domain.resources.ResourceStatus;
+import net.pkhsolutions.idispatch.entity.ResourceStatus;
+import net.pkhsolutions.idispatch.ui.common.DateToStringConverter;
+import net.pkhsolutions.idispatch.ui.common.resources.*;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Base class for tables showing {@link net.pkhsolutions.idispatch.domain.resources.ResourceStatus} beans.
+ * Base class for tables showing {@link net.pkhsolutions.idispatch.entity.ResourceStatus} beans.
  */
 public abstract class AbstractResourceStatusTable extends Table {
 
@@ -19,8 +19,8 @@ public abstract class AbstractResourceStatusTable extends Table {
         setConverter(ResourceStatus.PROP_RESOURCE, applicationContext.getBean(ResourceToStringConverter.class));
         setConverter(ResourceStatus.PROP_TIMESTAMP, DateToStringConverter.dateTime());
         setConverter(ResourceStatus.PROP_STATE, applicationContext.getBean(ResourceStateToStringConverter.class));
-        setConverter(AbstractResourceStatusContainer.NESTPROP_TICKET_TYPE, applicationContext.getBean(TicketTypeToStringConverter.class));
-        setConverter(AbstractResourceStatusContainer.NESTPROP_TICKET_MUNICIPALITY, applicationContext.getBean(MunicipalityToStringConverter.class));
+        setConverter(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_TYPE, applicationContext.getBean(AssignmentTypeToStringConverter.class));
+        setConverter(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_MUNICIPALITY, applicationContext.getBean(MunicipalityToStringConverter.class));
         setConverter(AbstractResourceStatusContainer.NESTPROP_RESOURCE_TYPE, applicationContext.getBean(ResourceTypeToStringConverter.class));
 
         // TODO Internationalize
@@ -28,9 +28,9 @@ public abstract class AbstractResourceStatusTable extends Table {
         setColumnHeader(ResourceStatus.PROP_STATE, "State");
         setColumnHeader(ResourceStatus.PROP_TIMESTAMP, "Last changed");
         setColumnHeader(AbstractResourceStatusContainer.NESTPROP_RESOURCE_TYPE, "Type");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_TICKET_ID, "Ticket No");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_TICKET_TYPE, "Ticket Type");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_TICKET_MUNICIPALITY, "Ticket Municipality");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_TICKET_ADDRESS, "Ticket Address");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ID, "Ticket No");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_TYPE, "Ticket Type");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_MUNICIPALITY, "Ticket Municipality");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ADDRESS, "Ticket Address");
     }
 }

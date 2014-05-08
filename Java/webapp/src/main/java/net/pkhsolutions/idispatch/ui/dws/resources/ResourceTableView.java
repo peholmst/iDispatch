@@ -1,24 +1,19 @@
-package net.pkhsolutions.idispatch.dws.ui.resources;
+package net.pkhsolutions.idispatch.ui.dws.resources;
 
 import com.vaadin.data.Property;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener;
 import com.vaadin.ui.*;
-import net.pkhsolutions.idispatch.common.ui.resources.CurrentResourceStateContainer;
-import net.pkhsolutions.idispatch.domain.resources.ResourceStatus;
-import net.pkhsolutions.idispatch.dws.ui.DwsTheme;
-import net.pkhsolutions.idispatch.dws.ui.DwsUI;
-import net.pkhsolutions.idispatch.dws.ui.tickets.TicketView;
+import net.pkhsolutions.idispatch.entity.ResourceStatus;
+import net.pkhsolutions.idispatch.ui.dws.DwsTheme;
+import net.pkhsolutions.idispatch.ui.dws.DwsUI;
+import net.pkhsolutions.idispatch.ui.dws.assignments.AssignmentView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.vaadin.spring.UIScope;
-import org.vaadin.spring.events.EventBus;
-import org.vaadin.spring.events.EventBusScope;
-import org.vaadin.spring.events.EventScope;
 import org.vaadin.spring.navigator.VaadinView;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.Optional;
 
 /**
@@ -33,15 +28,12 @@ public class ResourceTableView extends VerticalLayout implements View {
     @Autowired
     ResourceStatusContainer container;
     @Autowired
-    @EventBusScope(EventScope.APPLICATION)
-    EventBus eventBus;
-    @Autowired
     ApplicationContext applicationContext;
     @Autowired
     ChangeResourceStatusWindow changeResourceStatusWindow;
 
     private Table table;
-    private Button openTicket;
+    private Button openAssignment;
     private Button changeState;
 
     @PostConstruct
@@ -61,13 +53,13 @@ public class ResourceTableView extends VerticalLayout implements View {
             setImmediate(true);
             setVisibleColumns(
                     ResourceStatus.PROP_RESOURCE,
-                    CurrentResourceStateContainer.NESTPROP_RESOURCE_TYPE,
+                    ResourceStatusContainer.NESTPROP_RESOURCE_TYPE,
                     ResourceStatus.PROP_STATE,
                     ResourceStatus.PROP_TIMESTAMP,
-                    CurrentResourceStateContainer.NESTPROP_TICKET_ID,
-                    CurrentResourceStateContainer.NESTPROP_TICKET_TYPE,
-                    CurrentResourceStateContainer.NESTPROP_TICKET_MUNICIPALITY,
-                    CurrentResourceStateContainer.NESTPROP_TICKET_ADDRESS
+                    ResourceStatusContainer.NESTPROP_ASSIGNMENT_ID,
+                    ResourceStatusContainer.NESTPROP_ASSIGNMENT_TYPE,
+                    ResourceStatusContainer.NESTPROP_ASSIGNMENT_MUNICIPALITY,
+                    ResourceStatusContainer.NESTPROP_ASSIGNMENT_ADDRESS
             );
             setSortEnabled(true);
             setSortContainerPropertyId(ResourceStatus.PROP_RESOURCE);
@@ -82,14 +74,13 @@ public class ResourceTableView extends VerticalLayout implements View {
                 setDisableOnClick(true);
                 setEnabled(false);
             }});
-            addComponent(openTicket = new Button("Open Ticket", ResourceTableView.this::openTicket) {{
+            addComponent(openAssignment = new Button("Open Assignment", ResourceTableView.this::openTicket) {{
                 setDisableOnClick(true);
                 setEnabled(false);
             }});
         }};
         addComponent(buttons);
         setComponentAlignment(buttons, Alignment.BOTTOM_RIGHT);
-        eventBus.subscribe(container);
     }
 
     private Optional<ResourceStatus> getSelection() {
@@ -103,23 +94,30 @@ public class ResourceTableView extends VerticalLayout implements View {
 
     private void openTicket(Button.ClickEvent clickEvent) {
         getSelection()
-                .filter((selection) -> selection.getTicket() != null)
-                .ifPresent((selection) -> TicketView.openTicket(selection.getTicket().getId()));
-        openTicket.setEnabled(true);
+                .filter((selection) -> selection.getAssignment() != null)
+                .ifPresent((selection) -> AssignmentView.openAssignment(selection.getAssignment().getId()));
+        openAssignment.setEnabled(true);
     }
 
     private void updateButtonStates(Property.ValueChangeEvent valueChangeEvent) {
         boolean hasSelection = getSelection().isPresent();
         changeState.setEnabled(hasSelection);
-        openTicket.setEnabled(hasSelection && getSelection().get().getTicket() != null);
-    }
-
-    @PreDestroy
-    void destroy() {
-        eventBus.unsubscribe(container);
+        openAssignment.setEnabled(hasSelection && getSelection().get().getAssignment() != null);
     }
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+    }
+
+    @Override
+    public void attach() {
+        super.attach();
+        container.attachedToUI(getUI());
+    }
+
+    @Override
+    public void detach() {
+        container.detachedFromUI(getUI());
+        super.detach();
     }
 }

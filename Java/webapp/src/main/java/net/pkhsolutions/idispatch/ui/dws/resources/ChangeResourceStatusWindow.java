@@ -1,11 +1,11 @@
-package net.pkhsolutions.idispatch.dws.ui.resources;
+package net.pkhsolutions.idispatch.ui.dws.resources;
 
 import com.vaadin.ui.*;
-import net.pkhsolutions.idispatch.common.ui.resources.ResourceStateToStringConverter;
-import net.pkhsolutions.idispatch.domain.resources.Resource;
-import net.pkhsolutions.idispatch.domain.resources.ResourceService;
-import net.pkhsolutions.idispatch.domain.resources.ResourceState;
-import net.pkhsolutions.idispatch.dws.ui.DwsTheme;
+import net.pkhsolutions.idispatch.boundary.ResourceStatusService;
+import net.pkhsolutions.idispatch.entity.Resource;
+import net.pkhsolutions.idispatch.entity.ResourceState;
+import net.pkhsolutions.idispatch.ui.common.resources.ResourceStateToStringConverter;
+import net.pkhsolutions.idispatch.ui.dws.DwsTheme;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.UIScope;
 import org.vaadin.spring.VaadinComponent;
@@ -16,14 +16,14 @@ import java.util.Locale;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Window for changing the state of a {@link net.pkhsolutions.idispatch.domain.resources.Resource}.
+ * Window for changing the state of a {@link net.pkhsolutions.idispatch.entity.Resource}.
  */
 @VaadinComponent
 @UIScope
 public class ChangeResourceStatusWindow extends Window {
 
     @Autowired
-    ResourceService resourceService;
+    ResourceStatusService resourceStatusService;
     @Autowired
     ResourceStateToStringConverter resourceStateToStringConverter;
 
@@ -66,7 +66,7 @@ public class ChangeResourceStatusWindow extends Window {
         this.resource = checkNotNull(resource);
         resourceName.setValue(resource.getCallSign());
         stateButtons.removeAllComponents();
-        resourceService.getPossibleResourceStateTransitions(resource).forEach(this::createResourceStateButton);
+        resourceStatusService.findCurrentStatus(resource).ifPresent(status -> status.getManualValidNextStates().forEach(this::createResourceStateButton));
         ui.addWindow(this);
     }
 
@@ -76,7 +76,7 @@ public class ChangeResourceStatusWindow extends Window {
         stateButton.setDisableOnClick(true);
         stateButton.addClickListener((event) -> {
             try {
-                resourceService.setResourceState(resource, resourceState);
+                resourceStatusService.setResourceState(resource, resourceState);
             } finally {
                 close();
             }
