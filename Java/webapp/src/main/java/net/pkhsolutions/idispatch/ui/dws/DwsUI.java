@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.dws.ui;
+package net.pkhsolutions.idispatch.ui.dws;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
@@ -8,15 +8,15 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import net.pkhsolutions.idispatch.common.ui.ErrorView;
-import net.pkhsolutions.idispatch.dws.ui.resources.ShowResourceTableCommand;
-import net.pkhsolutions.idispatch.dws.ui.tickets.NewTicketCommand;
+import net.pkhsolutions.idispatch.ui.common.ErrorView;
+import net.pkhsolutions.idispatch.ui.dws.assignments.OpenAssignmentCommand;
+import net.pkhsolutions.idispatch.ui.dws.resources.ShowResourceTableCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.VaadinUI;
 import org.vaadin.spring.navigator.SpringViewProvider;
 
 /**
- * Vaadin UI for the Dispatcher Workstation (DWS). This UI is used to create and update tickets,
+ * Vaadin UI for the Dispatcher Workstation (DWS). This UI is used to create and update assignments,
  * dispatch and track/update the state of resources.
  */
 @VaadinUI(path = "/dws")
@@ -28,7 +28,7 @@ public class DwsUI extends UI {
     SpringViewProvider viewProvider;
 
     @Autowired
-    NewTicketCommand newTicketCommand;
+    OpenAssignmentCommand openAssignmentCommand;
 
     @Autowired
     ShowResourceTableCommand showResourceTableCommand;
@@ -61,16 +61,14 @@ public class DwsUI extends UI {
     }
 
     private void addMenuItems(MenuBar menuBar) {
-        final MenuBar.MenuItem ticket = menuBar.addItem("Ticket", null);
-        ticket.addItem("Open New Ticket", newTicketCommand);
+        final MenuBar.MenuItem assignment = menuBar.addItem("Assignment", null);
+        assignment.addItem("Open New Assignment", openAssignmentCommand);
 
         final MenuBar.MenuItem viewMenu = menuBar.addItem("View", null);
-        viewMenu.addItem("Tickets", null);
+//        viewMenu.addItem("Assignments", null);
         viewMenu.addItem("Resource Table", showResourceTableCommand);
-        viewMenu.addSeparator();
-        viewMenu.addItem("Open New Browser Window", null);
 
-        final MenuBar.MenuItem accountMenu = menuBar.addItem("Account", null);
-        accountMenu.addItem("Logout", null);
+//        final MenuBar.MenuItem accountMenu = menuBar.addItem("Account", null);
+//        accountMenu.addItem("Logout", null);
     }
 }
