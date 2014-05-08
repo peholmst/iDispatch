@@ -7,7 +7,6 @@ import net.pkhsolutions.idispatch.entity.ResourceStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 import static net.pkhsolutions.idispatch.utils.NestedPropertyUtils.buildNestedProperty;
@@ -35,7 +34,6 @@ public abstract class AbstractResourceStatusContainer extends BeanItemContainer<
 
     protected abstract List<ResourceStatus> doRefresh();
 
-    @PostConstruct
     public void refresh() {
         // TODO This method could be optimized
         logger.debug("Refreshing container");

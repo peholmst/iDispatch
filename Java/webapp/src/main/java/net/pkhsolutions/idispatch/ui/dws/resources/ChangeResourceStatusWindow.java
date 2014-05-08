@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @VaadinComponent
 @UIScope
-public class ChangeResourceStatusWindow extends Window {
+class ChangeResourceStatusWindow extends Window {
 
     @Autowired
     ResourceStatusService resourceStatusService;

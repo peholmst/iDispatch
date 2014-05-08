@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.vaadin.spring.events.EventBus;
 import org.vaadin.spring.events.EventBusListenerMethod;
+import org.vaadin.spring.events.EventBusScope;
+import org.vaadin.spring.events.EventScope;
 
 import java.util.List;
 
@@ -19,12 +21,15 @@ import java.util.List;
  */
 @Component
 @Scope("prototype")
-public class ResourceStatusContainer extends AbstractResourceStatusContainer implements UIAttachable {
+class ResourceStatusContainer extends AbstractResourceStatusContainer implements UIAttachable {
 
     @Autowired
     ResourceStatusService resourceStatusService;
     @Autowired
+    @EventBusScope(EventScope.APPLICATION)
     EventBus eventBus;
+    @Autowired
+    UI ui;
 
     @Override
     protected List<ResourceStatus> doRefresh() {
@@ -33,12 +38,12 @@ public class ResourceStatusContainer extends AbstractResourceStatusContainer imp
 
     @EventBusListenerMethod
     void onTicketEvent(AssignmentEvent event) {
-        refresh();
+        ui.access(this::refresh);
     }
 
     @EventBusListenerMethod
     void onResourceStatusChangedEvent(ResourceStatusChanged event) {
-        refresh();
+        ui.access(this::refresh);
     }
 
     @Override

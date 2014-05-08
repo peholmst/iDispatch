@@ -6,6 +6,11 @@ import net.pkhsolutions.idispatch.ui.common.DateToStringConverter;
 import net.pkhsolutions.idispatch.ui.common.resources.*;
 import org.springframework.context.ApplicationContext;
 
+import java.util.Collection;
+
+import static com.google.common.collect.Sets.newHashSet;
+import static java.util.Collections.emptySet;
+
 /**
  * Base class for tables showing {@link net.pkhsolutions.idispatch.entity.ResourceStatus} beans.
  */
@@ -32,5 +37,17 @@ public abstract class AbstractResourceStatusTable extends Table {
         setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_TYPE, "Ticket Type");
         setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_MUNICIPALITY, "Ticket Municipality");
         setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ADDRESS, "Ticket Address");
+    }
+
+    @SuppressWarnings("unchecked")
+    public Collection<ResourceStatus> getCurrentSelection() {
+        Object selection = getValue();
+        if (selection instanceof Collection) {
+            return (Collection<ResourceStatus>) selection;
+        } else if (selection != null) {
+            return newHashSet((ResourceStatus) selection);
+        } else {
+            return emptySet();
+        }
     }
 }
