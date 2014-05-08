@@ -6,6 +6,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 import static com.google.common.base.Objects.firstNonNull;
+import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Strings.nullToEmpty;
 
 /**
@@ -55,17 +56,16 @@ public class Assignment extends AbstractLockableEntity {
         return closed;
     }
 
-    @Deprecated
-    public void close() {
-        closed = new Date();
-    }
-
     public boolean isOpen() {
         return closed == null;
     }
 
     public boolean isClosed() {
         return closed != null;
+    }
+
+    public void setClosed(Date closed) {
+        this.closed = checkNotNull(closed);
     }
 
     public AssignmentUrgency getUrgency() {
