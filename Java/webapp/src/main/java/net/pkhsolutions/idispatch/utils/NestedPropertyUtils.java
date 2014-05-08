@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.common.utils;
+package net.pkhsolutions.idispatch.utils;
 
 /**
  * TODO Document me
