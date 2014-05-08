@@ -11,7 +11,7 @@ import org.vaadin.spring.VaadinComponent;
  */
 @VaadinComponent
 @Scope("prototype")
-public class BlahCommand implements MenuBar.Command {
+public class OpenAssignmentCommand implements MenuBar.Command {
 
     @Autowired
     AssignmentService assignmentService;
