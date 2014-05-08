@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.dws.ui.resources;
+package net.pkhsolutions.idispatch.ui.dws.resources;
 
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.UI;
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Scope;
 import org.vaadin.spring.VaadinComponent;
 
 /**
- * Menu bar command that navigates to the {@link net.pkhsolutions.idispatch.dws.ui.resources.ResourceTableView}.
+ * Menu bar command that navigates to the {@link net.pkhsolutions.idispatch.ui.dws.resources.ResourceTableView}.
  */
 @VaadinComponent
 @Scope("prototype")
