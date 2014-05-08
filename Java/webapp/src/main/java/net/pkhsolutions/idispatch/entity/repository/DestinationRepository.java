@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface DestinationRepository extends JpaRepository<Destination, Long> {
 
-    @Query("select d from Destination d where d.active = TRUE and ?0 in d.resources")
+    @Query("select d from Destination d join d.resources r where d.active = TRUE and r = ?1")
     List<Destination> findDestinationsForResource(Resource resource);
 
 }

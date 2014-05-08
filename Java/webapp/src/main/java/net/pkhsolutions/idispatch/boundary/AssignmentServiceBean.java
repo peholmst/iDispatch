@@ -19,6 +19,8 @@ class AssignmentServiceBean extends AbstractServiceBean implements AssignmentSer
 
     @Autowired
     AssignmentRepository assignmentRepository;
+    @Autowired
+    ResourceStatusService resourceStatusService;
 
     @Override
     public Optional<Assignment> findAssignment(Long id) {
@@ -62,6 +64,10 @@ class AssignmentServiceBean extends AbstractServiceBean implements AssignmentSer
         logger.debug("Closing assignment {}", assignment);
         if (assignment.isClosed()) {
             logger.debug("Assignment {} is already closed, ignoring", assignment);
+            return;
+        }
+        if (!resourceStatusService.getStatusOfResourcesAssignedToAssignment(assignment).isEmpty()) {
+            logger.debug("Resources are still assigned to assignment {}, ignoring", assignment);
             return;
         }
         assignment.setClosed(new Date());

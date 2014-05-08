@@ -25,7 +25,6 @@ abstract class AbstractServiceBean {
     void init() {
         txTemplate = new TransactionTemplate(txManager);
         txTemplate.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
-        txTemplate.setIsolationLevel(TransactionDefinition.ISOLATION_SERIALIZABLE);
     }
 
     TransactionTemplate getTxTemplate() {

@@ -79,6 +79,7 @@ class ResourceStatusServiceBean extends AbstractServiceBean implements ResourceS
                     status.setAssignment(null);
                     return true;
                 default:
+                    logger.debug("Resource {} was in state {}, cannot clear assignment", resource, status.getState());
                     return false;
             }
         });

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import static com.google.common.base.Strings.nullToEmpty;
 
 /**
- * Entity representing a ticket type.
+ * Entity representing a assignment type.
  */
 @Entity
 @Table(name = "assignment_types")
@@ -17,6 +17,7 @@ public class AssignmentType extends AbstractLockableEntity {
 
     public static final String PROP_CODE = "code";
     public static final String PROP_DESCRIPTION = "description";
+    public static final String PROP_FORMATTED_DESCRIPTION = "formattedDescription";
 
     @Column(name = "code", unique = true, nullable = false)
     private String code = "";
