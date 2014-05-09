@@ -6,6 +6,7 @@ import net.pkhsolutions.idispatch.boundary.events.AssignmentEvent;
 import net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged;
 import net.pkhsolutions.idispatch.entity.ResourceStatus;
 import net.pkhsolutions.idispatch.ui.common.UIAttachable;
+import net.pkhsolutions.idispatch.ui.dws.DwsUI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -29,7 +30,7 @@ class ResourceStatusContainer extends AbstractResourceStatusContainer implements
     @EventBusScope(EventScope.APPLICATION)
     EventBus eventBus;
     @Autowired
-    UI ui;
+    DwsUI ui;
 
     @Override
     protected List<ResourceStatus> doRefresh() {

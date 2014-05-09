@@ -7,6 +7,7 @@ import net.pkhsolutions.idispatch.boundary.events.ResourceStatusChanged;
 import net.pkhsolutions.idispatch.entity.Assignment;
 import net.pkhsolutions.idispatch.entity.ResourceStatus;
 import net.pkhsolutions.idispatch.ui.common.UIAttachable;
+import net.pkhsolutions.idispatch.ui.dws.DwsUI;
 import net.pkhsolutions.idispatch.ui.dws.resources.AbstractResourceStatusContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -34,7 +35,7 @@ class AssignedResourcesContainer extends AbstractResourceStatusContainer impleme
     @EventBusScope(EventScope.APPLICATION)
     EventBus eventBus;
     @Autowired
-    UI ui;
+    DwsUI ui;
 
     private Assignment assignment;
 

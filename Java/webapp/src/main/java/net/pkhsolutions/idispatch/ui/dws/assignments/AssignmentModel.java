@@ -10,6 +10,7 @@ import net.pkhsolutions.idispatch.entity.AssignmentType;
 import net.pkhsolutions.idispatch.entity.AssignmentUrgency;
 import net.pkhsolutions.idispatch.entity.Municipality;
 import net.pkhsolutions.idispatch.ui.common.UIAttachable;
+import net.pkhsolutions.idispatch.ui.dws.DwsUI;
 import net.pkhsolutions.idispatch.utils.UpdateResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,7 +86,7 @@ class AssignmentModel implements UIAttachable {
     @EventBusScope(EventScope.APPLICATION)
     EventBus eventBus;
     @Autowired
-    UI ui;
+    DwsUI ui;
 
     @EventBusListenerMethod
     void onTicketEvent(AssignmentEvent assignmentEvent) {
