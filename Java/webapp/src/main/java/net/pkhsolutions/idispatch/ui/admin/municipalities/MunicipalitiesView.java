@@ -1,8 +1,8 @@
 package net.pkhsolutions.idispatch.ui.admin.municipalities;
 
 import com.vaadin.ui.Table;
+import net.pkhsolutions.idispatch.boundary.MunicipalityManagementService;
 import net.pkhsolutions.idispatch.entity.Municipality;
-import net.pkhsolutions.idispatch.entity.repository.MunicipalityRepository;
 import net.pkhsolutions.idispatch.ui.admin.AbstractCrudView;
 import net.pkhsolutions.idispatch.ui.admin.AdminUI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import org.vaadin.spring.navigator.VaadinView;
 
 @VaadinView(name = MunicipalitiesView.VIEW_NAME, ui = AdminUI.class)
 @UIScope
-public class MunicipalitiesView extends AbstractCrudView<Municipality, MunicipalityRepository> {
+public class MunicipalitiesView extends AbstractCrudView<Municipality, MunicipalityManagementService> {
 
     // TODO Internationalize
 
     public static final String VIEW_NAME = "municipalities";
 
     @Autowired
-    MunicipalityRepository repository;
+    MunicipalityManagementService service;
 
     @Override
     protected String getTitle() {
@@ -26,8 +26,8 @@ public class MunicipalitiesView extends AbstractCrudView<Municipality, Municipal
     }
 
     @Override
-    protected MunicipalityRepository getRepository() {
-        return repository;
+    protected MunicipalityManagementService getManagementService() {
+        return service;
     }
 
     @Override

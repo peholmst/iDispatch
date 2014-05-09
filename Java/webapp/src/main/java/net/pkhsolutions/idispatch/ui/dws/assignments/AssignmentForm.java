@@ -97,8 +97,8 @@ class AssignmentForm extends CustomComponent {
         address.setWidth("100%");
         layout.addComponent(address, 0, 4, 2, 4);
 
-        setMunicipalities(municipalityRepository.findAll());
-        setTicketTypes(assignmentTypeRepository.findAll());
+        setMunicipalities(municipalityRepository.findByActiveTrueOrderByNameAsc());
+        setTicketTypes(assignmentTypeRepository.findByActiveTrueOrderByCodeAsc());
     }
 
     private void setMunicipalities(Collection<Municipality> municipalities) {

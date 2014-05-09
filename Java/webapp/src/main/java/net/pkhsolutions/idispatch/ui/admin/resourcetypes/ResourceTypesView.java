@@ -1,8 +1,8 @@
 package net.pkhsolutions.idispatch.ui.admin.resourcetypes;
 
 import com.vaadin.ui.Table;
+import net.pkhsolutions.idispatch.boundary.ResourceTypeManagementService;
 import net.pkhsolutions.idispatch.entity.ResourceType;
-import net.pkhsolutions.idispatch.entity.repository.ResourceTypeRepository;
 import net.pkhsolutions.idispatch.ui.admin.AbstractCrudView;
 import net.pkhsolutions.idispatch.ui.admin.AdminUI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import org.vaadin.spring.navigator.VaadinView;
 
 @VaadinView(name = ResourceTypesView.VIEW_NAME, ui = AdminUI.class)
 @UIScope
-public class ResourceTypesView extends AbstractCrudView<ResourceType, ResourceTypeRepository> {
+public class ResourceTypesView extends AbstractCrudView<ResourceType, ResourceTypeManagementService> {
 
     // TODO Internationalize
 
     public static final String VIEW_NAME = "resourceTypes";
 
     @Autowired
-    ResourceTypeRepository repository;
+    ResourceTypeManagementService service;
 
     @Override
     protected String getTitle() {
@@ -26,8 +26,8 @@ public class ResourceTypesView extends AbstractCrudView<ResourceType, ResourceTy
     }
 
     @Override
-    protected ResourceTypeRepository getRepository() {
-        return repository;
+    protected ResourceTypeManagementService getManagementService() {
+        return service;
     }
 
     @Override

@@ -1,10 +1,10 @@
 package net.pkhsolutions.idispatch.ui.admin.destinations;
 
 import com.vaadin.ui.Table;
+import net.pkhsolutions.idispatch.boundary.DestinationManagementService;
 import net.pkhsolutions.idispatch.entity.Destination;
 import net.pkhsolutions.idispatch.entity.RunboardDestination;
 import net.pkhsolutions.idispatch.entity.SmsDestination;
-import net.pkhsolutions.idispatch.entity.repository.DestinationRepository;
 import net.pkhsolutions.idispatch.ui.admin.AbstractCrudView;
 import net.pkhsolutions.idispatch.ui.admin.AdminUI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,14 @@ import org.vaadin.spring.navigator.VaadinView;
 
 @VaadinView(name = DestinationsView.VIEW_NAME, ui = AdminUI.class)
 @UIScope
-public class DestinationsView extends AbstractCrudView<Destination, DestinationRepository> {
+public class DestinationsView extends AbstractCrudView<Destination, DestinationManagementService> {
 
     // TODO Internationalize
 
     public static final String VIEW_NAME = "destinations";
 
     @Autowired
-    DestinationRepository repository;
+    DestinationManagementService service;
 
     @Autowired
     ApplicationContext applicationContext;
@@ -32,8 +32,8 @@ public class DestinationsView extends AbstractCrudView<Destination, DestinationR
     }
 
     @Override
-    protected DestinationRepository getRepository() {
-        return repository;
+    protected DestinationManagementService getManagementService() {
+        return service;
     }
 
     @Override

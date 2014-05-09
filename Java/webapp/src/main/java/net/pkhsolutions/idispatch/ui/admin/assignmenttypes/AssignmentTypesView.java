@@ -1,8 +1,8 @@
 package net.pkhsolutions.idispatch.ui.admin.assignmenttypes;
 
 import com.vaadin.ui.Table;
+import net.pkhsolutions.idispatch.boundary.AssignmentTypeManagementService;
 import net.pkhsolutions.idispatch.entity.AssignmentType;
-import net.pkhsolutions.idispatch.entity.repository.AssignmentTypeRepository;
 import net.pkhsolutions.idispatch.ui.admin.AbstractCrudView;
 import net.pkhsolutions.idispatch.ui.admin.AdminUI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +11,14 @@ import org.vaadin.spring.navigator.VaadinView;
 
 @VaadinView(name = AssignmentTypesView.VIEW_NAME, ui = AdminUI.class)
 @UIScope
-public class AssignmentTypesView extends AbstractCrudView<AssignmentType, AssignmentTypeRepository> {
+public class AssignmentTypesView extends AbstractCrudView<AssignmentType, AssignmentTypeManagementService> {
 
     // TODO Internationalize
 
     public static final String VIEW_NAME = "assignmentTypes";
 
     @Autowired
-    AssignmentTypeRepository repository;
+    AssignmentTypeManagementService service;
 
     @Override
     protected String getTitle() {
@@ -26,8 +26,8 @@ public class AssignmentTypesView extends AbstractCrudView<AssignmentType, Assign
     }
 
     @Override
-    protected AssignmentTypeRepository getRepository() {
-        return repository;
+    protected AssignmentTypeManagementService getManagementService() {
+        return service;
     }
 
     @Override
