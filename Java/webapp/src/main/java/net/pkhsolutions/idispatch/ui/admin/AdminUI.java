@@ -1,5 +1,6 @@
 package net.pkhsolutions.idispatch.ui.admin;
 
+import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.MenuBar;
@@ -18,6 +19,7 @@ import org.vaadin.spring.VaadinUI;
 import org.vaadin.spring.navigator.SpringViewProvider;
 
 @VaadinUI(path = "/admin")
+@Theme(AdminTheme.THEME_NAME)
 public class AdminUI extends UI {
 
     @Autowired
