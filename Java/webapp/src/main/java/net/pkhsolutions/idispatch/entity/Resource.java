@@ -45,6 +45,7 @@ public class Resource extends AbstractLockableEntity implements Comparable<Resou
         return active;
     }
 
+    @Override
     public void setActive(boolean active) {
         this.active = active;
     }

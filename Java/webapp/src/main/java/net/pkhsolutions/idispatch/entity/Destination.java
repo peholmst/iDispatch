@@ -38,6 +38,7 @@ public abstract class Destination extends AbstractLockableEntity implements Deac
         return active;
     }
 
+    @Override
     public void setActive(boolean active) {
         this.active = active;
     }

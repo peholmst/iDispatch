@@ -13,7 +13,7 @@ import static com.google.common.base.Strings.nullToEmpty;
  */
 @Entity
 @Table(name = "resource_types")
-public class ResourceType extends AbstractLockableEntity {
+public class ResourceType extends AbstractLockableEntity implements Deactivatable {
 
     public static final String PROP_CODE = "code";
     public static final String PROP_DESCRIPTION = "description";
@@ -21,7 +21,9 @@ public class ResourceType extends AbstractLockableEntity {
     @Column(name = "code", unique = true, nullable = false)
     private String code = "";
     @Column(name = "description", nullable = false)
-    private String description;
+    private String description = "";
+    @Column(name = "active", nullable = false)
+    private boolean active = true;
 
     public String getCode() {
         return code;
@@ -46,5 +48,15 @@ public class ResourceType extends AbstractLockableEntity {
                 .add(PROP_VERSION, getVersion())
                 .add(PROP_CODE, code)
                 .toString();
+    }
+
+    @Override
+    public boolean isActive() {
+        return active;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

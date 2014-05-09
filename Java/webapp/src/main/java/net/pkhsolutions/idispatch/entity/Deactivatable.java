@@ -6,4 +6,5 @@ public interface Deactivatable {
 
     boolean isActive();
 
+    void setActive(boolean active);
 }
