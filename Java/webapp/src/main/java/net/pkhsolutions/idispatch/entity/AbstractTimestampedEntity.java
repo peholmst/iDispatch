@@ -37,33 +37,8 @@ public abstract class AbstractTimestampedEntity extends AbstractEntity {
         }
     }
 
-    /**
-     * Base class for builders of timestamped entities.
-     *
-     * @param <E> the entity that is being built.
-     * @param <B> the builder type, to be used for chaining method calls.
-     */
-    @Deprecated
-    public static abstract class AbstractTimestampedEntityBuilder<E extends AbstractTimestampedEntity, B extends AbstractTimestampedEntityBuilder<E, B>> extends AbstractEntityBuilder<E, B> {
-
-        protected AbstractTimestampedEntityBuilder(Class<E> entityClass) {
-            super(entityClass);
-            entity.setTimestamp(new Date());
-        }
-
-        /**
-         * This constructor clears the identity information and resets the timestamp.
-         */
-        protected AbstractTimestampedEntityBuilder(Class<E> entityClass, AbstractTimestampedEntity original) {
-            super(entityClass, original);
-            entity.setTimestamp(new Date());
-            clearIdentityInfo();
-        }
-
-        @SuppressWarnings("unchecked")
-        public B withTimestamp(Date timestamp) {
-            entity.setTimestamp(timestamp);
-            return (B) this;
-        }
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        throw new CloneNotSupportedException("Timestamped entities cannot be cloned");
     }
 }
