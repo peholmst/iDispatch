@@ -9,7 +9,6 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.pkhsolutions.idispatch</groupId>
     <artifactId>webapp</artifactId>
     <name>iDispatch Web Application</name>
 
@@ -25,6 +24,10 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-themes</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vaadin</groupId>
+            <artifactId>vaadin-client-compiled</artifactId>
         </dependency>
 
         <dependency>
@@ -52,6 +55,12 @@
         <dependency>
             <groupId>com.vaadin.tapio</groupId>
             <artifactId>googlemaps</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>aspsms-integration</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

@@ -30,6 +30,7 @@
                 <module>idispatch-rest-client</module>
                 <module>idispatch-smsgateway</module>-->
         <module>webapp</module>
+        <module>aspsms-integration</module>
     </modules>
 
     <dependencyManagement>
@@ -112,7 +113,7 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                <artifactId>maven-war-plugin</artifactId>
+                    <artifactId>maven-war-plugin</artifactId>
                     <version>2.4</version>
                 </plugin>
                 <plugin>
