@@ -7,6 +7,7 @@ import com.vaadin.ui.*;
 import net.pkhsolutions.idispatch.boundary.ManagementService;
 import net.pkhsolutions.idispatch.entity.AbstractEntity;
 import net.pkhsolutions.idispatch.entity.Deactivatable;
+import net.pkhsolutions.idispatch.entity.ValidationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
@@ -210,7 +211,7 @@ public abstract class AbstractCrudView<E extends AbstractEntity, S extends Manag
         return form;
     }
 
-    protected void save(E entity) {
+    protected void save(E entity) throws ValidationFailedException {
         getManagementService().save(entity);
         refresh();
     }
@@ -239,6 +240,6 @@ public abstract class AbstractCrudView<E extends AbstractEntity, S extends Manag
 
     @FunctionalInterface
     protected interface SaveCallback<E> {
-        void save(E entity);
+        void save(E entity) throws ValidationFailedException;
     }
 }

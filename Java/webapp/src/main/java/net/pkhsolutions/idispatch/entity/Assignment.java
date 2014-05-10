@@ -1,8 +1,10 @@
 package net.pkhsolutions.idispatch.entity;
 
 import com.google.common.base.Objects;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 import static com.google.common.base.Objects.firstNonNull;
@@ -35,13 +37,16 @@ public class Assignment extends AbstractLockableEntity {
     private AssignmentUrgency urgency = AssignmentUrgency.UNKNOWN;
     @ManyToOne
     @JoinColumn(name = "type_id")
+    @NotNull(message = "Please select an assignment type", groups = DispatchValidationGroup.class)
     private AssignmentType type;
     @Column(name = "description", nullable = false)
     private String description = "";
     @ManyToOne
     @JoinColumn(name = "municipality_id")
+    @NotNull(message = "Please select a municipality", groups = DispatchValidationGroup.class)
     private Municipality municipality;
     @Column(name = "address", nullable = false)
+    @NotBlank(message = "Please enter an address", groups = DispatchValidationGroup.class)
     private String address = "";
 
     public Assignment() {

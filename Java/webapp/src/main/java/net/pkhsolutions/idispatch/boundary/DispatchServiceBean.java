@@ -8,6 +8,7 @@ import net.pkhsolutions.idispatch.entity.repository.ReceiptRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Validator;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,9 +26,12 @@ class DispatchServiceBean extends AbstractServiceBean implements DispatchService
     ReceiptRepository receiptRepository;
     @Autowired
     ResourceStatusService resourceStatusService;
+    @Autowired
+    Validator validator;
 
     @Override
-    public DispatchNotification dispatchSelectedResources(Assignment assignment, Collection<Resource> resources) {
+    public DispatchNotification dispatchSelectedResources(Assignment assignment, Collection<Resource> resources) throws ValidationFailedException {
+        ValidationFailedException.throwIfNotEmpty(validator.validate(assignment, DispatchValidationGroup.class));
         final Collection<Resource> assignedResources = newHashSet(findAssignedResources(assignment));
         final Collection<Resource> resourcesToDispatch = resources.stream()
                 .filter(resource -> assignedResources.contains(resource))
@@ -43,12 +47,12 @@ class DispatchServiceBean extends AbstractServiceBean implements DispatchService
     }
 
     @Override
-    public DispatchNotification dispatchAllResources(Assignment assignment) {
+    public DispatchNotification dispatchAllResources(Assignment assignment) throws ValidationFailedException {
         return dispatchSelectedResources(assignment, resourceStatusService.getResourcesAssignedToAssignment(assignment));
     }
 
     @Override
-    public DispatchNotification dispatchAllReservedResources(Assignment assignment) {
+    public DispatchNotification dispatchAllReservedResources(Assignment assignment) throws ValidationFailedException {
         return dispatchSelectedResources(assignment, resourceStatusService.getStatusOfResourcesAssignedToAssignment(assignment)
                         .stream()
                         .filter(status -> status.getState() == ResourceState.RESERVED)

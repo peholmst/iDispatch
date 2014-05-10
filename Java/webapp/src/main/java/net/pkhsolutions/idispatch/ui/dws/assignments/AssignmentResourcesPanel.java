@@ -7,6 +7,8 @@ import net.pkhsolutions.idispatch.boundary.ResourceStatusService;
 import net.pkhsolutions.idispatch.entity.Assignment;
 import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceStatus;
+import net.pkhsolutions.idispatch.entity.ValidationFailedException;
+import net.pkhsolutions.idispatch.ui.common.ValidationFailedExceptionHandler;
 import net.pkhsolutions.idispatch.ui.dws.resources.AbstractResourceStatusTable;
 import net.pkhsolutions.idispatch.ui.dws.resources.ChangeResourceStatusWindow;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -193,6 +195,8 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
     private void dispatchAllResources(Button.ClickEvent clickEvent) {
         try {
             dispatchService.dispatchAllResources(assignmentModel.assignment().getValue());
+        } catch (ValidationFailedException ex) {
+            ValidationFailedExceptionHandler.showValidationErrors(getUI(), ex);
         } finally {
             dispatchAll.setEnabled(true);
         }
@@ -201,6 +205,8 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
     private void dispatchSelectedResources(Button.ClickEvent clickEvent) {
         try {
             dispatchService.dispatchSelectedResources(assignmentModel.assignment().getValue(), getSelectedAssignedResources());
+        } catch (ValidationFailedException ex) {
+            ValidationFailedExceptionHandler.showValidationErrors(getUI(), ex);
         } finally {
             dispatchSelected.setEnabled(true);
         }
@@ -209,6 +215,8 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
     private void dispatchReservedResources(Button.ClickEvent clickEvent) {
         try {
             dispatchService.dispatchAllReservedResources(assignmentModel.assignment().getValue());
+        } catch (ValidationFailedException ex) {
+            ValidationFailedExceptionHandler.showValidationErrors(getUI(), ex);
         } finally {
             dispatchReserved.setEnabled(true);
         }

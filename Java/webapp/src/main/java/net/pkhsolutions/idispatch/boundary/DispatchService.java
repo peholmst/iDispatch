@@ -1,9 +1,6 @@
 package net.pkhsolutions.idispatch.boundary;
 
-import net.pkhsolutions.idispatch.entity.Assignment;
-import net.pkhsolutions.idispatch.entity.DispatchNotification;
-import net.pkhsolutions.idispatch.entity.Receipt;
-import net.pkhsolutions.idispatch.entity.Resource;
+import net.pkhsolutions.idispatch.entity.*;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,24 +17,28 @@ public interface DispatchService {
      * <p>
      * Callers can listen for {@link net.pkhsolutions.idispatch.boundary.events.DispatchNotificationReceived} events to check whether the
      * dispatch notification reached its destinations.
+     *
+     * @throws net.pkhsolutions.idispatch.entity.ValidationFailedException if the assignment did not contain enough information
      */
-    DispatchNotification dispatchSelectedResources(Assignment assignment, Collection<Resource> resources);
+    DispatchNotification dispatchSelectedResources(Assignment assignment, Collection<Resource> resources) throws ValidationFailedException;
 
     /**
      * Same as calling {@link #dispatchSelectedResources(net.pkhsolutions.idispatch.entity.Assignment, java.util.Collection)},
      * but passing in all assigned resources.
      *
+     * @throws net.pkhsolutions.idispatch.entity.ValidationFailedException if the assignment did not contain enough information
      * @see net.pkhsolutions.idispatch.entity.ResourceStatus#isAssigned()
      */
-    DispatchNotification dispatchAllResources(Assignment assignment);
+    DispatchNotification dispatchAllResources(Assignment assignment) throws ValidationFailedException;
 
     /**
      * Same as calling {@link #dispatchSelectedResources(net.pkhsolutions.idispatch.entity.Assignment, java.util.Collection)}},
      * but passing in all assigned resources that are in the {@link net.pkhsolutions.idispatch.entity.ResourceState#RESERVED} state.
      *
+     * @throws net.pkhsolutions.idispatch.entity.ValidationFailedException if the assignment did not contain enough information
      * @see net.pkhsolutions.idispatch.entity.ResourceStatus#isAssigned()
      */
-    DispatchNotification dispatchAllReservedResources(Assignment assignment);
+    DispatchNotification dispatchAllReservedResources(Assignment assignment) throws ValidationFailedException;
 
     /**
      * Finds all dispatch notifications for the specified assignment.

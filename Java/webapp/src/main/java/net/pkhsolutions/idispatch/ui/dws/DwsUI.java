@@ -61,7 +61,7 @@ public class DwsUI extends UI {
 
         addMenuItems(menuBar);
 
-        setPollInterval(300);
+        setPollInterval(400);
     }
 
     private void addMenuItems(MenuBar menuBar) {

@@ -5,6 +5,8 @@ import com.vaadin.data.fieldgroup.FieldGroup;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.ui.*;
 import net.pkhsolutions.idispatch.entity.AbstractEntity;
+import net.pkhsolutions.idispatch.entity.ValidationFailedException;
+import net.pkhsolutions.idispatch.ui.common.ValidationFailedExceptionHandler;
 
 import javax.annotation.PostConstruct;
 
@@ -56,6 +58,8 @@ public abstract class AbstractForm<E extends AbstractEntity> extends VerticalLay
             closeWindow();
         } catch (FieldGroup.CommitException e) {
             Notification.show("The changes could not be saved");
+        } catch (ValidationFailedException e) {
+            ValidationFailedExceptionHandler.showValidationErrors(getUI(), e);
         } finally {
             save.setEnabled(true);
         }

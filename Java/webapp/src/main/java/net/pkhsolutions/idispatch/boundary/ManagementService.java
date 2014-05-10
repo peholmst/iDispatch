@@ -2,12 +2,13 @@ package net.pkhsolutions.idispatch.boundary;
 
 import net.pkhsolutions.idispatch.entity.AbstractEntity;
 import net.pkhsolutions.idispatch.entity.Deactivatable;
+import net.pkhsolutions.idispatch.entity.ValidationFailedException;
 
 import java.util.List;
 
 public interface ManagementService<E extends AbstractEntity> {
 
-    E save(E entity);
+    E save(E entity) throws ValidationFailedException;
 
     List<E> findAll();
 
