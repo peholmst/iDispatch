@@ -1,14 +1,14 @@
 package net.pkhsolutions.idispatch.ui.dws.assignments;
 
-import com.vaadin.ui.Button;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.HorizontalSplitPanel;
-import com.vaadin.ui.VerticalLayout;
+import com.vaadin.data.Property;
+import com.vaadin.ui.*;
+import net.pkhsolutions.idispatch.boundary.DispatchService;
 import net.pkhsolutions.idispatch.boundary.ResourceStatusService;
 import net.pkhsolutions.idispatch.entity.Assignment;
 import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.ResourceStatus;
 import net.pkhsolutions.idispatch.ui.dws.resources.AbstractResourceStatusTable;
+import net.pkhsolutions.idispatch.ui.dws.resources.ChangeResourceStatusWindow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -33,13 +33,21 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
     @Autowired
     ResourceStatusService resourceStatusService;
     @Autowired
+    DispatchService dispatchService;
+    @Autowired
     ApplicationContext applicationContext;
+    @Autowired
+    ChangeResourceStatusWindow changeResourceStatusWindow;
 
     private AssignmentModel assignmentModel;
     private AbstractResourceStatusTable assignableResourcesTable;
     private AbstractResourceStatusTable assignedResourcesTable;
     private Button add;
     private Button remove;
+    private Button dispatchAll;
+    private Button dispatchSelected;
+    private Button dispatchReserved;
+    private Button changeState;
 
     @PostConstruct
     void init() {
@@ -80,7 +88,6 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
                         addComponent(remove);
                     }
                 });
-
                 assignedResourcesTable = new AbstractResourceStatusTable(assignedResourcesContainer, applicationContext) {
                     {
                         setSizeFull();
@@ -90,10 +97,45 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
                                 ResourceStatus.PROP_STATE, ResourceStatus.PROP_TIMESTAMP);
                         setSortEnabled(true);
                         setSortContainerPropertyId(ResourceStatus.PROP_RESOURCE);
+                        setImmediate(true);
+                        addValueChangeListener(event -> updateComponentStates());
                     }
                 };
                 addComponent(assignedResourcesTable);
                 setExpandRatio(assignedResourcesTable, 1f);
+
+                addComponent(new VerticalLayout() {
+                    {
+                        setWidth("150px");
+                        setHeight("100%");
+                        setSpacing(true);
+
+                        addComponent(dispatchAll = new NativeButton("Dispatch All",
+                                AssignmentResourcesPanel.this::dispatchAllResources));
+                        dispatchAll.addStyleName("dispatch");
+                        dispatchAll.setDisableOnClick(true);
+                        dispatchAll.setWidth("100%");
+
+                        addComponent(dispatchSelected = new NativeButton("Dispatch Selected",
+                                AssignmentResourcesPanel.this::dispatchSelectedResources));
+                        dispatchSelected.addStyleName("dispatch");
+                        dispatchSelected.setDisableOnClick(true);
+                        dispatchSelected.setWidth("100%");
+
+                        addComponent(dispatchReserved = new NativeButton("Dispatch Reserved",
+                                AssignmentResourcesPanel.this::dispatchReservedResources));
+                        dispatchReserved.addStyleName("dispatch");
+                        dispatchReserved.setDisableOnClick(true);
+                        dispatchReserved.setWidth("100%");
+
+                        addComponent(changeState = new Button("Change State",
+                                AssignmentResourcesPanel.this::changeState));
+                        changeState.setDisableOnClick(true);
+                        changeState.setWidth("100%");
+                        setExpandRatio(changeState, 1f);
+                        setComponentAlignment(changeState, Alignment.BOTTOM_LEFT);
+                    }
+                });
             }
         });
     }
@@ -117,9 +159,13 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
     void setAssignmentModel(AssignmentModel assignmentModel) {
         this.assignmentModel = assignmentModel;
         assignedResourcesContainer.setAssignmentModel(assignmentModel);
+        ((Property.ValueChangeNotifier) assignmentModel.isClosed()).addValueChangeListener(event -> {
+            updateComponentStates();
+        });
+        updateComponentStates();
     }
 
-    Collection<Resource> getSelectedAssignedResources() {
+    private Collection<Resource> getSelectedAssignedResources() {
         return assignedResourcesTable.getCurrentSelection().stream().map(ResourceStatus::getResource).collect(Collectors.toSet());
     }
 
@@ -141,6 +187,51 @@ class AssignmentResourcesPanel extends HorizontalSplitPanel {
             );
         } finally {
             remove.setEnabled(true);
+        }
+    }
+
+    private void dispatchAllResources(Button.ClickEvent clickEvent) {
+        try {
+            dispatchService.dispatchAllResources(assignmentModel.assignment().getValue());
+        } finally {
+            dispatchAll.setEnabled(true);
+        }
+    }
+
+    private void dispatchSelectedResources(Button.ClickEvent clickEvent) {
+        try {
+            dispatchService.dispatchSelectedResources(assignmentModel.assignment().getValue(), getSelectedAssignedResources());
+        } finally {
+            dispatchSelected.setEnabled(true);
+        }
+    }
+
+    private void dispatchReservedResources(Button.ClickEvent clickEvent) {
+        try {
+            dispatchService.dispatchAllReservedResources(assignmentModel.assignment().getValue());
+        } finally {
+            dispatchReserved.setEnabled(true);
+        }
+    }
+
+    private void changeState(Button.ClickEvent clickEvent) {
+        try {
+            Collection<Resource> selection = getSelectedAssignedResources();
+            if (selection.size() == 1) {
+                changeResourceStatusWindow.open(getUI(), selection.iterator().next());
+            }
+        } finally {
+            changeState.setEnabled(true);
+        }
+    }
+
+    private void updateComponentStates() {
+        if (assignmentModel.isClosed().getValue()) {
+            setEnabled(false);
+        } else {
+            final Collection<Resource> selectedAssignedResources = getSelectedAssignedResources();
+            changeState.setEnabled(selectedAssignedResources.size() == 1);
+            dispatchSelected.setEnabled(selectedAssignedResources.size() > 0);
         }
     }
 }

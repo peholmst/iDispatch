@@ -36,9 +36,9 @@ public interface AssignmentService {
 
     /**
      * Closes the assignment and fires an {@link net.pkhsolutions.idispatch.boundary.events.AssignmentClosed} event. If
-     * the assignment is already closed, or there are still resources assigned to the assignment, nothing will happen.
+     * the assignment is already closed, or there are still resources assigned to the assignment, nothing happens and false is returned.
      */
-    void closeAssignment(Assignment assignment);
+    boolean closeAssignment(Assignment assignment);
 
     /**
      * Finds all currently open assignments.

@@ -11,7 +11,7 @@ import org.vaadin.spring.UIScope;
 import org.vaadin.spring.VaadinComponent;
 
 import javax.annotation.PostConstruct;
-import java.util.Locale;
+import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 @VaadinComponent
 @UIScope
-class ChangeResourceStatusWindow extends Window {
+public class ChangeResourceStatusWindow extends Window {
 
     @Autowired
     ResourceStatusService resourceStatusService;
@@ -66,12 +66,19 @@ class ChangeResourceStatusWindow extends Window {
         this.resource = checkNotNull(resource);
         resourceName.setValue(resource.getCallSign());
         stateButtons.removeAllComponents();
-        resourceStatusService.findCurrentStatus(resource).ifPresent(status -> status.getManualValidNextStates().forEach(this::createResourceStateButton));
+        resourceStatusService.findCurrentStatus(resource).ifPresent(status -> sortStates(status.getManualValidNextStates()).forEach(this::createResourceStateButton));
         ui.addWindow(this);
     }
 
+    private List<ResourceState> sortStates(Collection<ResourceState> statesCollection) {
+        ArrayList<ResourceState> list = new ArrayList<>(statesCollection);
+        Collections.sort(list);
+        return list;
+    }
+
     private void createResourceStateButton(ResourceState resourceState) {
-        final Button stateButton = new Button(resourceStateToStringConverter.convertToPresentation(resourceState, String.class, Locale.getDefault()));
+        final NativeButton stateButton = new NativeButton(resourceStateToStringConverter.convertToPresentation(resourceState, String.class, Locale.getDefault()));
+        stateButton.addStyleName("resource-state");
         stateButton.addStyleName("state-" + resourceState.toString().toLowerCase());
         stateButton.setDisableOnClick(true);
         stateButton.addClickListener((event) -> {

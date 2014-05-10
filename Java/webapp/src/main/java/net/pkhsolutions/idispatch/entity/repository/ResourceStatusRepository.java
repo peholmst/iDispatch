@@ -15,6 +15,8 @@ public interface ResourceStatusRepository extends JpaRepository<ResourceStatus, 
 
     ResourceStatus findByResource(Resource resource);
 
+    List<ResourceStatus> findByAssignment(Assignment assignment);
+
     @Query("select rs from ResourceStatus rs where rs.resource.active = TRUE and rs.available = TRUE order by rs.resource.callSign")
     List<ResourceStatus> findByActiveTrueAndAvailableTrue();
 

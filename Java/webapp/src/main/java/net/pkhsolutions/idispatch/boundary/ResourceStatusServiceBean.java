@@ -86,6 +86,12 @@ class ResourceStatusServiceBean extends AbstractServiceBean implements ResourceS
     }
 
     @Override
+    public void clearAssignmentFromAllResources(Assignment assignment) {
+        logger.debug("Attempting to clear the assignment from all resources associated with {}", assignment);
+        resourceStatusRepository.findByAssignment(assignment).forEach(status -> clearResourceAssignment(status.getResource()));
+    }
+
+    @Override
     public List<Resource> getResourcesAssignedToAssignment(Assignment assignment) {
         logger.debug("Looking up resources assigned to {}", assignment);
         return getStatusOfResourcesAssignedToAssignment(assignment)

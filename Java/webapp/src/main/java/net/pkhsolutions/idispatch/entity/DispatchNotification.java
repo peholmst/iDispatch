@@ -17,7 +17,7 @@ import static java.util.Collections.unmodifiableSet;
 public class DispatchNotification extends AbstractTimestampedEntity {
 
     @ManyToMany
-    @JoinTable(name = "dispatched_notification_resources",
+    @JoinTable(name = "dispatch_notification_assigned_resources",
             joinColumns = @JoinColumn(name = "dispatch_notification_id"),
             inverseJoinColumns = @JoinColumn(name = "resource_id"))
     private Set<Resource> assignedResources;

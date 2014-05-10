@@ -60,19 +60,30 @@ class AssignmentServiceBean extends AbstractServiceBean implements AssignmentSer
     }
 
     @Override
-    public void closeAssignment(Assignment assignment) {
+    public boolean closeAssignment(Assignment assignment) {
+        return closeAssignment(assignment.getId());
+    }
+
+    private boolean closeAssignment(Long assignmentId) {
+        Assignment assignment = assignmentRepository.findOne(assignmentId);
+        if (assignment == null) {
+            logger.debug("Could not close assignment - no such assignment ID: {}", assignmentId);
+            return false;
+        }
         logger.debug("Closing assignment {}", assignment);
         if (assignment.isClosed()) {
             logger.debug("Assignment {} is already closed, ignoring", assignment);
-            return;
+            return false;
         }
         if (!resourceStatusService.getStatusOfResourcesAssignedToAssignment(assignment).isEmpty()) {
             logger.debug("Resources are still assigned to assignment {}, ignoring", assignment);
-            return;
+            return false;
         }
         assignment.setClosed(new Date());
         final Assignment closedAssignment = getTxTemplate().execute(status -> assignmentRepository.saveAndFlush(assignment));
+        resourceStatusService.clearAssignmentFromAllResources(closedAssignment);
         getApplicationContext().publishEvent(new AssignmentClosed(this, closedAssignment));
+        return true;
     }
 
     @Override

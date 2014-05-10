@@ -55,6 +55,12 @@ public interface ResourceStatusService {
     void clearResourceAssignment(Resource resource);
 
     /**
+     * Same as {@link #clearResourceAssignment(net.pkhsolutions.idispatch.entity.Resource)} , but for all resources
+     * associated with the specified assignment.
+     */
+    void clearAssignmentFromAllResources(Assignment assignment);
+
+    /**
      * Finds all resources that are currently assigned to the specified assignment.
      *
      * @see net.pkhsolutions.idispatch.entity.ResourceStatus#isAssigned()

@@ -139,11 +139,11 @@ class AssignmentModel implements UIAttachable {
         return address;
     }
 
-    public AssignmentProperty<Boolean> isClosed() {
+    public Property<Boolean> isClosed() {
         return isClosed;
     }
 
-    public AssignmentProperty<Boolean> isOpen() {
+    public Property<Boolean> isOpen() {
         return isOpen;
     }
 
