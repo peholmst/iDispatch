@@ -2,18 +2,11 @@ package net.pkhsolutions.idispatch.control;
 
 import https.webservice_aspsms_com.aspsmsx2.ASPSMSX2;
 import https.webservice_aspsms_com.aspsmsx2.ASPSMSX2Soap;
-import net.pkhsolutions.idispatch.boundary.events.DispatchNotificationReceived;
 import net.pkhsolutions.idispatch.boundary.events.DispatchNotificationSent;
 import net.pkhsolutions.idispatch.entity.DispatchNotification;
-import net.pkhsolutions.idispatch.entity.Receipt;
 import net.pkhsolutions.idispatch.entity.Resource;
 import net.pkhsolutions.idispatch.entity.SmsDestination;
-import net.pkhsolutions.idispatch.entity.repository.ReceiptRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -24,15 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-class SmsDispatcher implements ApplicationListener<DispatchNotificationSent> {
-
-    private final Logger logger = LoggerFactory.getLogger(getClass());
-
-    @Autowired
-    ReceiptRepository receiptRepository;
-
-    @Autowired
-    ApplicationContext applicationContext;
+class SmsDispatcher extends AbstractDispatcher {
 
     @Autowired
     Environment environment;
@@ -88,11 +73,7 @@ class SmsDispatcher implements ApplicationListener<DispatchNotificationSent> {
                     messageText
             );
             if (resultCode.equals("StatusCode:1")) {
-                destinations.forEach(destination -> {
-                    logger.debug("Storing receipt for destination {} and notification {}", destination, notification);
-                    final Receipt receipt = receiptRepository.saveAndFlush(new Receipt(destination, notification));
-                    applicationContext.publishEvent(new DispatchNotificationReceived(this, receipt));
-                });
+                destinations.forEach(destination -> createReceipt(destination, notification));
             } else {
                 logger.warn("SMS messages were not successfully sent: {}", resultCode);
             }
@@ -103,13 +84,9 @@ class SmsDispatcher implements ApplicationListener<DispatchNotificationSent> {
 
     private String buildMessageText(DispatchNotification notification) {
         final StringBuilder sb = new StringBuilder();
-        if (notification.getMunicipality() != null) {
-            sb.append(notification.getMunicipality().getName());
-            sb.append(",");
-        }
-        if (notification.getAssignmentType() != null) {
-            sb.append(notification.getAssignmentType().getCode());
-        }
+        sb.append(notification.getMunicipality().getName());
+        sb.append(",");
+        sb.append(notification.getAssignmentType().getCode());
         sb.append(notification.getUrgency());
         sb.append(",");
         sb.append(notification.getAddress());
