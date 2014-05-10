@@ -38,7 +38,6 @@ public class ChangeResourceStatusWindow extends Window {
         setModal(true);
         setResizable(false);
         setCaption("Change State");
-        center();
 
         setContent(new VerticalLayout() {{
             setMargin(true);
@@ -68,6 +67,8 @@ public class ChangeResourceStatusWindow extends Window {
         stateButtons.removeAllComponents();
         resourceStatusService.findCurrentStatus(resource).ifPresent(status -> sortStates(status.getManualValidNextStates()).forEach(this::createResourceStateButton));
         ui.addWindow(this);
+        center();
+        focus();
     }
 
     private List<ResourceState> sortStates(Collection<ResourceState> statesCollection) {

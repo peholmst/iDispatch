@@ -181,6 +181,7 @@ public abstract class AbstractCrudView<E extends AbstractEntity, S extends Manag
         window.setResizable(false);
         window.setModal(true);
         getUI().addWindow(window);
+        window.focus();
     }
 
     protected boolean supportsDelete() {

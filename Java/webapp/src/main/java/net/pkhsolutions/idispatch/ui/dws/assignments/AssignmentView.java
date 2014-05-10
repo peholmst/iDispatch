@@ -79,7 +79,9 @@ public class AssignmentView extends Panel implements View {
 
     private void closeAssignment(Button.ClickEvent clickEvent) {
         try {
-            assignmentService.closeAssignment(assignmentModel.assignment().getValue());
+            if (!assignmentService.closeAssignment(assignmentModel.assignment().getValue())) {
+                Notification.show("Could not close assignment", "There are still resources attached to this assignment", Notification.Type.HUMANIZED_MESSAGE);
+            }
         } finally {
             close.setEnabled(true);
         }
