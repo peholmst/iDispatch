@@ -1,5 +1,7 @@
 package net.pkhsolutions.idispatch.entity;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,6 +25,7 @@ public abstract class Destination extends AbstractLockableEntity implements Deac
     @JoinTable(name = "destination_resources",
             joinColumns = @JoinColumn(name = "destination_id"),
             inverseJoinColumns = @JoinColumn(name = "resource_id"))
+    @NotEmpty(message = "Please select at least one resource")
     private Set<Resource> resources = new HashSet<>();
 
     public Set<Resource> getResources() {

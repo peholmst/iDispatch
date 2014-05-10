@@ -1,5 +1,7 @@
 package net.pkhsolutions.idispatch.entity;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +15,7 @@ public class SmsDestination extends Destination {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "sms_destination_phone_numbers")
+    @NotEmpty(message = "Please enter at least one phone number")
     private Set<String> phoneNumbers = new HashSet<>();
 
     public Set<String> getPhoneNumbers() {

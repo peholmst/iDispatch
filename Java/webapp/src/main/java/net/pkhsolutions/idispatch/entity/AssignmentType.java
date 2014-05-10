@@ -1,6 +1,7 @@
 package net.pkhsolutions.idispatch.entity;
 
 import com.google.common.base.Objects;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,8 +21,10 @@ public class AssignmentType extends AbstractLockableEntity implements Deactivata
     public static final String PROP_FORMATTED_DESCRIPTION = "formattedDescription";
 
     @Column(name = "code", unique = true, nullable = false)
+    @NotBlank(message = "Please enter a code")
     private String code = "";
     @Column(name = "description", nullable = false)
+    @NotBlank(message = "Please enter a description")
     private String description = "";
     @Column(name = "active", nullable = false)
     private boolean active = true;

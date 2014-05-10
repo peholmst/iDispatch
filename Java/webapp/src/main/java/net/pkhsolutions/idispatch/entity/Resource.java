@@ -1,8 +1,10 @@
 package net.pkhsolutions.idispatch.entity;
 
 import com.google.common.base.Objects;
+import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 import static com.google.common.base.Strings.nullToEmpty;
 
@@ -17,9 +19,11 @@ public class Resource extends AbstractLockableEntity implements Comparable<Resou
     public static final String PROP_TYPE = "type";
 
     @Column(name = "call_sign", unique = true, nullable = false)
+    @NotBlank(message = "Please enter a call sign")
     private String callSign = "";
     @ManyToOne(optional = false)
     @JoinColumn(name = "type_id", nullable = false)
+    @NotNull(message = "Please select a type")
     private ResourceType type;
     @Column(name = "active", nullable = false)
     private boolean active = true;

@@ -1,5 +1,7 @@
 package net.pkhsolutions.idispatch.entity;
 
+import org.hibernate.validator.constraints.NotBlank;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
@@ -16,6 +18,7 @@ public class Municipality extends AbstractLockableEntity implements Deactivatabl
     public static final String PROP_NAME = "name";
 
     @Column(name = "name", nullable = false, unique = true)
+    @NotBlank(message = "Please enter a name")
     private String name = "";
     @Column(name = "active", nullable = false)
     private boolean active = true;
