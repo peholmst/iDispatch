@@ -98,7 +98,7 @@ class AssignmentTableView extends VerticalLayout implements View {
 
     @EventBusListenerMethod
     private void onAssignmentEvent(AssignmentEvent event) {
-        refresh();
+        getUI().access(this::refresh);
     }
 
     @Override
