@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.validation.Validation;
@@ -17,8 +18,9 @@ import javax.validation.Validator;
  */
 @EnableAutoConfiguration
 @EnableJpaRepositories
-@EnableTransactionManagement(proxyTargetClass = true)
+@EnableTransactionManagement
 @EnableAsync
+@EnableScheduling
 @ComponentScan
 @Configuration
 public class Application {

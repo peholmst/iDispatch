@@ -66,8 +66,14 @@ public abstract class AbstractForm<E extends AbstractEntity> extends VerticalLay
     }
 
     protected void closeWindow() {
-        if (getParent() instanceof Window) {
-            ((Window) getParent()).close();
+        closeIfWindow(getParent());
+    }
+
+    private void closeIfWindow(Component parent) {
+        if (parent instanceof Window) {
+            ((Window) parent).close();
+        } else if (parent != null) {
+            closeIfWindow(parent.getParent());
         }
     }
 

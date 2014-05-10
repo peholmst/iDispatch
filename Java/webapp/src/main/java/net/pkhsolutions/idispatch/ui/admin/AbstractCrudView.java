@@ -240,7 +240,7 @@ public abstract class AbstractCrudView<E extends AbstractEntity, S extends Manag
     }
 
     @FunctionalInterface
-    protected interface SaveCallback<E> {
+    public interface SaveCallback<E> {
         void save(E entity) throws ValidationFailedException;
     }
 }

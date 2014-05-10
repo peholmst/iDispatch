@@ -6,6 +6,9 @@ import java.util.Collection;
 
 public interface RunboardDispatcher {
 
-    Collection<DispatchNotification> dequeDispatchNotifications(String runboardKey);
+    Collection<DispatchNotification> getDispatchNotifications(String runboardKey);
 
+    void acknowledgeDispatchNotification(String runboardKey, Long notificationId);
+
+    void cleanUp();
 }

@@ -43,9 +43,9 @@ public class DestinationsView extends AbstractCrudView<Destination, DestinationM
 
     @Override
     protected void openCreateWindow(SaveCallback<Destination> saveCallback) {
-        final SmsDestinationForm form = createSmsDestinationForm();
-        form.init(new SmsDestination(), saveCallback);
-        openWindow("Add SMS Destination", form);
+        final NewDestinationForm form = applicationContext.getBean(NewDestinationForm.class);
+        form.init(saveCallback);
+        openWindow("Add Destination", form);
     }
 
     @Override
@@ -54,11 +54,19 @@ public class DestinationsView extends AbstractCrudView<Destination, DestinationM
             final SmsDestinationForm form = createSmsDestinationForm();
             form.init((SmsDestination) entity, saveCallback);
             openWindow("Edit SMS Destination", form);
+        } else if (entity instanceof RunboardDestination) {
+            final RunboardDestinationForm form = createRunboardDestinationForm();
+            form.init((RunboardDestination) entity, saveCallback);
+            openWindow("Edit Runboard Destination", form);
         }
     }
 
     private SmsDestinationForm createSmsDestinationForm() {
         return applicationContext.getBean(SmsDestinationForm.class);
+    }
+
+    private RunboardDestinationForm createRunboardDestinationForm() {
+        return applicationContext.getBean(RunboardDestinationForm.class);
     }
 
     @Override
