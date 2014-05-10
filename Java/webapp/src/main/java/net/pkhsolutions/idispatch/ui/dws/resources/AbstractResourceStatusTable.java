@@ -33,10 +33,10 @@ public abstract class AbstractResourceStatusTable extends Table {
         setColumnHeader(ResourceStatus.PROP_STATE, "State");
         setColumnHeader(ResourceStatus.PROP_TIMESTAMP, "Last changed");
         setColumnHeader(AbstractResourceStatusContainer.NESTPROP_RESOURCE_TYPE, "Type");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ID, "Ticket No");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_TYPE, "Ticket Type");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_MUNICIPALITY, "Ticket Municipality");
-        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ADDRESS, "Ticket Address");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ID, "Assignment No");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_TYPE, "Assignment Type");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_MUNICIPALITY, "Assignment Municipality");
+        setColumnHeader(AbstractResourceStatusContainer.NESTPROP_ASSIGNMENT_ADDRESS, "Assignment Address");
     }
 
     @SuppressWarnings("unchecked")

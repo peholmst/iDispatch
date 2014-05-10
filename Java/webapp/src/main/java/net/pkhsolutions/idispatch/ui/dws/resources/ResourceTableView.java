@@ -21,7 +21,7 @@ import java.util.Optional;
  */
 @VaadinView(name = ResourceTableView.VIEW_NAME, ui = DwsUI.class)
 @UIScope
-public class ResourceTableView extends VerticalLayout implements View {
+class ResourceTableView extends VerticalLayout implements View {
 
     public static final String VIEW_NAME = "resourceTable";
 
@@ -74,7 +74,7 @@ public class ResourceTableView extends VerticalLayout implements View {
                 setDisableOnClick(true);
                 setEnabled(false);
             }});
-            addComponent(openAssignment = new Button("Open Assignment", ResourceTableView.this::openTicket) {{
+            addComponent(openAssignment = new Button("Open Assignment", ResourceTableView.this::openAssignment) {{
                 setDisableOnClick(true);
                 setEnabled(false);
             }});
@@ -92,7 +92,7 @@ public class ResourceTableView extends VerticalLayout implements View {
         changeState.setEnabled(true);
     }
 
-    private void openTicket(Button.ClickEvent clickEvent) {
+    private void openAssignment(Button.ClickEvent clickEvent) {
         getSelection()
                 .filter((selection) -> selection.getAssignment() != null)
                 .ifPresent((selection) -> AssignmentView.openAssignment(selection.getAssignment().getId()));

@@ -10,6 +10,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import net.pkhsolutions.idispatch.ui.common.ErrorView;
 import net.pkhsolutions.idispatch.ui.dws.assignments.OpenAssignmentCommand;
+import net.pkhsolutions.idispatch.ui.dws.assignments.ShowAssignmentTableCommand;
 import net.pkhsolutions.idispatch.ui.dws.resources.ShowResourceTableCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.vaadin.spring.VaadinUI;
@@ -32,6 +33,9 @@ public class DwsUI extends UI {
 
     @Autowired
     ShowResourceTableCommand showResourceTableCommand;
+
+    @Autowired
+    ShowAssignmentTableCommand showAssignmentTableCommand;
 
     private MenuBar menuBar;
 
@@ -65,7 +69,7 @@ public class DwsUI extends UI {
         assignment.addItem("Open New Assignment", openAssignmentCommand);
 
         final MenuBar.MenuItem viewMenu = menuBar.addItem("View", null);
-//        viewMenu.addItem("Assignments", null);
+        viewMenu.addItem("Assignment Table", showAssignmentTableCommand);
         viewMenu.addItem("Resource Table", showResourceTableCommand);
 
 //        final MenuBar.MenuItem accountMenu = menuBar.addItem("Account", null);
