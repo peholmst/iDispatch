@@ -45,7 +45,7 @@ class RunboardDispatcherBean extends AbstractDispatcher implements RunboardDispa
 
     @Override
     public Collection<DispatchNotification> getDispatchNotifications(String runboardKey) {
-        logger.debug("Looking up dispatch notifications for runboard {}", runboardKey);
+        logger.trace("Looking up dispatch notifications for runboard {}", runboardKey);
         Optional<RunboardDestination> runboard = getDestinationByKey(runboardKey);
         if (runboard.isPresent()) {
             return getDispatchNotifications(runboard.get());
