@@ -20,7 +20,6 @@ import org.vaadin.spring.events.EventBusListenerMethod;
 import org.vaadin.spring.navigator.VaadinView;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.util.Optional;
 
 @VaadinView(name = AssignmentTableView.VIEW_NAME, ui = DwsUI.class)
@@ -87,13 +86,19 @@ class AssignmentTableView extends VerticalLayout implements View {
             setEnabled(false);
         }});
         setComponentAlignment(openAssignment, Alignment.BOTTOM_RIGHT);
-        eventBus.subscribe(this);
         refresh();
     }
 
-    @PreDestroy
-    void destroy() {
+    @Override
+    public void attach() {
+        super.attach();
+        eventBus.subscribe(this);
+    }
+
+    @Override
+    public void detach() {
         eventBus.unsubscribe(this);
+        super.detach();
     }
 
     @EventBusListenerMethod
@@ -103,6 +108,7 @@ class AssignmentTableView extends VerticalLayout implements View {
 
     @Override
     public void enter(ViewChangeListener.ViewChangeEvent event) {
+        refresh();
     }
 
     private void refresh() {
