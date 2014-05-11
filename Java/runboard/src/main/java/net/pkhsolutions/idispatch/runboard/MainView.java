@@ -1,26 +1,16 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import javax.swing.Timer;
 import net.pkhsolutions.idispatch.rest.client.DispatcherClientException;
 import net.pkhsolutions.idispatch.rest.client.Notification;
+
+import javax.swing.*;
+import javax.swing.Timer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MainView extends JFrame implements Observer {
 
@@ -28,9 +18,10 @@ public class MainView extends JFrame implements Observer {
     private final Timer cardFlipperTimer;
     private final Map<Notification, NotificationView> views = new HashMap<>();
     private final Language language;
+    private final boolean lowRes;
     private Model model;
     private JTabbedPane notifications;
-    private final boolean lowRes;
+    private JDialog errorDialog;
 
     public MainView(Language language, boolean lowRes) {
         super("iDispatch Runboard");
@@ -64,7 +55,6 @@ public class MainView extends JFrame implements Observer {
         }
         update(model, null);
     }
-    private JDialog errorDialog;
 
     private void showErrorMessage(DispatcherClientException.ErrorCode errorCode) {
         if (errorDialog != null) {

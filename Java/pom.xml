@@ -20,17 +20,9 @@
     </properties>
 
     <modules>
-        <!--        <module>idispatch-dws</module>
-                <module>idispatch-entity</module>
-                <module>idispatch-ejb</module>
-                <module>idispatch-common-ui</module>
-                <module>idispatch-ear</module>
-                <module>idispatch-rest</module>
-                <module>idispatch-runboard</module>
-                <module>idispatch-rest-client</module>
-                <module>idispatch-smsgateway</module>-->
         <module>webapp</module>
         <module>aspsms-integration</module>
+        <module>runboard</module>
     </modules>
 
     <dependencyManagement>
@@ -89,6 +81,11 @@
                 <groupId>com.vaadin.tapio</groupId>
                 <artifactId>googlemaps</artifactId>
                 <version>0.8.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.1.0.CR1</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

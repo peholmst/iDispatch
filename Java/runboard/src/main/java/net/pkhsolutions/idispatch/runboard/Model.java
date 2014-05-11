@@ -1,31 +1,22 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Observable;
-import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.pkhsolutions.idispatch.rest.client.DispatcherClientException;
 import net.pkhsolutions.idispatch.rest.client.Notification;
 import net.pkhsolutions.idispatch.rest.client.Notifications;
 import net.pkhsolutions.idispatch.rest.client.ServerPoller;
 
+import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Model extends Observable implements ServerPoller.Callback {
 
     private static final Logger LOG = Logger.getLogger(Model.class.getName());
-    private DispatcherClientException.ErrorCode errorCode;
     private final List<Notification> notifications = new ArrayList<>();
     private final Set<Long> seenNotifications = new HashSet<>();
     private final Set<String> concernedResources;
     private final Timer expirationTimer = new Timer();
+    private DispatcherClientException.ErrorCode errorCode;
 
     public Model(Set<String> concernedResources) {
         if (LOG.isLoggable(Level.INFO)) {
@@ -44,7 +35,7 @@ public class Model extends Observable implements ServerPoller.Callback {
 
     private synchronized void removeExpiredNotifications() {
         Calendar now = Calendar.getInstance();
-        for (Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
+        for (Iterator<Notification> it = notifications.iterator(); it.hasNext(); ) {
             Notification notification = it.next();
             if (isExpired(now, notification)) {
                 LOG.log(Level.INFO, "Removing expired notification {0}", notification);
@@ -62,6 +53,10 @@ public class Model extends Observable implements ServerPoller.Callback {
         return now.after(expirationDate);
     }
 
+    public synchronized DispatcherClientException.ErrorCode getErrorCode() {
+        return errorCode;
+    }
+
     @Override
     public synchronized void setErrorCode(DispatcherClientException.ErrorCode errorCode) {
         if (!Objects.equals(this.errorCode, errorCode)) {
@@ -72,16 +67,12 @@ public class Model extends Observable implements ServerPoller.Callback {
         notifyObservers();
     }
 
-    public synchronized DispatcherClientException.ErrorCode getErrorCode() {
-        return errorCode;
-    }
-
     public synchronized boolean hasError() {
         return errorCode != null;
     }
 
     private void addNotifications(Notifications notifications) {
-        for (Iterator<Notification> it = notifications.getNotificationsForResources(concernedResources).iterator(); it.hasNext();) {
+        for (Iterator<Notification> it = notifications.getNotificationsForResources(concernedResources).iterator(); it.hasNext(); ) {
             Notification notificationToAdd = it.next();
             if (!seenNotifications.contains(notificationToAdd.getId())) {
                 LOG.log(Level.INFO, "Adding notification {0} to model", notificationToAdd);

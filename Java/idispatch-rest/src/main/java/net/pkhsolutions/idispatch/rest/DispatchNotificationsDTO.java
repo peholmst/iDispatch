@@ -5,7 +5,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import net.pkhsolutions.idispatch.entity.DispatchNotification;
+import net.pkhsolutions.idispatch.domain.DispatchNotification;
 
 @XmlRootElement(name = "notifications")
 @XmlAccessorType(XmlAccessType.FIELD)

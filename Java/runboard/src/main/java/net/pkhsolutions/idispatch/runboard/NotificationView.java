@@ -1,15 +1,14 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import java.awt.BorderLayout;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import javax.swing.JEditorPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
 import net.pkhsolutions.idispatch.rest.client.Notification;
 import org.apache.commons.lang.StringEscapeUtils;
+
+import javax.swing.*;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
+import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
 
 public class NotificationView extends JPanel {
 
@@ -102,7 +101,7 @@ public class NotificationView extends JPanel {
         sb.append("</div>");
 
         sb.append("<div class=\"resources\">");
-        for (Iterator<String> resource = notification.getTicketResources().iterator(); resource.hasNext();) {
+        for (Iterator<String> resource = notification.getTicketResources().iterator(); resource.hasNext(); ) {
             sb.append(StringEscapeUtils.escapeHtml(resource.next()));
             if (resource.hasNext()) {
                 sb.append(", ");

@@ -1,16 +1,7 @@
-package net.pkhsolutions.idispatch.rest.client;
+package net.pkhsolutions.idispatch.runboard.client;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.*;
+import java.util.*;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -44,6 +35,10 @@ public class Notification {
     private String description;
 
     protected Notification() {
+    }
+
+    private static String nullToEmptyString(String s) {
+        return s == null ? "" : s;
     }
 
     /*    public Notification(Long id, Calendar timestamp, Set<String> resources, String municipalitySv, String municipalityFi, Long ticketId, String address, String ticketTypeCode, String ticketTypeDescriptionSv, String ticketTypeDescriptionFi, Urgency urgency, String description) {
@@ -126,10 +121,6 @@ public class Notification {
             }
         }
         return false;
-    }
-
-    private static String nullToEmptyString(String s) {
-        return s == null ? "" : s;
     }
 
     @Override

@@ -17,7 +17,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import net.pkhsolutions.idispatch.ejb.tickets.DispatchNotificationEJB;
 import net.pkhsolutions.idispatch.ejb.tickets.NoSuchReceiverException;
-import net.pkhsolutions.idispatch.entity.DispatchNotification;
+import net.pkhsolutions.idispatch.domain.DispatchNotification;
 
 @Path("/dispatcher")
 @RequestScoped

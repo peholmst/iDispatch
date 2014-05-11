@@ -1,10 +1,9 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import javax.swing.JFrame;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import net.pkhsolutions.idispatch.rest.client.DispatcherClient;
 import net.pkhsolutions.idispatch.rest.client.ServerPoller;
+
+import javax.swing.*;
 
 public class App {
 
@@ -25,11 +24,6 @@ public class App {
         model.addObserver(new Alarm());
     }
 
-    void start() {
-        mainView.setVisible(true);
-        poller.start();
-    }
-
     public static void main(String[] args) throws Exception {
         UIManager.setLookAndFeel(
                 UIManager.getCrossPlatformLookAndFeelClassName());
@@ -39,5 +33,10 @@ public class App {
                 new App().start();
             }
         });
+    }
+
+    void start() {
+        mainView.setVisible(true);
+        poller.start();
     }
 }

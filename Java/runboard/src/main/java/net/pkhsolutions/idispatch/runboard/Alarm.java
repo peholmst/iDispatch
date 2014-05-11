@@ -1,5 +1,8 @@
 package net.pkhsolutions.idispatch.runboard;
 
+import net.pkhsolutions.idispatch.rest.client.Notification;
+
+import javax.sound.sampled.*;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Observable;
@@ -7,12 +10,6 @@ import java.util.Observer;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.UnsupportedAudioFileException;
-import net.pkhsolutions.idispatch.rest.client.Notification;
 
 public class Alarm implements Observer {
 
@@ -20,6 +17,7 @@ public class Alarm implements Observer {
     private AudioInputStream beepWav;
     private Clip alarmClip;
     private Clip beepClip;
+    private Set<Notification> seenNotifications = new HashSet<>();
 
     public Alarm() {
         try {
@@ -33,6 +31,14 @@ public class Alarm implements Observer {
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, "Error initializing sound system, no sounds will be played", ex);
         }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Alarm alarm = new Alarm();
+        alarm.soundAlarm();
+        Thread.sleep(3000);
+        alarm.soundAlarm();
+        System.in.read();
     }
 
     public void soundAlarm() {
@@ -52,7 +58,6 @@ public class Alarm implements Observer {
             Logger.getLogger(Alarm.class.getName()).log(Level.SEVERE, "Error playing beep", ex);
         }
     }
-    private Set<Notification> seenNotifications = new HashSet<>();
 
     @Override
     public void update(Observable o, Object arg) {
@@ -69,13 +74,5 @@ public class Alarm implements Observer {
         if (model.hasError()) {
             soundBeep();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        Alarm alarm = new Alarm();
-        alarm.soundAlarm();
-        Thread.sleep(3000);
-        alarm.soundAlarm();
-        System.in.read();
     }
 }

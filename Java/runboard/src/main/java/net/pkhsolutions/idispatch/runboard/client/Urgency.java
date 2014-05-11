@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.rest.client;
+package net.pkhsolutions.idispatch.runboard.client;
 
 public enum Urgency {
 

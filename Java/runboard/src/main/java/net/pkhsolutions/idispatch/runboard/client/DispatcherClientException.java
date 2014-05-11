@@ -1,13 +1,7 @@
-package net.pkhsolutions.idispatch.rest.client;
+package net.pkhsolutions.idispatch.runboard.client;
 
 public class DispatcherClientException extends Exception {
 
-    public enum ErrorCode {
-
-        INVALID_CREDENTIALS,
-        UNKNOWN_SERVER_ERROR,
-        COMMUNICATION_ERROR
-    }
     private final ErrorCode code;
 
     public DispatcherClientException(ErrorCode code) {
@@ -21,5 +15,12 @@ public class DispatcherClientException extends Exception {
 
     public ErrorCode getCode() {
         return code;
+    }
+
+    public enum ErrorCode {
+
+        INVALID_CREDENTIALS,
+        UNKNOWN_SERVER_ERROR,
+        COMMUNICATION_ERROR
     }
 }

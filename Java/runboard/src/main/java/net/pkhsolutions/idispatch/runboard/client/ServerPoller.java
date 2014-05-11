@@ -1,4 +1,4 @@
-package net.pkhsolutions.idispatch.rest.client;
+package net.pkhsolutions.idispatch.runboard.client;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,18 +9,10 @@ import java.util.logging.Logger;
 
 public class ServerPoller {
 
-    public interface Callback {
-
-        void clearErrorCode();
-
-        void setErrorCode(DispatcherClientException.ErrorCode errorCode);
-
-        void notificationsReceived(Notifications notifications);
-    }
     private static final Logger LOG = Logger.getLogger(ServerPoller.class.getName());
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private int pollIntervalMilliseconds;
-    private DispatcherClient client;
+    private RunboardRestClient client;
     private Callback callback;
     private Runnable checkForNotifications = new Runnable() {
         @Override
@@ -39,7 +31,7 @@ public class ServerPoller {
     };
     private ScheduledFuture<?> handle;
 
-    public ServerPoller(DispatcherClient client, Callback callback) {
+    public ServerPoller(RunboardRestClient client, Callback callback) {
         this.client = client;
         this.callback = callback;
         this.pollIntervalMilliseconds = client.getConfiguration().getPollingIntervalMilliseconds();
@@ -62,5 +54,14 @@ public class ServerPoller {
 
     public boolean isRunning() {
         return handle != null && !handle.isDone();
+    }
+
+    public interface Callback {
+
+        void clearErrorCode();
+
+        void setErrorCode(DispatcherClientException.ErrorCode errorCode);
+
+        void notificationsReceived(Notifications notifications);
     }
 }
