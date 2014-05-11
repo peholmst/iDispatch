@@ -19,7 +19,6 @@ public class DispatcherClientException extends Exception {
 
     public enum ErrorCode {
 
-        INVALID_CREDENTIALS,
         UNKNOWN_SERVER_ERROR,
         COMMUNICATION_ERROR
     }

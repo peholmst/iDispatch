@@ -1,23 +1,21 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import net.pkhsolutions.idispatch.rest.client.DispatcherClient;
-import net.pkhsolutions.idispatch.rest.client.ServerPoller;
+
+import net.pkhsolutions.idispatch.runboard.client.ServerPoller;
 
 import javax.swing.*;
 
 public class App {
 
     private MainView mainView;
-    private DispatcherClient client;
     private ServerPoller poller;
     private Model model;
 
     private App() {
-        Configuration configuration = new Configuration();
-        client = new DispatcherClient(configuration);
-        model = new Model(configuration.getConcernedResources());
-        poller = new ServerPoller(client, model);
-        mainView = new MainView(configuration.getLanguage(), configuration.isLowResolution());
+        final Configuration configuration = new Configuration();
+        model = new Model();
+        poller = new ServerPoller(configuration, model);
+        mainView = new MainView(configuration.isLowResolution());
         mainView.setModel(model);
         mainView.setUndecorated(configuration.isUndecorated());
         mainView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

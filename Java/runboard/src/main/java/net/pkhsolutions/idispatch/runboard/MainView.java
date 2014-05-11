@@ -1,41 +1,32 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import net.pkhsolutions.idispatch.rest.client.DispatcherClientException;
-import net.pkhsolutions.idispatch.rest.client.Notification;
+import net.pkhsolutions.idispatch.runboard.client.DispatcherClientException;
+import net.pkhsolutions.idispatch.runboard.client.Notification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class MainView extends JFrame implements Observer {
+class MainView extends JFrame implements Observer {
 
-    private static final Logger LOG = Logger.getLogger(MainView.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private final Timer cardFlipperTimer;
     private final Map<Notification, NotificationView> views = new HashMap<>();
-    private final Language language;
     private final boolean lowRes;
     private Model model;
     private JTabbedPane notifications;
     private JDialog errorDialog;
 
-    public MainView(Language language, boolean lowRes) {
+    MainView(boolean lowRes) {
         super("iDispatch Runboard");
         this.lowRes = lowRes;
         setExtendedState(MAXIMIZED_BOTH);
-        this.language = language;
         notifications = new JTabbedPane();
         add(notifications, BorderLayout.CENTER);
-        cardFlipperTimer = new Timer(10000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                flipCard();
-            }
-        });
+        cardFlipperTimer = new Timer(10000, e -> flipCard());
         cardFlipperTimer.start();
     }
 
@@ -61,7 +52,6 @@ public class MainView extends JFrame implements Observer {
             clearErrorMessage();
         }
 
-        System.out.println(errorCode);
         JPanel errorPanel = new JPanel();
         errorPanel.setBackground(Color.RED);
         errorPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
@@ -89,7 +79,7 @@ public class MainView extends JFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        LOG.info("Model updated");
+        logger.info("Model updated");
         if (model != null && model.hasError()) {
             showErrorMessage(model.getErrorCode());
         } else {
@@ -97,27 +87,21 @@ public class MainView extends JFrame implements Observer {
         }
         Set<Notification> notificationsToRemove = new HashSet<>(views.keySet());
         if (model != null) {
-            for (Notification n : model.getVisibleNotifications()) {
-                if (!notificationsToRemove.remove(n)) {
-                    addCard(n);
-                }
-            }
+            model.getVisibleNotifications().stream().filter(n -> !notificationsToRemove.remove(n)).forEach(this::addCard);
         }
-        for (Notification n : notificationsToRemove) {
-            removeCard(n);
-        }
+        notificationsToRemove.forEach(this::removeCard);
     }
 
     private void removeCard(Notification notification) {
-        LOG.log(Level.INFO, "Removing card for notification {0}", notification);
+        logger.info("Removing card for notification {}", notification);
         NotificationView view = views.remove(notification);
         notifications.remove(view);
     }
 
     private void addCard(Notification notification) {
-        LOG.log(Level.INFO, "Adding card for notification {0}", notification);
-        NotificationView view = new NotificationView(notification, language, lowRes);
+        logger.info("Adding card for notification {}", notification);
+        final NotificationView view = new NotificationView(notification, lowRes);
         views.put(notification, view);
-        notifications.addTab(String.format("Ticket %d (Notification %d)", notification.getTicketId(), notification.getId()), view);
+        notifications.addTab(String.format("Assignment %d (Notification %d)", notification.getAssignmentId(), notification.getId()), view);
     }
 }

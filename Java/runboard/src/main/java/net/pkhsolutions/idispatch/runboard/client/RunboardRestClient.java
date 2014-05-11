@@ -1,54 +1,65 @@
 package net.pkhsolutions.idispatch.runboard.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
-public class RunboardRestClient {
+class RunboardRestClient {
 
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private Configuration configuration;
     private RestTemplate restTemplate;
 
-    public RunboardRestClient(Configuration configuration) {
+    RunboardRestClient(Configuration configuration) {
         this.configuration = configuration;
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(1000);
         restTemplate = new RestTemplate();
     }
 
-    public Configuration getConfiguration() {
-        return configuration;
+    public static void main(String[] args) throws Exception {
+        new RunboardRestClient(new Configuration()).findNewNotifications();
     }
 
-    public List<Map<String, Object>> findNewNotifications() throws DispatcherClientException {
-        /*
+    @SuppressWarnings("unchecked")
+    List<Map<String, Object>> findNewNotifications() throws DispatcherClientException {
+        final URI uri = UriComponentsBuilder.fromHttpUrl(configuration.getUrl())
+                .path("/runboardNotifications")
+                .queryParam("runboardKey", configuration.getRunboardKey())
+                .build().toUri();
         try {
-            ClientResponse response = dispatcher
-                    .queryParam("id", receiverId)
-                    .queryParam("sc", securityCode)
-                    .accept(MediaType.APPLICATION_XML)
-                    .get(ClientResponse.class);
-
-            switch (response.getStatus()) {
-                case 403: // Forbidden
-                    throw new DispatcherClientException(DispatcherClientException.ErrorCode.INVALID_CREDENTIALS);
-                case 204: // No content
-                    return null;
-                case 200: // OK
-                    Notifications result = response.getEntity(Notifications.class);
-                    markAsSeen(result);
-                    return result;
-                default:
-                    LOG.log(Level.WARNING, "Unexpected server status code: {0}", response.getStatus());
-                    throw new DispatcherClientException(DispatcherClientException.ErrorCode.UNKNOWN_SERVER_ERROR);
+            ResponseEntity<List> result = restTemplate.getForEntity(uri, List.class);
+            if (result.getStatusCode() == HttpStatus.OK) {
+                final List<Map<String, Object>> notifications = (List<Map<String, Object>>) result.getBody();
+                notifications.forEach(map -> acknowledge(map.get("id")));
+                return (List<Map<String, Object>>) result.getBody();
+            } else {
+                logger.debug("Unexpected server status code: {}", result.getStatusCode());
+                throw new DispatcherClientException(DispatcherClientException.ErrorCode.UNKNOWN_SERVER_ERROR);
             }
-        } catch (UniformInterfaceException | ClientHandlerException e) {
-            LOG.log(Level.SEVERE, "Communication error", e);
-            throw new DispatcherClientException(DispatcherClientException.ErrorCode.COMMUNICATION_ERROR, e);
-        }  */
-        return null;
+        } catch (RestClientException ex) {
+            logger.debug("Communication error", ex);
+            throw new DispatcherClientException(DispatcherClientException.ErrorCode.COMMUNICATION_ERROR, ex);
+        }
     }
 
-    private void acknowledge(Long notificationId) {
-
+    private void acknowledge(Object notificationId) {
+        logger.info("Acknowledging notification {}", notificationId);
+        final URI uri = UriComponentsBuilder.fromHttpUrl(configuration.getUrl())
+                .path("/runboardAcknowledge")
+                .queryParam("runboardKey", configuration.getRunboardKey())
+                .queryParam("notification", notificationId)
+                .build().toUri();
+        ResponseEntity<Object> result = restTemplate.getForEntity(uri, Object.class);
+        logger.info("Return code: {}", result.getStatusCode());
     }
 }

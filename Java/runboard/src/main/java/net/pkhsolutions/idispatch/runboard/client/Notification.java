@@ -1,137 +1,65 @@
 package net.pkhsolutions.idispatch.runboard.client;
 
-import javax.xml.bind.annotation.*;
 import java.util.*;
 
-@XmlRootElement
-@XmlAccessorType(XmlAccessType.FIELD)
+@SuppressWarnings("unchecked")
 public class Notification {
 
-    @XmlAttribute
-    private Long id;
-    @XmlAttribute(name = "timestamp")
-    private Calendar timestamp;
-    @XmlElement(name = "resource")
-    private Set<String> resources;
-    @XmlElement(name = "ticketResource")
-    private Set<String> ticketResources;
-    @XmlElement
-    private String municipalitySv;
-    @XmlElement
-    private String municipalityFi;
-    @XmlAttribute
-    private Long ticketId;
-    @XmlElement
-    private String address;
-    @XmlElement
-    private String ticketTypeCode;
-    @XmlElement
-    private String ticketTypeDescriptionSv;
-    @XmlElement
-    private String ticketTypeDescriptionFi;
-    @XmlElement
-    private Urgency urgency;
-    @XmlElement
-    private String description;
+    private final Map<String, Object> notificationData;
 
-    protected Notification() {
+    public Notification(Map<String, Object> notificationData) {
+        this.notificationData = notificationData;
     }
 
-    private static String nullToEmptyString(String s) {
-        return s == null ? "" : s;
+    public Number getId() {
+        return (Number) notificationData.get("id");
     }
 
-    /*    public Notification(Long id, Calendar timestamp, Set<String> resources, String municipalitySv, String municipalityFi, Long ticketId, String address, String ticketTypeCode, String ticketTypeDescriptionSv, String ticketTypeDescriptionFi, Urgency urgency, String description) {
-     this.id = id;
-     this.timestamp = timestamp;
-     this.resources = resources;
-     this.municipalitySv = municipalitySv;
-     this.municipalityFi = municipalityFi;
-     this.ticketId = ticketId;
-     this.address = address;
-     this.ticketTypeCode = ticketTypeCode;
-     this.ticketTypeDescriptionSv = ticketTypeDescriptionSv;
-     this.ticketTypeDescriptionFi = ticketTypeDescriptionFi;
-     this.urgency = urgency;
-     this.description = description;
-     }*/
-    public Long getId() {
-        return id;
-    }
-
-    public Calendar getTimestamp() {
-        return timestamp;
+    public Date getTimestamp() {
+        return new Date((Long) notificationData.getOrDefault("timestamp", System.currentTimeMillis()));
     }
 
     public Collection<String> getResources() {
-        ArrayList<String> sortedResources = new ArrayList<>(resources);
-        Collections.sort(sortedResources);
-        return sortedResources;
+        return (Collection<String>) notificationData.getOrDefault("resources", Collections.emptyList());
     }
 
-    public Collection<String> getTicketResources() {
-        ArrayList<String> sortedResources = new ArrayList<>(ticketResources);
-        Collections.sort(sortedResources);
-        return sortedResources;
+    public Number getAssignmentId() {
+        return (Number) notificationData.getOrDefault("assignment_id", -1);
     }
 
-    public String getMunicipalitySv() {
-        return nullToEmptyString(municipalitySv);
+    public String getAssignmentTypeCode() {
+        return (String) notificationData.getOrDefault("assignment_type_code", "");
     }
 
-    public String getMunicipalityFi() {
-        return nullToEmptyString(municipalityFi);
+    public String getAssignmentTypeDescription() {
+        return (String) notificationData.getOrDefault("assignment_type_descr", "");
     }
 
-    public Long getTicketId() {
-        return ticketId;
+    public String getUrgency() {
+        return (String) notificationData.getOrDefault("urgency", "");
+    }
+
+    public String getMunicipality() {
+        return (String) notificationData.getOrDefault("municipality", "");
     }
 
     public String getAddress() {
-        return nullToEmptyString(address);
-    }
-
-    public String getTicketTypeCode() {
-        return nullToEmptyString(ticketTypeCode);
-    }
-
-    public String getTicketTypeDescriptionSv() {
-        return nullToEmptyString(ticketTypeDescriptionSv);
-    }
-
-    public String getTicketTypeDescriptionFi() {
-        return nullToEmptyString(ticketTypeDescriptionFi);
-    }
-
-    public Urgency getUrgency() {
-        return urgency;
+        return (String) notificationData.getOrDefault("address", "");
     }
 
     public String getDescription() {
-        return nullToEmptyString(description);
-    }
-
-    public boolean concernsAnyOf(Collection<String> resources) {
-        if (this.resources == null || this.resources.isEmpty()) {
-            return false;
-        }
-        for (String resource : resources) {
-            if (this.resources.contains(resource)) {
-                return true;
-            }
-        }
-        return false;
+        return (String) notificationData.getOrDefault("description", "");
     }
 
     @Override
     public String toString() {
-        return String.format("Notification[id = %s]", id);
+        return String.format("Notification[id = %s]", getId());
     }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 37 * hash + Objects.hashCode(this.id);
+        hash = 37 * hash + Objects.hashCode(this.getId());
         return hash;
     }
 
@@ -144,7 +72,7 @@ public class Notification {
             return false;
         }
         final Notification other = (Notification) obj;
-        if (!Objects.equals(this.id, other.id)) {
+        if (!Objects.equals(this.getId(), other.getId())) {
             return false;
         }
         return true;

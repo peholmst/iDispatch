@@ -1,6 +1,7 @@
 package net.pkhsolutions.idispatch.runboard;
 
-import net.pkhsolutions.idispatch.rest.client.Notification;
+
+import net.pkhsolutions.idispatch.runboard.client.Notification;
 
 import javax.sound.sampled.*;
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Alarm implements Observer {
+class Alarm implements Observer {
 
     private AudioInputStream alarmWav;
     private AudioInputStream beepWav;
@@ -19,7 +20,7 @@ public class Alarm implements Observer {
     private Clip beepClip;
     private Set<Notification> seenNotifications = new HashSet<>();
 
-    public Alarm() {
+    Alarm() {
         try {
             alarmWav = AudioSystem.getAudioInputStream(Alarm.class
                     .getResource("/sounds/alarm.wav"));
@@ -33,15 +34,7 @@ public class Alarm implements Observer {
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        Alarm alarm = new Alarm();
-        alarm.soundAlarm();
-        Thread.sleep(3000);
-        alarm.soundAlarm();
-        System.in.read();
-    }
-
-    public void soundAlarm() {
+    void soundAlarm() {
         try {
             alarmClip.stop();
             alarmClip.loop(8);
@@ -50,7 +43,7 @@ public class Alarm implements Observer {
         }
     }
 
-    public void soundBeep() {
+    void soundBeep() {
         try {
             beepClip.stop();
             beepClip.loop(1);
@@ -70,7 +63,6 @@ public class Alarm implements Observer {
             }
         }
         seenNotifications.removeAll(notificationsToDelete);
-
         if (model.hasError()) {
             soundBeep();
         }
