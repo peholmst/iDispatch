@@ -15,6 +15,8 @@ public interface ArchivedResourceStatusRepository extends JpaRepository<Archived
 
     List<ArchivedResourceStatus> findByAssignment(Assignment assignment, Pageable pageable);
 
+    List<ArchivedResourceStatus> findByAssignment(Assignment assignment);
+
     List<ArchivedResourceStatus> findByResource(Resource resource, Pageable pageable);
 
 }

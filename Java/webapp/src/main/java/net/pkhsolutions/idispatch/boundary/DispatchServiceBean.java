@@ -63,7 +63,7 @@ class DispatchServiceBean extends AbstractServiceBean implements DispatchService
 
     @Override
     public List<DispatchNotification> findDispatchNotificationsForAssignment(Assignment assignment) {
-        logger.debug("Looking up dispatch notifications for assignment {}", assignment);
+        logger.trace("Looking up dispatch notifications for assignment {}", assignment);
         return dispatchNotificationRepository.findByAssignment(assignment);
     }
 

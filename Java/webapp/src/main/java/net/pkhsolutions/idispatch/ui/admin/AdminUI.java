@@ -48,8 +48,6 @@ public class AdminUI extends UI {
         navigator.addProvider(viewProvider);
 
         addMenuItems(menuBar);
-
-        setPollInterval(300);
     }
 
     private void addMenuItems(MenuBar menuBar) {

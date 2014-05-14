@@ -61,11 +61,11 @@ public class Assignment extends AbstractLockableEntity {
         return closed;
     }
 
-    public boolean isOpen() {
+    public boolean isAssignmentOpen() {
         return closed == null;
     }
 
-    public boolean isClosed() {
+    public boolean isAssignmentClosed() {
         return closed != null;
     }
 

@@ -8,6 +8,7 @@ import net.pkhsolutions.idispatch.entity.repository.AssignmentRepository;
 import net.pkhsolutions.idispatch.utils.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -44,7 +45,7 @@ class AssignmentServiceBean extends AbstractServiceBean implements AssignmentSer
     @Override
     public UpdateResult<Assignment> updateAssignment(Assignment assignment) {
         logger.debug("Updating assignment {}", assignment);
-        if (assignment.isClosed()) {
+        if (assignment.isAssignmentClosed()) {
             logger.debug("Assignment {} is closed, ignoring", assignment);
             return new UpdateResult.NoChange<>(assignment);
         }
@@ -71,7 +72,7 @@ class AssignmentServiceBean extends AbstractServiceBean implements AssignmentSer
             return false;
         }
         logger.debug("Closing assignment {}", assignment);
-        if (assignment.isClosed()) {
+        if (assignment.isAssignmentClosed()) {
             logger.debug("Assignment {} is already closed, ignoring", assignment);
             return false;
         }
@@ -90,5 +91,15 @@ class AssignmentServiceBean extends AbstractServiceBean implements AssignmentSer
     public List<Assignment> findOpenAssignments() {
         logger.debug("Looking up open assignments");
         return assignmentRepository.findByClosedIsNull();
+    }
+
+    @Override
+    public List<Assignment> findClosedAssignments(Optional<Pageable> pageable) {
+        logger.debug("Looking up closed assignments");
+        if (pageable.isPresent()) {
+            return assignmentRepository.findByClosedIsNotNull(pageable.get());
+        } else {
+            return assignmentRepository.findByClosedIsNotNull();
+        }
     }
 }

@@ -22,7 +22,7 @@ import org.vaadin.spring.navigator.SpringViewProvider;
  */
 @VaadinUI(path = "/dws")
 @Theme(DwsTheme.THEME_NAME)
-@Widgetset("net.pkhsolutions.idispatch.dws.ui.DwsWidgetset")
+@Widgetset("net.pkhsolutions.idispatch.ui.dws.DwsWidgetset")
 public class DwsUI extends UI {
 
     @Autowired

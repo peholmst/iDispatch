@@ -2,6 +2,7 @@ package net.pkhsolutions.idispatch.boundary;
 
 import net.pkhsolutions.idispatch.entity.Assignment;
 import net.pkhsolutions.idispatch.utils.UpdateResult;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,4 +45,9 @@ public interface AssignmentService {
      * Finds all currently open assignments.
      */
     List<Assignment> findOpenAssignments();
+
+    /**
+     * Finds all closed assignments.
+     */
+    List<Assignment> findClosedAssignments(Optional<Pageable> pageable);
 }

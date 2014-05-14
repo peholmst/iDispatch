@@ -77,8 +77,8 @@ class AssignmentModel implements UIAttachable {
     private final AssignmentProperty<Date> opened = new AssignmentProperty<>(Date.class, Assignment::getOpened);
     private final AssignmentProperty<Date> closed = new AssignmentProperty<>(Date.class, Assignment::getClosed);
     private final AssignmentProperty<Long> id = new AssignmentProperty<>(Long.class, Assignment::getId);
-    private final AssignmentProperty<Boolean> isOpen = new AssignmentProperty<>(Boolean.class, Assignment::isOpen);
-    private final AssignmentProperty<Boolean> isClosed = new AssignmentProperty<>(Boolean.class, Assignment::isClosed);
+    private final AssignmentProperty<Boolean> isOpen = new AssignmentProperty<>(Boolean.class, Assignment::isAssignmentOpen);
+    private final AssignmentProperty<Boolean> isClosed = new AssignmentProperty<>(Boolean.class, Assignment::isAssignmentClosed);
 
     @Autowired
     AssignmentService assignmentService;
@@ -104,7 +104,7 @@ class AssignmentModel implements UIAttachable {
 
     public boolean isEditable() {
         Assignment assignment = assignment().getValue();
-        return assignment != null && !assignment.isClosed();
+        return assignment != null && !assignment.isAssignmentClosed();
     }
 
     public Property<Long> id() {
