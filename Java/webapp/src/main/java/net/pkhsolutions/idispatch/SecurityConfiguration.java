@@ -18,7 +18,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .withUser("dispatcher").password("chosen").roles("DISPATCHER")
                 .and()
-                .withUser("root").password("moviedrome").roles("ADMIN", "DISPATCHER");
+                .withUser("supervisor").password("thevisitor").roles("SUPERVISOR")
+                .and()
+                .withUser("root").password("moviedrome").roles("ADMIN", "DISPATCHER", "SUPERVISOR");
     }
 
     @Override
@@ -33,6 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers("/rest/*").permitAll()
                 .antMatchers("/ui/admin/**").hasRole("ADMIN")
                 .antMatchers("/ui/dws/**").hasRole("DISPATCHER")
+                .antMatchers("/ui/reports/**").hasRole("SUPERVISOR")
                 .antMatchers("/ui/**").authenticated()
                 .anyRequest().denyAll()
                 .and()

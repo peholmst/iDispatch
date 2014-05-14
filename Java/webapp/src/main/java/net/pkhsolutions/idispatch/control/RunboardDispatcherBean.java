@@ -94,7 +94,7 @@ class RunboardDispatcherBean extends AbstractDispatcher implements RunboardDispa
     @Override
     @Scheduled(fixedDelay = 60000)
     public void cleanUp() {
-        logger.debug("Cleaning up expired dispatch notifications");
+        logger.trace("Cleaning up expired dispatch notifications");
         Collection<Map<Long, DispatchNotification>> notificationMaps;
         synchronized (waitingNotifications) {
             notificationMaps = new HashSet<>(waitingNotifications.values());
