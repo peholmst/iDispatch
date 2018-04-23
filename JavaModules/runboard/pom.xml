@@ -2,12 +2,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>master</artifactId>
-        <groupId>net.pkhsolutions.idispatch</groupId>
-        <version>2.0-SNAPSHOT</version>
+        <groupId>net.pkhapps.idispatch</groupId>
+        <version>3.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>runboard</artifactId>
+    <artifactId>idispatch-runboard</artifactId>
     <name>iDispatch Runboard</name>
 
     <dependencies>
