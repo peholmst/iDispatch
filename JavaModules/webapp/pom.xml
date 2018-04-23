@@ -67,7 +67,13 @@
 
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>aspsms-integration</artifactId>
+            <artifactId>idispatch-aspsms-integration</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>idispatch-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -23,6 +23,7 @@
         <module>webapp</module>
         <module>aspsms-integration</module>
         <module>runboard</module>
+        <module>idispatch-domain</module>
     </modules>
 
     <dependencyManagement>
