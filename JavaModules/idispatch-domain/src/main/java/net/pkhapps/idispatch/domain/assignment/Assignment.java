@@ -100,6 +100,11 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
     }
 
     @NonNull
+    public Set<AssignmentResource> getAssignedResources() {
+        return Collections.emptySet(); // TODO Implement me!
+    }
+
+    @NonNull
     public Instant getOpened() {
         return opened;
     }

@@ -24,7 +24,7 @@ public class ResourceStateChangedEvent {
         this.resource = Objects.requireNonNull(resource);
         this.oldState = oldState;
         this.newState = Objects.requireNonNull(newState);
-        this.timestamp = timestamp;
+        this.timestamp = Objects.requireNonNull(timestamp);
     }
 
     @NonNull

@@ -14,135 +14,19 @@
     </parent>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <vaadin.version>7.1.14</vaadin.version>
-        <spring.vaadin.version>0.0.2-SNAPSHOT</spring.vaadin.version>
+        <java.version>1.8</java.version>
     </properties>
 
     <modules>
-        <module>webapp</module>
+        <!--<module>webapp</module>-->
         <module>aspsms-integration</module>
         <module>runboard</module>
         <module>idispatch-domain</module>
+        <module>idispatch-application</module>
+        <module>idispatch-web</module>
     </modules>
 
-    <dependencyManagement>
-        <dependencies>
-            <!-- Vaadin -->
-            <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-server</artifactId>
-                <version>${vaadin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-client-compiled</artifactId>
-                <version>${vaadin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-themes</artifactId>
-                <version>${vaadin.version}</version>
-            </dependency>
-
-            <!-- vaadin4spring -->
-            <dependency>
-                <groupId>org.vaadin.spring</groupId>
-                <artifactId>spring-vaadin</artifactId>
-                <version>${spring.vaadin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.vaadin.spring</groupId>
-                <artifactId>spring-vaadin-stuff</artifactId>
-                <version>${spring.vaadin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.vaadin.spring</groupId>
-                <artifactId>spring-boot-vaadin</artifactId>
-                <version>${spring.vaadin.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.vaadin.spring</groupId>
-                <artifactId>spring-security-vaadin</artifactId>
-                <version>${spring.vaadin.version}</version>
-            </dependency>
-
-            <!-- Other -->
-            <dependency>
-                <groupId>com.h2database</groupId>
-                <artifactId>h2</artifactId>
-                <version>LATEST</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>17.0</version>
-            </dependency>
-            <dependency>
-                <groupId>com.vaadin.tapio</groupId>
-                <artifactId>googlemaps</artifactId>
-                <version>0.8.1</version>
-            </dependency>
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-validator</artifactId>
-                <version>5.1.0.CR1</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                        <encoding>${project.build.sourceEncoding}</encoding>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-resources-plugin</artifactId>
-                    <version>2.6</version>
-                    <configuration>
-                        <encoding>${project.build.sourceEncoding}</encoding>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-war-plugin</artifactId>
-                    <version>2.4</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-ejb-plugin</artifactId>
-                    <version>2.3</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.8</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-ear-plugin</artifactId>
-                    <version>2.9</version>
-                </plugin>
-                <plugin>
-                    <groupId>com.vaadin</groupId>
-                    <artifactId>vaadin-maven-plugin</artifactId>
-                    <version>${vaadin.version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
     <repositories>
-        <repository>
-            <id>sonatype-snapshots</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
         <repository>
             <id>vaadin-addons</id>
             <url>http://maven.vaadin.com/vaadin-addons</url>
