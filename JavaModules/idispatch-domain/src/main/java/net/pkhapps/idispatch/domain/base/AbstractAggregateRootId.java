@@ -16,6 +16,10 @@ public abstract class AbstractAggregateRootId implements Serializable {
         this.id = Objects.requireNonNull(id);
     }
 
+    public AbstractAggregateRootId(@NonNull String id) {
+        this(Long.valueOf(id));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -38,5 +42,13 @@ public abstract class AbstractAggregateRootId implements Serializable {
      */
     public long toLong() {
         return id;
+    }
+
+    /**
+     * Returns the ID as a string.
+     */
+    @Override
+    public String toString() {
+        return id.toString();
     }
 }

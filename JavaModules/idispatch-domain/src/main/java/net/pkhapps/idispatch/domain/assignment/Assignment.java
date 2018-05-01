@@ -29,8 +29,12 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
     private Instant closed;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "urgency", nullable = false)
-    private AssignmentUrgency urgency = AssignmentUrgency.UNKNOWN;
+    @Column(name = "state", nullable = false)
+    private AssignmentState state = AssignmentState.NEW;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority", nullable = false)
+    private AssignmentPriority priority = AssignmentPriority.C;
 
     @Column(name = "type_id")
     private AssignmentTypeId type;
@@ -64,6 +68,10 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
         registerEvent(new AssignmentClosedEvent(this));
     }
 
+    public boolean isOpen() {
+        return closed == null;
+    }
+
     @NonNull
     public AssignmentResource assignResource(@NonNull ResourceId resource) {
         requireOpen();
@@ -81,7 +89,7 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
     }
 
     void updateResourceStateIfApplicable(@NonNull ResourceId resource, @NonNull ResourceState newState,
-                                                @NonNull Instant stateChangedOn) {
+                                         @NonNull Instant stateChangedOn) {
         requireOpen();
         Optional<AssignmentResource> existingResource = assignmentResources.stream()
                 .filter(withResource(resource))
@@ -115,13 +123,18 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
     }
 
     @NonNull
+    public AssignmentState getState() {
+        return state;
+    }
+
+    @NonNull
     public Set<AssignmentResource> getAssignmentResources() {
         return Collections.unmodifiableSet(assignmentResources);
     }
 
     @NonNull
-    public AssignmentUrgency getUrgency() {
-        return urgency;
+    public AssignmentPriority getPriority() {
+        return priority;
     }
 
     @Nullable

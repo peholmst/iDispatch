@@ -9,9 +9,9 @@ import org.springframework.lang.NonNull;
 /**
  * Combo box for looking up/selecting municipalities.
  */
-public class MunicipalityLookupComboBox extends AbstractLookupComboBox<MunicipalityId, MunicipalityLookupDTO> {
+public class MunicipalityComboBox extends AbstractLookupComboBox<MunicipalityId, MunicipalityLookupDTO> {
 
-    public MunicipalityLookupComboBox(@NonNull MunicipalityLookupService lookupService) {
+    public MunicipalityComboBox(@NonNull MunicipalityLookupService lookupService) {
         super(lookupService);
     }
 }

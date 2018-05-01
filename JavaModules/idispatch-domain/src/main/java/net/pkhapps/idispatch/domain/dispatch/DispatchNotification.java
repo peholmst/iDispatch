@@ -2,7 +2,7 @@ package net.pkhapps.idispatch.domain.dispatch;
 
 import net.pkhapps.idispatch.domain.assignment.AssignmentId;
 import net.pkhapps.idispatch.domain.assignment.AssignmentTypeId;
-import net.pkhapps.idispatch.domain.assignment.AssignmentUrgency;
+import net.pkhapps.idispatch.domain.assignment.AssignmentPriority;
 import net.pkhapps.idispatch.domain.base.AbstractAggregateRoot;
 import net.pkhapps.idispatch.domain.common.MunicipalityId;
 import net.pkhapps.idispatch.domain.resource.ResourceId;
@@ -43,7 +43,7 @@ public class DispatchNotification extends AbstractAggregateRoot<DispatchNotifica
 
     @Enumerated(EnumType.STRING)
     @Column(name = "assignment_urgency", nullable = false)
-    private AssignmentUrgency urgency;
+    private AssignmentPriority urgency;
 
     @Column(name = "assignment_description", nullable = false)
     private String description;

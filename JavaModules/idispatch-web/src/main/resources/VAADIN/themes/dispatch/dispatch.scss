@@ -45,6 +45,19 @@ $v-font-size: 14px;
     }
   }
 
+  .view.v-margin-bottom {
+    padding-bottom: 16px;
+  }
+  .view.v-margin-top {
+    padding-top: 16px;
+  }
+  .view.v-margin-left {
+    padding-left: 16px;
+  }
+  .view.v-margin-right {
+    padding-right: 16px;
+  }
+
   .resource-state-RESERVED {
     .v-grid-cell {
       background-color: rgba(255, 165, 0, 0.5);

@@ -22,6 +22,11 @@ public class MessageSourceI18N implements I18N {
     }
 
     @Override
+    public Locale getLocale() {
+        return locale;
+    }
+
+    @Override
     public String getOrDefault(String key, String defaultValue, Object... args) {
         try {
             return messageSource.getMessage(key, args, locale);

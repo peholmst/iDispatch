@@ -9,6 +9,7 @@ import net.pkhapps.idispatch.web.ui.common.I18N;
 import net.pkhapps.idispatch.web.ui.common.ViewletTitle;
 import net.pkhapps.idispatch.web.ui.dispatch.DispatchTheme;
 import net.pkhapps.idispatch.web.ui.dispatch.annotation.DispatchQualifier;
+import net.pkhapps.idispatch.web.ui.dispatch.controller.AssignmentController;
 import net.pkhapps.idispatch.web.ui.dispatch.model.AssignmentOverviewDataProvider;
 import net.pkhapps.idispatch.web.ui.dispatch.model.AssignmentOverviewModel;
 import net.pkhapps.idispatch.web.ui.dispatch.provider.AssignmentStateStyleProvider;
@@ -32,14 +33,16 @@ public class OpenAssignmentsViewlet extends CustomComponent {
 
     private final AssignmentOverviewModel model;
     private final I18N i18n;
+    private final AssignmentController assignmentController;
 
     private Grid<AssignmentOverviewDTO> grid;
     private AssignmentOverviewDataProvider dataProvider;
 
     OpenAssignmentsViewlet(AssignmentOverviewModel model,
-                           @DispatchQualifier I18N i18n) {
+                           @DispatchQualifier I18N i18n, AssignmentController assignmentController) {
         this.model = model;
         this.i18n = i18n;
+        this.assignmentController = assignmentController;
     }
 
     @PostConstruct
@@ -86,7 +89,14 @@ public class OpenAssignmentsViewlet extends CustomComponent {
         newAssignment.setDescription(i18n.get("openAssignmentsViewlet.newAssignment.description"));
         newAssignment.addStyleName(DispatchTheme.BUTTON_FRIENDLY);
         newAssignment.addStyleName(DispatchTheme.BUTTON_TINY);
-        // TODO Click listener
+        newAssignment.setDisableOnClick(true);
+        newAssignment.addClickListener(event -> {
+            try {
+                assignmentController.openAssignment();
+            } finally {
+                newAssignment.setEnabled(true);
+            }
+        });
         title.addComponent(newAssignment);
 
         Button searchAssignment = new Button(VaadinIcons.SEARCH);
