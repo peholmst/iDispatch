@@ -25,7 +25,7 @@ class AssignmentResourceStateUpdateHandler {
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void onResourceStateChangedEvent(@NonNull ResourceStateChangedEvent event) {
-        List<Assignment> openAssignments = assignmentRepository.findOpenAssignmentsForResource(event.getResource());
+        var openAssignments = assignmentRepository.findOpenAssignmentsForResource(event.getResource());
         openAssignments.forEach(assignment -> assignment.updateResourceStateIfApplicable(event.getResource(),
                 event.getNewState(), event.getTimestamp()));
         assignmentRepository.saveAll(openAssignments);

@@ -47,7 +47,7 @@ class AssignmentServiceImpl implements AssignmentService {
 
     @NonNull
     private AssignmentDetailsDTO toDetailsDTO(@NonNull Assignment assignment) {
-        AssignmentDetailsDTO dto = new AssignmentDetailsDTO(assignment.getId(), assignment.getVersion(),
+        var dto = new AssignmentDetailsDTO(assignment.getId(), assignment.getVersion(),
                 assignment.getOpened(), assignment.getClosed(), assignment.getState());
         dto.setAddress(assignment.getAddress());
         dto.setType(assignment.getType());

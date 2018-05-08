@@ -95,7 +95,7 @@ public class AssignmentResource extends AbstractEntity {
     }
 
     boolean canSetTimestampFor(@NonNull ResourceState state) {
-        boolean result = true;
+        var result = true;
         switch (state) {
             case RESERVED:
                 result = reserved == null;

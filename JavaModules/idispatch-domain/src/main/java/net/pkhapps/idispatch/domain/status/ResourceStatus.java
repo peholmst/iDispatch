@@ -41,7 +41,7 @@ public class ResourceStatus extends AbstractAggregateRoot<ResourceStatusId> {
     }
 
     public final void changeState(@NonNull ResourceState newState, @NonNull Clock clock) {
-        ResourceState oldState = currentState;
+        var oldState = currentState;
         currentState = newState;
         stateChangedOn = clock.instant();
         available = newState.isAvailableForNewAssignments();

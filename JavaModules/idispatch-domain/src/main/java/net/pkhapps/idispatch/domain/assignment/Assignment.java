@@ -75,14 +75,14 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
     @NonNull
     public AssignmentResource assignResource(@NonNull ResourceId resource) {
         requireOpen();
-        Optional<AssignmentResource> existingResource = assignmentResources.stream()
+        var existingResource = assignmentResources.stream()
                 .filter(withResource(resource))
                 .filter(AssignmentResource::isAssigned)
                 .findFirst();
         if (existingResource.isPresent()) {
             return existingResource.get();
         } else {
-            AssignmentResource newResource = new AssignmentResource(this, resource);
+            var newResource = new AssignmentResource(this, resource);
             assignmentResources.add(newResource);
             return newResource;
         }
@@ -91,7 +91,7 @@ public class Assignment extends AbstractAggregateRoot<AssignmentId> {
     void updateResourceStateIfApplicable(@NonNull ResourceId resource, @NonNull ResourceState newState,
                                          @NonNull Instant stateChangedOn) {
         requireOpen();
-        Optional<AssignmentResource> existingResource = assignmentResources.stream()
+        var existingResource = assignmentResources.stream()
                 .filter(withResource(resource))
                 .filter(withSettableTimestampFor(newState))
                 .findFirst();

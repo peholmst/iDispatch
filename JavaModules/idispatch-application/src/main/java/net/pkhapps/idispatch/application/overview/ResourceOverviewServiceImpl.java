@@ -42,7 +42,7 @@ class ResourceOverviewServiceImpl implements ResourceOverviewService {
     private static AtomicLong nextId = new AtomicLong();
 
     private static ResourceOverviewDTO createDummy(String callSign, ResourceState state, String assignment) {
-        ResourceOverviewDTO dto = new ResourceOverviewDTO();
+        var dto = new ResourceOverviewDTO();
         dto.setResourceId(new ResourceId(nextId.incrementAndGet()));
         dto.setCallSign(callSign);
         dto.setState(state);

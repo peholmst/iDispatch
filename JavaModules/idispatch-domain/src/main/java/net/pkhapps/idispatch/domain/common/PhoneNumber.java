@@ -38,7 +38,7 @@ public class PhoneNumber implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        PhoneNumber that = (PhoneNumber) o;
+        var that = (PhoneNumber) o;
         return Objects.equals(phoneNumber, that.phoneNumber);
     }
 

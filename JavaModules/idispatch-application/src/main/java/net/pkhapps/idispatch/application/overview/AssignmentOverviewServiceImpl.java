@@ -36,7 +36,7 @@ class AssignmentOverviewServiceImpl implements AssignmentOverviewService {
     private static AtomicLong nextId = new AtomicLong();
 
     private static AssignmentOverviewDTO createDummy(String type, AssignmentState state, String municipality, String address) {
-        AssignmentOverviewDTO dto = new AssignmentOverviewDTO();
+        var dto = new AssignmentOverviewDTO();
         dto.setAssignmentId(new AssignmentId(nextId.incrementAndGet()));
         dto.setAssignmentTypeCode(type);
         dto.setState(state);
