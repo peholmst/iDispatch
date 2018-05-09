@@ -9,15 +9,20 @@ import java.lang.reflect.Constructor;
 import java.util.Objects;
 
 /**
- * TODO Document me!
+ * Base class for Hibernate type descriptors for {@link AbstractAggregateRootId ID} types. You will need to create a
+ * subclass of this for every ID type and then pass it as a parameter to your {@link AbstractAggregateRootIdCustomType}.
  *
- * @param <ID>
+ * @param <ID> the ID type.
  */
 public abstract class AbstractAggregateRootIdTypeDescriptor<ID extends AbstractAggregateRootId> extends AbstractTypeDescriptor<ID> {
 
     private final Constructor<ID> constructor;
 
-    protected AbstractAggregateRootIdTypeDescriptor(Class<ID> type) {
+    /**
+     * Protected constructor that accepts the ID type as parameter. Subclasses should declare a default constructor
+     * and invoke this super constructor, passing in the correct parameter.
+     */
+    protected AbstractAggregateRootIdTypeDescriptor(@NonNull Class<ID> type) {
         super(type);
         try {
             constructor = type.getConstructor(Long.class);

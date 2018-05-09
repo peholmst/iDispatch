@@ -6,18 +6,25 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Base class for aggregate root ID types.
+ * Base class for aggregate root ID types (essentially a wrapper around a long integer).
+ * <p/>
+ * You will also need to implement support for your custom ID types into
+ * your JPA implementation since {@link javax.persistence.AttributeConverter}s don't work with ID types (according
+ * to the API spec). This project has base classes for implementing custom Hibernate types for your ID types.
+ *
+ * @see net.pkhapps.idispatch.domain.base.hibernate.AbstractAggregateRootIdCustomType
+ * @see net.pkhapps.idispatch.domain.base.hibernate.AbstractAggregateRootIdTypeDescriptor
  */
 public abstract class AbstractAggregateRootId implements Serializable {
 
     private final Long id;
 
+    /**
+     * Constructor that accepts a long integer as parameter. Subclasses must include this constructor since the
+     * Hibernate custom type will use it to create new instances.
+     */
     public AbstractAggregateRootId(@NonNull Long id) {
         this.id = Objects.requireNonNull(id);
-    }
-
-    public AbstractAggregateRootId(@NonNull String id) {
-        this(Long.valueOf(id));
     }
 
     @Override
