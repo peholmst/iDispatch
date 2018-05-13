@@ -13,7 +13,6 @@ import net.pkhapps.idispatch.web.ui.common.model.WritableProperty;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -24,7 +23,7 @@ import java.util.Objects;
  * @param <FIELDTYPE>    the type of the field.
  * @param <PROPERTYTYPE> the type of the property.
  */
-public abstract class AbstractBinding<FIELDTYPE, PROPERTYTYPE> implements Serializable {
+public abstract class AbstractFieldBinding<FIELDTYPE, PROPERTYTYPE> implements Binding {
 
     private final HasValue<FIELDTYPE> field;
     private final Converter<FIELDTYPE, PROPERTYTYPE> converter;
@@ -41,8 +40,8 @@ public abstract class AbstractBinding<FIELDTYPE, PROPERTYTYPE> implements Serial
      * @param converter the converter to use when converting back and forth between the field and property types. If the
      *                  types are one and a same, pass in an instance of {@link SelfConverter}.
      */
-    protected AbstractBinding(@NonNull HasValue<FIELDTYPE> field,
-                              @NonNull Converter<FIELDTYPE, PROPERTYTYPE> converter) {
+    protected AbstractFieldBinding(@NonNull HasValue<FIELDTYPE> field,
+                                   @NonNull Converter<FIELDTYPE, PROPERTYTYPE> converter) {
         this.field = Objects.requireNonNull(field, "field must not be null");
         this.converter = Objects.requireNonNull(converter, "converter must not be null");
     }
@@ -146,6 +145,7 @@ public abstract class AbstractBinding<FIELDTYPE, PROPERTYTYPE> implements Serial
      * @see #bind(WritableProperty)
      * @see #bind(WritableProperty, SerializableConsumer)
      */
+    @Override
     public void unbind() {
         if (registration != null) {
             registration.remove();
@@ -164,10 +164,8 @@ public abstract class AbstractBinding<FIELDTYPE, PROPERTYTYPE> implements Serial
     }
 
     private void onFieldValueChangeEvent(@NonNull HasValue.ValueChangeEvent<FIELDTYPE> event) {
-        //if (event.isUserOriginated()) {
-            var model = converter.convertToModel(event.getValue(), createValueContext());
-            model.handle(this::onConverterSuccess, this::setConversionErrorMessage);
-        //}
+        var model = converter.convertToModel(event.getValue(), createValueContext());
+        model.handle(this::onConverterSuccess, this::setConversionErrorMessage);
     }
 
     private void onConverterSuccess(@Nullable PROPERTYTYPE value) {
@@ -201,7 +199,7 @@ public abstract class AbstractBinding<FIELDTYPE, PROPERTYTYPE> implements Serial
 
     /**
      * An implementation of {@link Converter} that just uses the same type for model and presentation. This is used
-     * by {@link AbstractBinding} to allow for a consistent use of converters even in cases where no conversion is
+     * by {@link AbstractFieldBinding} to allow for a consistent use of converters even in cases where no conversion is
      * needed (i.e. the property and field types are one and a same).
      */
     protected static class SelfConverter<T> implements Converter<T, T> {

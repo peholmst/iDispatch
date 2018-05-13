@@ -6,7 +6,7 @@ import org.springframework.lang.NonNull;
 /**
  * Binder that binds a {@link ComboBox} to a property.
  */
-public class ComboBoxBinding<MODEL> extends AbstractBinding<MODEL, MODEL> {
+public class ComboBoxBinding<MODEL> extends AbstractFieldBinding<MODEL, MODEL> {
 
     private ComboBoxBinding(@NonNull ComboBox<MODEL> field) {
         super(field, new SelfConverter<>());

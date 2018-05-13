@@ -10,10 +10,7 @@ import net.pkhapps.idispatch.domain.assignment.AssignmentState;
 import net.pkhapps.idispatch.domain.assignment.AssignmentTypeId;
 import net.pkhapps.idispatch.domain.common.MunicipalityId;
 import net.pkhapps.idispatch.web.ui.common.AbstractModel;
-import net.pkhapps.idispatch.web.ui.common.model.Property;
-import net.pkhapps.idispatch.web.ui.common.model.SimpleProperty;
-import net.pkhapps.idispatch.web.ui.common.model.SimpleWritableProperty;
-import net.pkhapps.idispatch.web.ui.common.model.WritableProperty;
+import net.pkhapps.idispatch.web.ui.common.model.*;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -39,6 +36,13 @@ public class AssignmentModel extends AbstractModel<AssignmentModel.Observer> {
     private final SimpleWritableProperty<AssignmentPriority> priority = new SimpleWritableProperty<>(AssignmentPriority.class);
     private final SimpleWritableProperty<MunicipalityId> municipality = new SimpleWritableProperty<>(MunicipalityId.class);
     private final SimpleWritableProperty<String> address = new SimpleWritableProperty<>(String.class);
+    private final AbstractAction<Void> close = new AbstractAction<>() {
+        @Override
+        protected Void doPerform() {
+            // TODO implement me
+            return null;
+        }
+    };
 
     private AssignmentDetailsDTO assignmentDetails;
 
@@ -89,6 +93,11 @@ public class AssignmentModel extends AbstractModel<AssignmentModel.Observer> {
     @NonNull
     public WritableProperty<String> address() {
         return address;
+    }
+
+    @NonNull
+    public Action<Void> close() {
+        return close;
     }
 
     /**

@@ -11,7 +11,7 @@ import java.util.Objects;
 /**
  * Binder that binds an {@link AbstractTextField} to a property.
  */
-public class TextFieldBinding<MODEL> extends AbstractBinding<String, MODEL> {
+public class TextFieldBinding<MODEL> extends AbstractFieldBinding<String, MODEL> {
 
     private TextFieldBinding(@NonNull AbstractTextField field, @NonNull Converter<String, MODEL> converter) {
         super(field, converter);

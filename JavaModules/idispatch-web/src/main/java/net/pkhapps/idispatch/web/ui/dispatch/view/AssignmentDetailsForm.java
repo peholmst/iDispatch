@@ -10,6 +10,7 @@ import net.pkhapps.idispatch.web.ui.common.converter.StringToInstantConverter;
 import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
 import net.pkhapps.idispatch.web.ui.dispatch.DispatchTheme;
 import net.pkhapps.idispatch.web.ui.dispatch.annotation.DispatchQualifier;
+import net.pkhapps.idispatch.web.ui.dispatch.converter.AssignmentStateToStringConverter;
 import net.pkhapps.idispatch.web.ui.dispatch.lookup.AssignmentPriorityComboBox;
 import net.pkhapps.idispatch.web.ui.dispatch.lookup.AssignmentTypeComboBox;
 import net.pkhapps.idispatch.web.ui.dispatch.lookup.MunicipalityComboBox;
@@ -72,12 +73,11 @@ class AssignmentDetailsForm extends VerticalLayout {
         binder.forField(closed).withConverter(stringToInstantConverter).bind(model.closed());
 
         state = new TextField(i18n.get("assignmentDetailsForm.state.caption"));
-        state.setReadOnly(true);
-        // TODO Bind
+        binder.forField(state).withConverter(new AssignmentStateToStringConverter(i18n)).bind(model.state());
 
         close = new Button(i18n.get("assignmentDetailsForm.close.caption"));
         close.addStyleName(DispatchTheme.BUTTON_DANGER);
-        // TODO Bind
+        binder.forButton(close).bind(model.close());
 
         details = new TextArea(i18n.get("assignmentDetailsForm.details.caption"));
         details.setRows(3);
