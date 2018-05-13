@@ -1,7 +1,7 @@
 package net.pkhapps.idispatch.web.ui.dispatch;
 
-import net.pkhapps.idispatch.web.ui.common.I18N;
-import net.pkhapps.idispatch.web.ui.common.MessageSourceI18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.MessageSourceI18N;
 import net.pkhapps.idispatch.web.ui.dispatch.annotation.DispatchQualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

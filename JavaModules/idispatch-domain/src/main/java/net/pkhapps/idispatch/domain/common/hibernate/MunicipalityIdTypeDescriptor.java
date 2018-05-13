@@ -9,7 +9,7 @@ import net.pkhapps.idispatch.domain.common.MunicipalityId;
  */
 public class MunicipalityIdTypeDescriptor extends AbstractAggregateRootIdTypeDescriptor<MunicipalityId> {
 
-    public static final MunicipalityIdTypeDescriptor INSTANCE = new MunicipalityIdTypeDescriptor();
+    private static final MunicipalityIdTypeDescriptor INSTANCE = new MunicipalityIdTypeDescriptor();
 
     public MunicipalityIdTypeDescriptor() {
         super(MunicipalityId.class);

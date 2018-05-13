@@ -5,7 +5,7 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.*;
 import net.pkhapps.idispatch.application.overview.AssignmentOverviewDTO;
-import net.pkhapps.idispatch.web.ui.common.I18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
 import net.pkhapps.idispatch.web.ui.common.ViewletTitle;
 import net.pkhapps.idispatch.web.ui.dispatch.DispatchTheme;
 import net.pkhapps.idispatch.web.ui.dispatch.annotation.DispatchQualifier;

@@ -13,6 +13,6 @@ public class AssignmentId extends AbstractAggregateRootId {
     }
 
     public AssignmentId(@NonNull String id) {
-        super(id);
+        super(Long.valueOf(id));
     }
 }

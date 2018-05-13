@@ -2,7 +2,7 @@ package net.pkhapps.idispatch.web.ui.dispatch.provider;
 
 import com.vaadin.data.ValueProvider;
 import net.pkhapps.idispatch.domain.status.ResourceState;
-import net.pkhapps.idispatch.web.ui.common.I18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
 
 /**
  * TODO implement me

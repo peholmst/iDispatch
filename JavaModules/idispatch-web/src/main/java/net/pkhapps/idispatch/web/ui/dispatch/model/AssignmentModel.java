@@ -5,12 +5,21 @@ import com.vaadin.spring.annotation.ViewScope;
 import net.pkhapps.idispatch.application.assignment.AssignmentDetailsDTO;
 import net.pkhapps.idispatch.application.assignment.AssignmentService;
 import net.pkhapps.idispatch.domain.assignment.AssignmentId;
+import net.pkhapps.idispatch.domain.assignment.AssignmentPriority;
+import net.pkhapps.idispatch.domain.assignment.AssignmentState;
+import net.pkhapps.idispatch.domain.assignment.AssignmentTypeId;
+import net.pkhapps.idispatch.domain.common.MunicipalityId;
 import net.pkhapps.idispatch.web.ui.common.AbstractModel;
+import net.pkhapps.idispatch.web.ui.common.model.Property;
+import net.pkhapps.idispatch.web.ui.common.model.SimpleProperty;
+import net.pkhapps.idispatch.web.ui.common.model.SimpleWritableProperty;
+import net.pkhapps.idispatch.web.ui.common.model.WritableProperty;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import java.io.Serializable;
+import java.time.Instant;
 
 /**
  * TODO Document me!
@@ -21,10 +30,65 @@ public class AssignmentModel extends AbstractModel<AssignmentModel.Observer> {
 
     private final AssignmentService assignmentService;
 
+    private final SimpleProperty<String> idAndVersion = new SimpleProperty<>(String.class);
+    private final SimpleProperty<Instant> opened = new SimpleProperty<>(Instant.class);
+    private final SimpleProperty<Instant> closed = new SimpleProperty<>(Instant.class);
+    private final SimpleProperty<AssignmentState> state = new SimpleProperty<>(AssignmentState.class);
+    private final SimpleWritableProperty<String> description = new SimpleWritableProperty<>(String.class);
+    private final SimpleWritableProperty<AssignmentTypeId> type = new SimpleWritableProperty<>(AssignmentTypeId.class);
+    private final SimpleWritableProperty<AssignmentPriority> priority = new SimpleWritableProperty<>(AssignmentPriority.class);
+    private final SimpleWritableProperty<MunicipalityId> municipality = new SimpleWritableProperty<>(MunicipalityId.class);
+    private final SimpleWritableProperty<String> address = new SimpleWritableProperty<>(String.class);
+
     private AssignmentDetailsDTO assignmentDetails;
 
     AssignmentModel(AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
+    }
+
+    @NonNull
+    public Property<String> idAndVersion() {
+        return idAndVersion;
+    }
+
+    @NonNull
+    public Property<Instant> opened() {
+        return opened;
+    }
+
+    @NonNull
+    public Property<Instant> closed() {
+        return closed;
+    }
+
+    @NonNull
+    public Property<AssignmentState> state() {
+        return state;
+    }
+
+    @NonNull
+    public WritableProperty<String> description() {
+        return description;
+    }
+
+    @NonNull
+    public WritableProperty<AssignmentTypeId> type() {
+        return type;
+    }
+
+    @NonNull
+    public WritableProperty<AssignmentPriority> priority() {
+        return priority;
+    }
+
+    @NonNull
+    public WritableProperty<MunicipalityId> municipality() {
+        return municipality;
+    }
+
+    @NonNull
+    public WritableProperty<String> address() {
+        return address;
     }
 
     /**

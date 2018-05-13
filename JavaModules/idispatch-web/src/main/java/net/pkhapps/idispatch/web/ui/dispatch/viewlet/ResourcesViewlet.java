@@ -7,7 +7,7 @@ import com.vaadin.ui.Grid;
 import com.vaadin.ui.StyleGenerator;
 import com.vaadin.ui.VerticalLayout;
 import net.pkhapps.idispatch.application.overview.ResourceOverviewDTO;
-import net.pkhapps.idispatch.web.ui.common.I18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
 import net.pkhapps.idispatch.web.ui.common.ViewletTitle;
 import net.pkhapps.idispatch.web.ui.dispatch.DispatchTheme;
 import net.pkhapps.idispatch.web.ui.dispatch.annotation.DispatchQualifier;

@@ -9,6 +9,7 @@ import java.util.Objects;
 
 /**
  * Base class for attribute converters that convert between subclasses of {@link AbstractAggregateRootId} and long.
+ * @deprecated Cannot be used for IDs according to the JPA spec. Use Hibernate custom types instead.
  */
 @Deprecated
 public class AbstractAggregateRootIdAttributeConverter<T extends AbstractAggregateRootId>

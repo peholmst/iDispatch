@@ -8,7 +8,7 @@ import com.vaadin.server.VaadinRequest;
 import com.vaadin.spring.annotation.SpringUI;
 import com.vaadin.spring.navigator.SpringNavigator;
 import com.vaadin.ui.*;
-import net.pkhapps.idispatch.web.ui.common.I18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
 import net.pkhapps.idispatch.web.ui.dispatch.view.ErrorView;
 import net.pkhapps.idispatch.web.ui.dispatch.view.ViewWithTitle;
 import net.pkhapps.idispatch.web.ui.dispatch.viewlet.OpenAssignmentsViewlet;

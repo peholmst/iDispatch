@@ -8,39 +8,33 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractAction<T> implements Action<T> {
 
-    private final SimpleProperty<Boolean> canPerform = new SimpleProperty<>(Boolean.class, true);
+    private final SimpleProperty<Boolean> isExecutable = new SimpleProperty<>(Boolean.class, true);
 
     @Override
     @NonNull
-    public Property<Boolean> canPerform() {
-        return canPerform;
+    public Property<Boolean> isExecutable() {
+        return isExecutable;
     }
 
     @Override
     @Nullable
-    public T perform() {
-        if (canPerform.getValue()) {
+    public T execute() {
+        if (isExecutable.getValue()) {
             return doPerform();
         }
         return null;
     }
 
     /**
-     * Enables this action. Clients will be able to perform it after this.
+     * Sets the value of the {@link #isExecutable() writable} flag. By default this flag is true, i.e. the action
+     * is executable.
      */
-    protected void enable() {
-        canPerform.setValue(true);
+    protected void setExecutable(boolean executable) {
+        isExecutable.setValue(executable);
     }
 
     /**
-     * Disables this action. Clients will not be able to perform it until it is {@link #enable() enabled} again.
-     */
-    protected void disable() {
-        canPerform.setValue(false);
-    }
-
-    /**
-     * Performs the action if it is enabled. This method is never called if {@link #canPerform()} is false.
+     * Executes the action if it is executable. This method is never called if {@link #isExecutable()} is false.
      *
      * @return any result to pass to the performing client.
      */

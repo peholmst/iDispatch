@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.web.ui.common;
+package net.pkhapps.idispatch.web.ui.common.converter;
 
 import com.vaadin.data.Converter;
 import com.vaadin.data.Result;

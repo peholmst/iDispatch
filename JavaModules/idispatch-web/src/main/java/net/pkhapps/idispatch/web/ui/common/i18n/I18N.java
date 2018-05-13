@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.web.ui.common;
+package net.pkhapps.idispatch.web.ui.common.i18n;
 
 import org.springframework.lang.NonNull;
 

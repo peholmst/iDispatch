@@ -66,11 +66,6 @@ public class SimpleProperty<T> implements Property<T> {
     }
 
     @Override
-    public boolean hasValue() {
-        return value != null;
-    }
-
-    @Override
     @NonNull
     public Registration addPropertyListener(@NonNull PropertyListener<T> listener) {
         Objects.requireNonNull(listener, "listener must not be null");

@@ -6,7 +6,7 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.VerticalLayout;
-import net.pkhapps.idispatch.web.ui.common.I18N;
+import net.pkhapps.idispatch.web.ui.common.i18n.I18N;
 import net.pkhapps.idispatch.web.ui.dispatch.DispatchTheme;
 import net.pkhapps.idispatch.web.ui.dispatch.annotation.DispatchQualifier;
 import net.pkhapps.idispatch.web.ui.dispatch.model.AssignmentModel;

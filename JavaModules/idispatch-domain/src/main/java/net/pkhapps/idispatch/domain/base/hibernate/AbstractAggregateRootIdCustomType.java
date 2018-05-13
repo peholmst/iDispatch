@@ -40,7 +40,7 @@ public abstract class AbstractAggregateRootIdCustomType<ID extends AbstractAggre
     @Override
     public Serializable consumeIdentifier(ResultSet resultSet) {
         try {
-            Long id = resultSet.getLong(1); // For some reason, the ID is always at index 1. I don't know why.
+            var id = resultSet.getLong(1); // For some reason, the ID is always at index 1. I don't know why.
             return getJavaTypeDescriptor().wrap(id, null);
         } catch (Exception ex) {
             throw new RuntimeException(ex);
