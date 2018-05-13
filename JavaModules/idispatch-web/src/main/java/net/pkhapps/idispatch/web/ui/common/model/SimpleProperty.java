@@ -16,22 +16,33 @@ import java.util.Objects;
 public class SimpleProperty<T> implements Property<T> {
 
     private final List<PropertyListener<T>> listeners = new LinkedList<>();
+    private final Class<T> type;
     private T value;
 
     /**
      * Creates a new empty property.
+     *
+     * @param type the type of the property.
      */
-    public SimpleProperty() {
-        this(null);
+    public SimpleProperty(@NonNull Class<T> type) {
+        this(type, null);
     }
 
     /**
      * Creates a new property with the given initial value.
      *
+     * @param type         the type of the property.
      * @param initialValue the initial property value.
      */
-    public SimpleProperty(@Nullable T initialValue) {
+    public SimpleProperty(@NonNull Class<T> type, @Nullable T initialValue) {
+        this.type = Objects.requireNonNull(type, "type must not be null");
         value = initialValue;
+    }
+
+    @Override
+    @NonNull
+    public Class<T> getType() {
+        return type;
     }
 
     @Override

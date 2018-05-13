@@ -11,7 +11,7 @@ public class SimpleWritablePropertyTest {
 
     @Test
     public void setValue_canWrite_valueIsSet() {
-        var property = new SimpleWritableProperty<>();
+        var property = new SimpleWritableProperty<>(String.class);
         property.setValue("foobar");
 
         assertThat(property.isWritable().getValue()).isTrue();
@@ -20,14 +20,14 @@ public class SimpleWritablePropertyTest {
 
     @Test(expected = IllegalStateException.class)
     public void setValue_cannotWrite_exceptionIsThrown() {
-        var property = new SimpleWritableProperty<>();
+        var property = new SimpleWritableProperty<>(String.class);
         property.setWritable(false);
         property.setValue("foobar");
     }
 
     @Test
     public void forceSetValue_cannotWrite_valueIsSetAnyway() {
-        var property = new SimpleWritableProperty<>();
+        var property = new SimpleWritableProperty<>(String.class);
         property.setWritable(false);
         property.forceSetValue("foobar");
 

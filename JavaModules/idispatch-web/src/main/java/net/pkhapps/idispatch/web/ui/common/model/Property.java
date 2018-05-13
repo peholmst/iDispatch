@@ -12,6 +12,15 @@ import java.io.Serializable;
  */
 public interface Property<T> extends Serializable {
 
+    /**
+     * Returns the type of this property.
+     */
+    @NonNull
+    Class<T> getType();
+
+    /**
+     * Returns the value of this property.
+     */
     @Nullable
     T getValue();
 

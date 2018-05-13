@@ -8,7 +8,7 @@ import org.springframework.lang.Nullable;
  */
 public abstract class AbstractAction<T> implements Action<T> {
 
-    private final SimpleWritableProperty<Boolean> canPerform = new SimpleWritableProperty<>(true);
+    private final SimpleProperty<Boolean> canPerform = new SimpleProperty<>(Boolean.class, true);
 
     @Override
     @NonNull

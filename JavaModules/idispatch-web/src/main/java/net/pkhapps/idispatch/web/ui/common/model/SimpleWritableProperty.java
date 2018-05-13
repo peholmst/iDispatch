@@ -9,22 +9,25 @@ import org.springframework.lang.Nullable;
  */
 public class SimpleWritableProperty<T> extends SimpleProperty<T> implements WritableProperty<T> {
 
-    private final SimpleProperty<Boolean> isWritable = new SimpleProperty<>(true);
+    private final SimpleProperty<Boolean> isWritable = new SimpleProperty<>(Boolean.class, true);
 
     /**
      * Creates a new empty property.
+     *
+     * @param type the type of the property.
      */
-    public SimpleWritableProperty() {
-        super();
+    public SimpleWritableProperty(@NonNull Class<T> type) {
+        super(type);
     }
 
     /**
      * Creates a new property with the given initial value.
      *
+     * @param type         the type of the property.
      * @param initialValue the initial property value.
      */
-    public SimpleWritableProperty(@Nullable T initialValue) {
-        super(initialValue);
+    public SimpleWritableProperty(@NonNull Class<T> type, @Nullable T initialValue) {
+        super(type, initialValue);
     }
 
     @Override
