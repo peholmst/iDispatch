@@ -65,6 +65,13 @@ public class SimpleProperty<T> implements Property<T> {
         }
     }
 
+    /**
+     * Sets the value of this property to the {@link #getEmptyValue() empty value}.
+     */
+    public void clear() {
+        setValue(getEmptyValue());
+    }
+
     @Override
     @NonNull
     public Registration addPropertyListener(@NonNull PropertyListener<T> listener) {

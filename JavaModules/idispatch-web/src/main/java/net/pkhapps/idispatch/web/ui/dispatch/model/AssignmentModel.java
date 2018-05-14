@@ -9,9 +9,7 @@ import net.pkhapps.idispatch.domain.assignment.AssignmentPriority;
 import net.pkhapps.idispatch.domain.assignment.AssignmentState;
 import net.pkhapps.idispatch.domain.assignment.AssignmentTypeId;
 import net.pkhapps.idispatch.domain.common.MunicipalityId;
-import net.pkhapps.idispatch.web.ui.common.AbstractModel;
 import net.pkhapps.idispatch.web.ui.common.model.*;
-import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -23,10 +21,14 @@ import java.time.Instant;
  */
 @SpringComponent
 @ViewScope
-public class AssignmentModel extends AbstractModel<AssignmentModel.Observer> {
+public class AssignmentModel implements Serializable {
+
+    // TODO Update the assignment when the user changes any writable fields
+    // TODO Register for domain events and update the model when the assignment is changed
 
     private final AssignmentService assignmentService;
 
+    private final SimpleProperty<AssignmentId> id = new SimpleProperty<>(AssignmentId.class);
     private final SimpleProperty<String> idAndVersion = new SimpleProperty<>(String.class);
     private final SimpleProperty<Instant> opened = new SimpleProperty<>(Instant.class);
     private final SimpleProperty<Instant> closed = new SimpleProperty<>(Instant.class);
@@ -36,18 +38,17 @@ public class AssignmentModel extends AbstractModel<AssignmentModel.Observer> {
     private final SimpleWritableProperty<AssignmentPriority> priority = new SimpleWritableProperty<>(AssignmentPriority.class);
     private final SimpleWritableProperty<MunicipalityId> municipality = new SimpleWritableProperty<>(MunicipalityId.class);
     private final SimpleWritableProperty<String> address = new SimpleWritableProperty<>(String.class);
-    private final AbstractAction<Void> close = new AbstractAction<>() {
-        @Override
-        protected Void doPerform() {
-            // TODO implement me
-            return null;
-        }
-    };
-
     private AssignmentDetailsDTO assignmentDetails;
+    private final VoidActionWrapper close = new VoidActionWrapper(this::closeCurrentAssignment);
 
-    AssignmentModel(AssignmentService assignmentService) {
+    AssignmentModel(@NonNull AssignmentService assignmentService) {
         this.assignmentService = assignmentService;
+        setAssignmentDetails(null); // Initialize the form
+    }
+
+    @NonNull
+    public Property<AssignmentId> id() {
+        return id;
     }
 
     @NonNull
@@ -101,47 +102,42 @@ public class AssignmentModel extends AbstractModel<AssignmentModel.Observer> {
     }
 
     /**
-     * Returns the details of the current assignment or {@code null} if the model is empty. The returned DTO is a clone
-     * so changing it will not change the state of this model. Clients should call
-     * {@link #updateDetails(AssignmentDetailsDTO)} to update the model state.
-     */
-    @Nullable
-    public AssignmentDetailsDTO getDetails() {
-        return assignmentDetails == null ? null : assignmentDetails.clone();
-    }
-
-    /**
-     * @param updatedDetails
-     * @throws OptimisticLockingFailureException
-     */
-    public void updateDetails(@NonNull AssignmentDetailsDTO updatedDetails) throws OptimisticLockingFailureException {
-
-    }
-
-    /**
-     * Loads the assignment with the given ID into the model. If no such assignment exists, nothing happens. Clients can
-     * check {@link #isEmpty()} or {@link #getDetails()} to see if the assignment was loaded successfully or not.
+     * Loads the assignment with the given ID into the model. If no such assignment exists, the model is reset. Clients can
+     * check e.g. the {@link #id()} property to see if the assignment was loaded successfully or not.
      */
     public void loadAssignmentIntoModel(@NonNull AssignmentId assignmentId) {
-        assignmentService.findAssignmentDetails(assignmentId).ifPresent(this::setAssignmentDetails);
+        setAssignmentDetails(assignmentService.findAssignmentDetails(assignmentId).orElse(null));
+    }
+
+    private void closeCurrentAssignment() {
+        assert assignmentDetails != null; // The action should make sure this is always true when this method is called.
+        assignmentService.closeAssignment(assignmentDetails.getId());
     }
 
     private void setAssignmentDetails(@Nullable AssignmentDetailsDTO assignmentDetails) {
         this.assignmentDetails = assignmentDetails;
-        notifyObservers(observer -> observer.onAssignmentDetailsChanged(this));
-    }
-
-    /**
-     * Returns whether the model is empty or contains an assignment.
-     */
-    public boolean isEmpty() {
-        return assignmentDetails == null;
-    }
-
-    public interface Observer extends Serializable {
-
-        default void onAssignmentDetailsChanged(@NonNull AssignmentModel model) {
-            // NOP
+        if (assignmentDetails != null) {
+            idAndVersion.setValue(assignmentDetails.getIdAndVersion());
+            opened.setValue(assignmentDetails.getOpened());
+            closed.setValue(assignmentDetails.getClosed());
+            state.setValue(assignmentDetails.getState());
+            description.setValue(assignmentDetails.getDescription());
+            type.setValue(assignmentDetails.getType());
+            priority.setValue(assignmentDetails.getPriority());
+            municipality.setValue(assignmentDetails.getMunicipality());
+            address.setValue(assignmentDetails.getAddress());
+            close.setExecutable(assignmentDetails.getState() != AssignmentState.CLOSED);
+        } else {
+            idAndVersion.clear();
+            opened.clear();
+            closed.clear();
+            state.clear();
+            description.clear();
+            type.clear();
+            priority.clear();
+            municipality.clear();
+            address.clear();
+            close.setExecutable(false);
         }
     }
 }

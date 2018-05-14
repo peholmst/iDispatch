@@ -35,15 +35,11 @@ public class Binder implements Serializable {
     }
 
     /**
-     * TODO Document me!
-     *
-     * @param button
-     * @param <T>
-     * @return
+     * Creates a new binding for the given button.
      */
     @NonNull
     public ButtonBinding forButton(@NonNull Button button) {
-        throw new UnsupportedOperationException("not implemented yet"); // TODO Implement me!
+        return registerBinding(ButtonBinding.forButton(button));
     }
 
     /**

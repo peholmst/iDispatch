@@ -20,7 +20,7 @@ public abstract class AbstractAction<T> implements Action<T> {
     @Nullable
     public T execute() {
         if (isExecutable.getValue()) {
-            return doPerform();
+            return doExecute();
         }
         return null;
     }
@@ -29,15 +29,15 @@ public abstract class AbstractAction<T> implements Action<T> {
      * Sets the value of the {@link #isExecutable() writable} flag. By default this flag is true, i.e. the action
      * is executable.
      */
-    protected void setExecutable(boolean executable) {
+    public void setExecutable(boolean executable) {
         isExecutable.setValue(executable);
     }
 
     /**
      * Executes the action if it is executable. This method is never called if {@link #isExecutable()} is false.
      *
-     * @return any result to pass to the performing client.
+     * @return any result to pass to the executing code.
      */
     @Nullable
-    protected abstract T doPerform();
+    protected abstract T doExecute();
 }

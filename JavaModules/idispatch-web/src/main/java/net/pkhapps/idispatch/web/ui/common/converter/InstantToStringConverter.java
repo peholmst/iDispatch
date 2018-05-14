@@ -1,7 +1,5 @@
 package net.pkhapps.idispatch.web.ui.common.converter;
 
-import com.vaadin.data.Converter;
-import com.vaadin.data.Result;
 import com.vaadin.data.ValueContext;
 import com.vaadin.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,20 +13,20 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * TODO Document me!
+ * One-way converter for converting a {@link Instant} to a string.
  */
 @SpringComponent
-public class StringToInstantConverter implements Converter<String, Instant> {
+public class InstantToStringConverter extends OneWayToStringConverter<Instant> {
 
     private final ZoneId timeZone;
 
-    public StringToInstantConverter(@Value("${dispatch.ui.timeZone}") @NonNull ZoneId timeZone) {
+    /**
+     * Creates a new converter.
+     *
+     * @param timeZone the timezone to use when converting the instant to a string.
+     */
+    public InstantToStringConverter(@Value("${dispatch.ui.timeZone}") @NonNull ZoneId timeZone) {
         this.timeZone = Objects.requireNonNull(timeZone);
-    }
-
-    @Override
-    public Result<Instant> convertToModel(String value, ValueContext context) {
-        return Result.error("not implemented"); // TODO Implement me!
     }
 
     @Override

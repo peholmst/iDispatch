@@ -14,6 +14,7 @@ import java.util.function.Consumer;
  *
  * @param <O>
  */
+@Deprecated
 public abstract class AbstractModel<O extends Serializable> {
 
     private final List<O> observers = new ArrayList<>();
