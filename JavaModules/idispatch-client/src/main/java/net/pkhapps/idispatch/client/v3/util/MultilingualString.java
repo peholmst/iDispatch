@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * Class that represents a string in many languages.
+ * Value object that represents a string in many languages.
  */
 @Immutable
 @SuppressWarnings("WeakerAccess")
@@ -17,16 +17,20 @@ public class MultilingualString implements Serializable {
     private Map<Locale, String> values;
 
     public MultilingualString() {
-        this(Collections.emptyMap());
+        setValues(Collections.emptyMap());
     }
 
     public MultilingualString(@Nonnull Map<Locale, String> values) {
-        Objects.requireNonNull(values, "values must not be null");
-        this.values = new HashMap<>(values);
+        setValues(values);
     }
 
     public MultilingualString(@Nonnull Locale locale, @Nonnull String value) {
-        this(Map.of(locale, value));
+        setValues(Map.of(locale, value));
+    }
+
+    private void setValues(Map<Locale, String> values) {
+        Objects.requireNonNull(values, "values must not be null");
+        this.values = new HashMap<>(values);
     }
 
     @Nonnull
@@ -59,6 +63,11 @@ public class MultilingualString implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(values);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", getClass().getSimpleName(), values);
     }
 
     /**

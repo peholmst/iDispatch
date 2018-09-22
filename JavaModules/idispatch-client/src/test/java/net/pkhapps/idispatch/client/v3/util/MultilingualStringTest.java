@@ -1,7 +1,5 @@
 package net.pkhapps.idispatch.client.v3.util;
 
-import com.google.gson.Gson;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Locale;
@@ -11,17 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Unit test for {@link MultilingualString}.
  */
-public class MultilingualStringTest {
+public class MultilingualStringTest extends JsonObjectTest {
 
     private static final Locale FINNISH = new Locale("fi");
     private static final Locale SWEDISH = new Locale("sv");
-
-    private Gson gson;
-
-    @Before
-    public void setUp() {
-        gson = new Gson();
-    }
 
     @Test
     public void value_localeExists() {
@@ -60,9 +51,9 @@ public class MultilingualStringTest {
     @Test
     public void serializeAndDeserialize() {
         var original = new MultilingualString.Builder().withValue(FINNISH, "Terve").withValue(SWEDISH, "Hej").build();
-        var json = gson.toJson(original);
+        var json = getGson().toJson(original);
         System.out.println(json);
-        var deserialized = gson.fromJson(json, MultilingualString.class);
+        var deserialized = getGson().fromJson(json, MultilingualString.class);
         assertThat(deserialized).isNotSameAs(original);
         assertThat(deserialized).isEqualTo(original);
     }
