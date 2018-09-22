@@ -1,6 +1,6 @@
 package net.pkhapps.idispatch.client.v3.geo;
 
-import net.pkhapps.idispatch.client.v3.util.JsonObjectTest;
+import net.pkhapps.idispatch.client.v3.test.JsonObjectTest;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
