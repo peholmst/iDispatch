@@ -2,14 +2,18 @@ package net.pkhapps.idispatch.client.v3.test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import net.pkhapps.idispatch.client.v3.AssignmentId;
 import net.pkhapps.idispatch.client.v3.base.gson.DomainObjectIdJsonTypeAdapter;
 import net.pkhapps.idispatch.client.v3.type.*;
 import net.pkhapps.idispatch.client.v3.util.Color;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;
 import net.pkhapps.idispatch.client.v3.util.PhoneNumber;
 import net.pkhapps.idispatch.client.v3.util.gson.ColorJsonTypeAdapter;
+import net.pkhapps.idispatch.client.v3.util.gson.InstantJsonTypeAdapter;
 import net.pkhapps.idispatch.client.v3.util.gson.MultilingualStringTypeAdapter;
 import net.pkhapps.idispatch.client.v3.util.gson.PhoneNumberJsonTypeAdapter;
+
+import java.time.Instant;
 
 /**
  * Base class for objects that serialize to JSON using GSON.
@@ -21,7 +25,9 @@ public abstract class JsonObjectTest {
 
     public JsonObjectTest() {
         gson = new GsonBuilder()
+                .registerTypeAdapter(AssignmentId.class, new DomainObjectIdJsonTypeAdapter<>(AssignmentId::new))
                 .registerTypeAdapter(Color.class, new ColorJsonTypeAdapter())
+                .registerTypeAdapter(Instant.class, new InstantJsonTypeAdapter())
                 .registerTypeAdapter(MultilingualString.class, new MultilingualStringTypeAdapter())
                 .registerTypeAdapter(MunicipalityId.class, new DomainObjectIdJsonTypeAdapter<>(MunicipalityId::new))
                 .registerTypeAdapter(PhoneNumber.class, new PhoneNumberJsonTypeAdapter())
