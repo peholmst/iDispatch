@@ -52,6 +52,11 @@ public class MultilingualString implements Serializable {
         return values.containsKey(locale);
     }
 
+    @Nonnull
+    public Map<Locale, String> toMap() {
+        return Map.copyOf(values);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

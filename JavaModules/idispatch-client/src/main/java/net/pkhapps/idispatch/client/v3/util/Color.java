@@ -14,10 +14,6 @@ public class Color implements Serializable {
 
     private String hexRgb;
 
-    @SuppressWarnings("unused") // Used by GSON.
-    private Color() {
-    }
-
     public Color(@Nonnull String hexRgb) {
         setHexRgb(hexRgb);
     }
