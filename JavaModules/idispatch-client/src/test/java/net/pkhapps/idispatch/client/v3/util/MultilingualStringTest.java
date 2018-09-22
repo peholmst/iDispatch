@@ -3,17 +3,14 @@ package net.pkhapps.idispatch.client.v3.util;
 import net.pkhapps.idispatch.client.v3.test.JsonObjectTest;
 import org.junit.Test;
 
-import java.util.Locale;
-
+import static net.pkhapps.idispatch.client.v3.util.Locales.FINNISH;
+import static net.pkhapps.idispatch.client.v3.util.Locales.SWEDISH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit test for {@link MultilingualString}.
  */
 public class MultilingualStringTest extends JsonObjectTest {
-
-    private static final Locale FINNISH = new Locale("fi");
-    private static final Locale SWEDISH = new Locale("sv");
 
     @Test
     public void value_localeExists() {
