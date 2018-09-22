@@ -2,7 +2,7 @@ package net.pkhapps.idispatch.client.v3.util;
 
 import org.junit.Test;
 
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Unit test for {@link Color}.

@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.client.v3.util;
 
-import org.assertj.core.api.Java6Assertions;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -46,7 +45,7 @@ public class PhoneNumberTest extends JsonObjectTest {
         var json = getGson().toJson(original);
         System.out.println(json);
         var deserialized = getGson().fromJson(json, PhoneNumber.class);
-        Java6Assertions.assertThat(deserialized).isNotSameAs(original);
-        Java6Assertions.assertThat(deserialized).isEqualTo(original);
+        assertThat(deserialized).isNotSameAs(original);
+        assertThat(deserialized).isEqualTo(original);
     }
 }
