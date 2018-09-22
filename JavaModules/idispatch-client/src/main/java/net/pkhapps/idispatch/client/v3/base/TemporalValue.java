@@ -15,15 +15,15 @@ import java.util.Objects;
 public class TemporalValue<T> implements Serializable {
 
     private T value;
-    private Instant changedAt;
+    private Instant changedOn;
 
-    public TemporalValue(@Nullable T value, @Nonnull Instant changedAt) {
+    public TemporalValue(@Nullable T value, @Nonnull Instant changedOn) {
         this.value = value;
-        this.changedAt = Objects.requireNonNull(changedAt, "changedAt must not be null");
+        this.changedOn = Objects.requireNonNull(changedOn, "changedOn must not be null");
     }
 
-    public TemporalValue(@Nonnull Instant changedAt) {
-        this(null, changedAt);
+    public TemporalValue(@Nonnull Instant changedOn) {
+        this(null, changedOn);
     }
 
     @Nullable
@@ -32,8 +32,8 @@ public class TemporalValue<T> implements Serializable {
     }
 
     @Nonnull
-    public Instant changedAt() {
-        return changedAt;
+    public Instant changedOn() {
+        return changedOn;
     }
 
     public boolean hasValue() {
@@ -46,16 +46,16 @@ public class TemporalValue<T> implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         TemporalValue<?> that = (TemporalValue<?>) o;
         return Objects.equals(value, that.value) &&
-                Objects.equals(changedAt, that.changedAt);
+                Objects.equals(changedOn, that.changedOn);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(value, changedAt);
+        return Objects.hash(value, changedOn);
     }
 
     @Override
     public String toString() {
-        return String.format("%s[value=%s, changedAt=%s]", getClass().getSimpleName(), value, changedAt);
+        return String.format("%s[value=%s, changedOn=%s]", getClass().getSimpleName(), value, changedOn);
     }
 }
