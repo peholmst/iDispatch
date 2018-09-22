@@ -6,8 +6,8 @@ import net.pkhapps.idispatch.client.v3.test.JsonObjectTest;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;
 import org.junit.Test;
 
-import java.util.Locale;
-
+import static net.pkhapps.idispatch.client.v3.util.Locales.FINNISH;
+import static net.pkhapps.idispatch.client.v3.util.Locales.SWEDISH;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
@@ -18,7 +18,10 @@ public class StationTest extends JsonObjectTest {
 
     public static Station createTestStation() {
         return new Station(new StationId(1L),
-                new MultilingualString(new Locale("sv"), "Rondellens brandstation"),
+                new MultilingualString.Builder()
+                        .withValue(SWEDISH, "Rondellens brandstation")
+                        .withValue(FINNISH, "Liikenneympyrän paloasema")
+                        .build(),
                 new GeographicLocation(CoordinateReferenceSystem.ETRS_TM35FIN, 6694823, 240478),
                 true);
     }
