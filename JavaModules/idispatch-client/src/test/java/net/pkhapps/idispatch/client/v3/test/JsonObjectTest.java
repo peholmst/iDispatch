@@ -3,6 +3,7 @@ package net.pkhapps.idispatch.client.v3.test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.pkhapps.idispatch.client.v3.base.gson.DomainObjectIdJsonTypeAdapter;
+import net.pkhapps.idispatch.client.v3.type.MunicipalityId;
 import net.pkhapps.idispatch.client.v3.type.ResourceId;
 import net.pkhapps.idispatch.client.v3.type.ResourceTypeId;
 import net.pkhapps.idispatch.client.v3.type.StationId;
@@ -25,6 +26,7 @@ public abstract class JsonObjectTest {
         gson = new GsonBuilder()
                 .registerTypeAdapter(Color.class, new ColorJsonTypeAdapter())
                 .registerTypeAdapter(MultilingualString.class, new MultilingualStringTypeAdapter())
+                .registerTypeAdapter(MunicipalityId.class, new DomainObjectIdJsonTypeAdapter<>(MunicipalityId::new))
                 .registerTypeAdapter(PhoneNumber.class, new PhoneNumberJsonTypeAdapter())
                 .registerTypeAdapter(ResourceId.class, new DomainObjectIdJsonTypeAdapter<>(ResourceId::new))
                 .registerTypeAdapter(ResourceTypeId.class, new DomainObjectIdJsonTypeAdapter<>(ResourceTypeId::new))
