@@ -3,10 +3,7 @@ package net.pkhapps.idispatch.client.v3.test;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.pkhapps.idispatch.client.v3.base.gson.DomainObjectIdJsonTypeAdapter;
-import net.pkhapps.idispatch.client.v3.type.MunicipalityId;
-import net.pkhapps.idispatch.client.v3.type.ResourceId;
-import net.pkhapps.idispatch.client.v3.type.ResourceTypeId;
-import net.pkhapps.idispatch.client.v3.type.StationId;
+import net.pkhapps.idispatch.client.v3.type.*;
 import net.pkhapps.idispatch.client.v3.util.Color;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;
 import net.pkhapps.idispatch.client.v3.util.PhoneNumber;
@@ -29,6 +26,7 @@ public abstract class JsonObjectTest {
                 .registerTypeAdapter(MunicipalityId.class, new DomainObjectIdJsonTypeAdapter<>(MunicipalityId::new))
                 .registerTypeAdapter(PhoneNumber.class, new PhoneNumberJsonTypeAdapter())
                 .registerTypeAdapter(ResourceId.class, new DomainObjectIdJsonTypeAdapter<>(ResourceId::new))
+                .registerTypeAdapter(ResourceStateId.class, new DomainObjectIdJsonTypeAdapter<>(ResourceStateId::new))
                 .registerTypeAdapter(ResourceTypeId.class, new DomainObjectIdJsonTypeAdapter<>(ResourceTypeId::new))
                 .registerTypeAdapter(StationId.class, new DomainObjectIdJsonTypeAdapter<>(StationId::new))
                 .setPrettyPrinting()
