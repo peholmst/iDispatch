@@ -55,4 +55,10 @@ public class MultilingualStringTest extends JsonObjectTest {
         assertThat(deserialized).isNotSameAs(original);
         assertThat(deserialized).isEqualTo(original);
     }
+
+    @Test(expected = UnsupportedOperationException.class)
+    public void toMap_unmodifiable() {
+        var string = new MultilingualString(FINNISH, "Terve");
+        string.toMap().put(SWEDISH, "Hej");
+    }
 }

@@ -30,7 +30,7 @@ public class MultilingualString implements Serializable {
 
     private void setValues(Map<Locale, String> values) {
         Objects.requireNonNull(values, "values must not be null");
-        this.values = new HashMap<>(values);
+        this.values = Map.copyOf(values);
     }
 
     @Nonnull
@@ -54,7 +54,7 @@ public class MultilingualString implements Serializable {
 
     @Nonnull
     public Map<Locale, String> toMap() {
-        return Map.copyOf(values);
+        return values; // Unmodifiable
     }
 
     @Override
