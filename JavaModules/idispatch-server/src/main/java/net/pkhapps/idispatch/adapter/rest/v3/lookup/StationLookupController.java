@@ -1,10 +1,10 @@
 package net.pkhapps.idispatch.adapter.rest.v3.lookup;
 
+import net.pkhapps.idispatch.client.v3.Station;
+import net.pkhapps.idispatch.client.v3.StationId;
+import net.pkhapps.idispatch.client.v3.StationLookupService;
 import net.pkhapps.idispatch.client.v3.geo.CoordinateReferenceSystem;
 import net.pkhapps.idispatch.client.v3.geo.GeographicLocation;
-import net.pkhapps.idispatch.client.v3.type.Station;
-import net.pkhapps.idispatch.client.v3.type.StationId;
-import net.pkhapps.idispatch.client.v3.type.StationLookupService;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;
 
 import javax.validation.constraints.NotNull;

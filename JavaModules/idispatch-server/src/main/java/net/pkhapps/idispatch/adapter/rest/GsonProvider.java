@@ -2,7 +2,7 @@ package net.pkhapps.idispatch.adapter.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.pkhapps.idispatch.client.v3.gson.GsonConfigurer;
+import net.pkhapps.idispatch.client.v3.infrastructure.GsonConfigurer;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
