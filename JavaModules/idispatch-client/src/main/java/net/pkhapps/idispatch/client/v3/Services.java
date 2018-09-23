@@ -2,7 +2,6 @@ package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.Principal;
 import net.pkhapps.idispatch.client.v3.infrastructure.RetrofitConfigurer;
-import net.pkhapps.idispatch.client.v3.type.*;
 import net.pkhapps.idispatch.client.v3.util.LazyReference;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;

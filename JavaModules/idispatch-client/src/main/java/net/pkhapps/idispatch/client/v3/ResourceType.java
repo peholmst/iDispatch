@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.client.v3.type;
+package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.DeactivatableDomainObject;
 import net.pkhapps.idispatch.client.v3.base.IdentifiableDomainObject;
@@ -9,17 +9,17 @@ import javax.annotation.concurrent.Immutable;
 import java.util.Objects;
 
 /**
- * Identifiable value object representing a municipality.
+ * Identifiable value object representing a resource type.
  */
 @Immutable
 @SuppressWarnings("WeakerAccess")
-public class Municipality implements IdentifiableDomainObject<MunicipalityId>, DeactivatableDomainObject {
+public class ResourceType implements IdentifiableDomainObject<ResourceTypeId>, DeactivatableDomainObject {
 
-    private MunicipalityId id;
+    private ResourceTypeId id;
     private MultilingualString name;
     private boolean active;
 
-    public Municipality(@Nonnull MunicipalityId id, @Nonnull MultilingualString name, boolean active) {
+    public ResourceType(@Nonnull ResourceTypeId id, @Nonnull MultilingualString name, boolean active) {
         this.id = Objects.requireNonNull(id, "id must not be null");
         this.name = Objects.requireNonNull(name, "name must not be null");
         this.active = active;
@@ -27,7 +27,7 @@ public class Municipality implements IdentifiableDomainObject<MunicipalityId>, D
 
     @Nonnull
     @Override
-    public MunicipalityId id() {
+    public ResourceTypeId id() {
         return id;
     }
 
@@ -45,7 +45,7 @@ public class Municipality implements IdentifiableDomainObject<MunicipalityId>, D
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Municipality that = (Municipality) o;
+        ResourceType that = (ResourceType) o;
         return active == that.active &&
                 Objects.equals(id, that.id) &&
                 Objects.equals(name, that.name);
@@ -58,6 +58,6 @@ public class Municipality implements IdentifiableDomainObject<MunicipalityId>, D
 
     @Override
     public String toString() {
-        return String.format("%s[id=%s, name=%s, active=%s]", getClass().getSimpleName(), id, name, active);
+        return String.format("%s[id=%s, active=%s]", getClass().getSimpleName(), id, active);
     }
 }

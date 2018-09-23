@@ -2,8 +2,6 @@ package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.TemporalValue;
 import net.pkhapps.idispatch.client.v3.geo.GeographicLocation;
-import net.pkhapps.idispatch.client.v3.type.ResourceId;
-import net.pkhapps.idispatch.client.v3.type.ResourceStateId;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;

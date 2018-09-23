@@ -1,5 +1,7 @@
-package net.pkhapps.idispatch.client.v3.type;
+package net.pkhapps.idispatch.client.v3;
 
+import net.pkhapps.idispatch.client.v3.ResourceState;
+import net.pkhapps.idispatch.client.v3.ResourceStateId;
 import net.pkhapps.idispatch.client.v3.test.JsonObjectTest;
 import net.pkhapps.idispatch.client.v3.util.Color;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;

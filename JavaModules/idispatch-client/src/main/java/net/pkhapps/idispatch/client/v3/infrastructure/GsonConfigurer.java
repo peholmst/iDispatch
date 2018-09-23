@@ -1,8 +1,7 @@
 package net.pkhapps.idispatch.client.v3.infrastructure;
 
 import com.google.gson.GsonBuilder;
-import net.pkhapps.idispatch.client.v3.AssignmentId;
-import net.pkhapps.idispatch.client.v3.type.*;
+import net.pkhapps.idispatch.client.v3.*;
 import net.pkhapps.idispatch.client.v3.util.Color;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;
 import net.pkhapps.idispatch.client.v3.util.PhoneNumber;

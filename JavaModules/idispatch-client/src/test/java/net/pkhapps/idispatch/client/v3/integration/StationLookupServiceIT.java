@@ -1,7 +1,8 @@
 package net.pkhapps.idispatch.client.v3.integration;
 
 import net.pkhapps.idispatch.client.v3.Services;
-import net.pkhapps.idispatch.client.v3.type.Station;
+import net.pkhapps.idispatch.client.v3.Station;
+import net.pkhapps.idispatch.client.v3.StationLookupService;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Integration test for {@link net.pkhapps.idispatch.client.v3.type.StationLookupService}. The server must be running
+ * Integration test for {@link StationLookupService}. The server must be running
  * on {@code localhost}.
  */
 public class StationLookupServiceIT {

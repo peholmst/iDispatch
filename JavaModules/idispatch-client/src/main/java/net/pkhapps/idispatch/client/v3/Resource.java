@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.client.v3.type;
+package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.DeactivatableDomainObject;
 import net.pkhapps.idispatch.client.v3.base.IdentifiableDomainObject;

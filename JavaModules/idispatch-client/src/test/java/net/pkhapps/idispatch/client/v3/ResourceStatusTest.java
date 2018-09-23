@@ -4,8 +4,6 @@ import net.pkhapps.idispatch.client.v3.base.TemporalValue;
 import net.pkhapps.idispatch.client.v3.geo.CoordinateReferenceSystem;
 import net.pkhapps.idispatch.client.v3.geo.GeographicLocation;
 import net.pkhapps.idispatch.client.v3.test.JsonObjectTest;
-import net.pkhapps.idispatch.client.v3.type.ResourceId;
-import net.pkhapps.idispatch.client.v3.type.ResourceStateId;
 import org.junit.Test;
 
 import java.time.Instant;

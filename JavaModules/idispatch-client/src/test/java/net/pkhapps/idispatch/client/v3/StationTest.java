@@ -1,5 +1,7 @@
-package net.pkhapps.idispatch.client.v3.type;
+package net.pkhapps.idispatch.client.v3;
 
+import net.pkhapps.idispatch.client.v3.Station;
+import net.pkhapps.idispatch.client.v3.StationId;
 import net.pkhapps.idispatch.client.v3.geo.CoordinateReferenceSystem;
 import net.pkhapps.idispatch.client.v3.geo.GeographicLocation;
 import net.pkhapps.idispatch.client.v3.test.JsonObjectTest;
