@@ -2,6 +2,7 @@ package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.Principal;
 import net.pkhapps.idispatch.client.v3.infrastructure.RetrofitConfigurer;
+import net.pkhapps.idispatch.client.v3.type.ResourceLookupService;
 import net.pkhapps.idispatch.client.v3.type.ResourceStateLookupService;
 import net.pkhapps.idispatch.client.v3.type.ResourceTypeLookupService;
 import net.pkhapps.idispatch.client.v3.type.StationLookupService;
@@ -31,6 +32,7 @@ public class Services {
 
     private final String apiKey;
 
+    private final LazyReference<ResourceLookupService> resourceLookupService;
     private final LazyReference<ResourceStateLookupService> resourceStateLookupService;
     private final LazyReference<ResourceTypeLookupService> resourceTypeLookupService;
     private final LazyReference<StationLookupService> stationLookupService;
@@ -52,6 +54,7 @@ public class Services {
                 .baseUrl(baseUrl)
                 .client(client)
                 .build();
+        resourceLookupService = createClientService(retrofit, ResourceLookupService.class);
         resourceStateLookupService = createClientService(retrofit, ResourceStateLookupService.class);
         resourceTypeLookupService = createClientService(retrofit, ResourceTypeLookupService.class);
         stationLookupService = createClientService(retrofit, StationLookupService.class);
@@ -78,6 +81,11 @@ public class Services {
             }
         }
         return chain.proceed(chain.request());
+    }
+
+    @Nonnull
+    ResourceLookupService resourceLookupService() {
+        return resourceLookupService.get();
     }
 
     @Nonnull
