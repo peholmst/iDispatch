@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.client.v3.base.retrofit;
+package net.pkhapps.idispatch.client.v3.infrastructure;
 
 import net.pkhapps.idispatch.client.v3.base.DomainObjectId;
 import retrofit2.Converter;

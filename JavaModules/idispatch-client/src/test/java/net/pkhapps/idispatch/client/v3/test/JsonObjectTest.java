@@ -2,7 +2,7 @@ package net.pkhapps.idispatch.client.v3.test;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import net.pkhapps.idispatch.client.v3.gson.GsonConfigurer;
+import net.pkhapps.idispatch.client.v3.infrastructure.GsonConfigurer;
 
 /**
  * Base class for objects that serialize to JSON using GSON.

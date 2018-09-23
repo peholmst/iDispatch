@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.client.v3.base.gson;
+package net.pkhapps.idispatch.client.v3.infrastructure;
 
 import com.google.gson.*;
 import net.pkhapps.idispatch.client.v3.base.DomainObjectId;
@@ -11,14 +11,14 @@ import java.util.function.Function;
 /**
  * Type adapter ({@link JsonSerializer} and {@link JsonDeserializer}) for subclasses of {@link DomainObjectId}.
  */
-public class DomainObjectIdJsonTypeAdapter<T extends DomainObjectId> implements JsonSerializer<T>, JsonDeserializer<T> {
+class DomainObjectIdJsonTypeAdapter<T extends DomainObjectId> implements JsonSerializer<T>, JsonDeserializer<T> {
 
     private final Function<Long, T> factory;
 
     /**
      * @param factory a factory for creating new instances of the domain object ID class.
      */
-    public DomainObjectIdJsonTypeAdapter(@Nonnull Function<Long, T> factory) {
+    DomainObjectIdJsonTypeAdapter(@Nonnull Function<Long, T> factory) {
         this.factory = Objects.requireNonNull(factory, "factory must not be null");
     }
 

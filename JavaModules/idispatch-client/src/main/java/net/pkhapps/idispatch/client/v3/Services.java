@@ -2,8 +2,8 @@ package net.pkhapps.idispatch.client.v3;
 
 import com.google.gson.GsonBuilder;
 import net.pkhapps.idispatch.client.v3.base.Principal;
-import net.pkhapps.idispatch.client.v3.base.retrofit.DomainObjectIdConverterFactory;
-import net.pkhapps.idispatch.client.v3.gson.GsonConfigurer;
+import net.pkhapps.idispatch.client.v3.infrastructure.DomainObjectIdConverterFactory;
+import net.pkhapps.idispatch.client.v3.infrastructure.GsonConfigurer;
 import net.pkhapps.idispatch.client.v3.type.StationLookupService;
 import net.pkhapps.idispatch.client.v3.util.LazyReference;
 import okhttp3.Interceptor;

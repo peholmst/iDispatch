@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.client.v3.util.gson;
+package net.pkhapps.idispatch.client.v3.infrastructure;
 
 import com.google.gson.*;
 
@@ -9,7 +9,7 @@ import java.time.Instant;
  * Type adapter ({@link JsonSerializer} and {@link JsonDeserializer}) that represents {@link Instant}s as ISO-8601
  * strings.
  */
-public class InstantJsonTypeAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
+class InstantJsonTypeAdapter implements JsonSerializer<Instant>, JsonDeserializer<Instant> {
 
     @Override
     public Instant deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context)

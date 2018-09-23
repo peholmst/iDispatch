@@ -1,16 +1,11 @@
-package net.pkhapps.idispatch.client.v3.gson;
+package net.pkhapps.idispatch.client.v3.infrastructure;
 
 import com.google.gson.GsonBuilder;
 import net.pkhapps.idispatch.client.v3.AssignmentId;
-import net.pkhapps.idispatch.client.v3.base.gson.DomainObjectIdJsonTypeAdapter;
 import net.pkhapps.idispatch.client.v3.type.*;
 import net.pkhapps.idispatch.client.v3.util.Color;
 import net.pkhapps.idispatch.client.v3.util.MultilingualString;
 import net.pkhapps.idispatch.client.v3.util.PhoneNumber;
-import net.pkhapps.idispatch.client.v3.util.gson.ColorJsonTypeAdapter;
-import net.pkhapps.idispatch.client.v3.util.gson.InstantJsonTypeAdapter;
-import net.pkhapps.idispatch.client.v3.util.gson.MultilingualStringTypeAdapter;
-import net.pkhapps.idispatch.client.v3.util.gson.PhoneNumberJsonTypeAdapter;
 
 import javax.annotation.Nonnull;
 import java.time.Instant;

@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.client.v3.util.gson;
+package net.pkhapps.idispatch.client.v3.infrastructure;
 
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -11,7 +11,7 @@ import java.util.Map;
 /**
  * Type adapter ({@link JsonSerializer} and {@link JsonDeserializer}) for {@link MultilingualString}.
  */
-public class MultilingualStringTypeAdapter implements JsonSerializer<MultilingualString>,
+class MultilingualStringTypeAdapter implements JsonSerializer<MultilingualString>,
         JsonDeserializer<MultilingualString> {
 
     @Override
