@@ -11,7 +11,7 @@ import java.lang.reflect.Type;
 /**
  * Retrofit converter factory that makes it possible to use {@link DomainObjectId}s as parameters for REST calls.
  */
-public class DomainObjectIdConverterFactory extends Converter.Factory {
+class DomainObjectIdConverterFactory extends Converter.Factory {
 
     @Nullable
     @Override

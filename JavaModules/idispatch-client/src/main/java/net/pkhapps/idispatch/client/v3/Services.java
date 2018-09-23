@@ -1,16 +1,13 @@
 package net.pkhapps.idispatch.client.v3;
 
-import com.google.gson.GsonBuilder;
 import net.pkhapps.idispatch.client.v3.base.Principal;
-import net.pkhapps.idispatch.client.v3.infrastructure.DomainObjectIdConverterFactory;
-import net.pkhapps.idispatch.client.v3.infrastructure.GsonConfigurer;
+import net.pkhapps.idispatch.client.v3.infrastructure.RetrofitConfigurer;
 import net.pkhapps.idispatch.client.v3.type.StationLookupService;
 import net.pkhapps.idispatch.client.v3.util.LazyReference;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
@@ -42,15 +39,12 @@ public class Services {
     public Services(@Nonnull String baseUrl, @Nonnull String apiKey) {
         Objects.requireNonNull(baseUrl, "baseUrl must not be null");
         this.apiKey = Objects.requireNonNull(apiKey, "apiKey must not be null");
-        var gson = new GsonConfigurer().configure(new GsonBuilder()).create();
         var client = new OkHttpClient.Builder()
                 .addInterceptor(this::addApiKeyToRequest)
                 .addInterceptor(this::addSubjectToRequest)
                 .build();
-        var retrofit = new Retrofit.Builder()
+        var retrofit = new RetrofitConfigurer().configure(new Retrofit.Builder())
                 .baseUrl(baseUrl)
-                .addConverterFactory(new DomainObjectIdConverterFactory())
-                .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build();
         stationLookupService = new LazyReference<>(() -> retrofit.create(StationLookupService.class));
