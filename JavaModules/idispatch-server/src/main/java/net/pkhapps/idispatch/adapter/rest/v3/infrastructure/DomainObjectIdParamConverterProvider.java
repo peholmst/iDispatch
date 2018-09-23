@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.adapter.rest;
+package net.pkhapps.idispatch.adapter.rest.v3.infrastructure;
 
 import net.pkhapps.idispatch.client.v3.base.DomainObjectId;
 

@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.adapter.rest;
+package net.pkhapps.idispatch.adapter.rest.infrastructure;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
