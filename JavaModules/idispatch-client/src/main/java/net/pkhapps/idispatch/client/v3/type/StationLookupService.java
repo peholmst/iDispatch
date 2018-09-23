@@ -8,7 +8,7 @@ import javax.annotation.Nonnull;
 import java.util.List;
 
 /**
- * Client interface for looking up {@link Station}s from the server through REST.s
+ * Client interface for looking up {@link Station}s from the server through REST.
  */
 public interface StationLookupService {
 
