@@ -2,6 +2,7 @@ package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.Principal;
 import net.pkhapps.idispatch.client.v3.infrastructure.RetrofitConfigurer;
+import net.pkhapps.idispatch.client.v3.type.ResourceStateLookupService;
 import net.pkhapps.idispatch.client.v3.type.ResourceTypeLookupService;
 import net.pkhapps.idispatch.client.v3.type.StationLookupService;
 import net.pkhapps.idispatch.client.v3.util.LazyReference;
@@ -29,8 +30,10 @@ public class Services {
     private static final String PRINCIPAL_ID_HEADER = "iDispatch-Principal";
 
     private final String apiKey;
-    private final LazyReference<StationLookupService> stationLookupService;
+
+    private final LazyReference<ResourceStateLookupService> resourceStateLookupService;
     private final LazyReference<ResourceTypeLookupService> resourceTypeLookupService;
+    private final LazyReference<StationLookupService> stationLookupService;
 
     /**
      * Creates a new {@code Services} instance.
@@ -49,8 +52,13 @@ public class Services {
                 .baseUrl(baseUrl)
                 .client(client)
                 .build();
-        stationLookupService = new LazyReference<>(() -> retrofit.create(StationLookupService.class));
-        resourceTypeLookupService = new LazyReference<>(() -> retrofit.create(ResourceTypeLookupService.class));
+        resourceStateLookupService = createClientService(retrofit, ResourceStateLookupService.class);
+        resourceTypeLookupService = createClientService(retrofit, ResourceTypeLookupService.class);
+        stationLookupService = createClientService(retrofit, StationLookupService.class);
+    }
+
+    private <T> LazyReference<T> createClientService(Retrofit retrofit, Class<T> serviceInterface) {
+        return new LazyReference<>(() -> retrofit.create(serviceInterface));
     }
 
     private Response addApiKeyToRequest(Interceptor.Chain chain) throws IOException {
@@ -73,12 +81,17 @@ public class Services {
     }
 
     @Nonnull
-    public StationLookupService stationLookupService() {
-        return stationLookupService.get();
+    ResourceStateLookupService resourceStateLookupService() {
+        return resourceStateLookupService.get();
     }
 
     @Nonnull
     public ResourceTypeLookupService resourceTypeLookupService() {
         return resourceTypeLookupService.get();
+    }
+
+    @Nonnull
+    public StationLookupService stationLookupService() {
+        return stationLookupService.get();
     }
 }
