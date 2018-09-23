@@ -2,10 +2,7 @@ package net.pkhapps.idispatch.client.v3;
 
 import net.pkhapps.idispatch.client.v3.base.Principal;
 import net.pkhapps.idispatch.client.v3.infrastructure.RetrofitConfigurer;
-import net.pkhapps.idispatch.client.v3.type.ResourceLookupService;
-import net.pkhapps.idispatch.client.v3.type.ResourceStateLookupService;
-import net.pkhapps.idispatch.client.v3.type.ResourceTypeLookupService;
-import net.pkhapps.idispatch.client.v3.type.StationLookupService;
+import net.pkhapps.idispatch.client.v3.type.*;
 import net.pkhapps.idispatch.client.v3.util.LazyReference;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -32,6 +29,7 @@ public class Services {
 
     private final String apiKey;
 
+    private final LazyReference<MunicipalityLookupService> municipalityLookupService;
     private final LazyReference<ResourceLookupService> resourceLookupService;
     private final LazyReference<ResourceStateLookupService> resourceStateLookupService;
     private final LazyReference<ResourceTypeLookupService> resourceTypeLookupService;
@@ -54,6 +52,7 @@ public class Services {
                 .baseUrl(baseUrl)
                 .client(client)
                 .build();
+        municipalityLookupService = createClientService(retrofit, MunicipalityLookupService.class);
         resourceLookupService = createClientService(retrofit, ResourceLookupService.class);
         resourceStateLookupService = createClientService(retrofit, ResourceStateLookupService.class);
         resourceTypeLookupService = createClientService(retrofit, ResourceTypeLookupService.class);
@@ -81,6 +80,11 @@ public class Services {
             }
         }
         return chain.proceed(chain.request());
+    }
+
+    @Nonnull
+    MunicipalityLookupService municipalityLookupService() {
+        return municipalityLookupService.get();
     }
 
     @Nonnull
