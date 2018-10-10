@@ -18,5 +18,6 @@
         <module>idispatch-cad-domain</module>
         <module>idispatch-cad-app</module>
         <module>idispatch-cad-schema</module>
+        <module>idispatch-cad-client</module>
     </modules>
 </project>

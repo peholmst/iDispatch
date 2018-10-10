@@ -14,6 +14,7 @@
         <module>idispatch-reporting-domain</module>
         <module>idispatch-reporting-app</module>
         <module>idispatch-reporting-schema</module>
+        <module>idispatch-reporting-client</module>
     </modules>
     <groupId>net.pkhapps.idispatch.reporting</groupId>
     <name>iDispatch Reporting Master POM</name>
