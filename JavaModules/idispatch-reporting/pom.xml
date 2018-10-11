@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>master</artifactId>
+        <groupId>net.pkhapps.idispatch</groupId>
+        <version>3.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>reporting-master</artifactId>
+    <modules>
+        <module>idispatch-reporting-domain</module>
+        <module>idispatch-reporting-app</module>
+        <module>idispatch-reporting-schema</module>
+        <module>idispatch-reporting-client</module>
+    </modules>
+    <groupId>net.pkhapps.idispatch.reporting</groupId>
+    <name>iDispatch Reporting Master POM</name>
+    <packaging>pom</packaging>
+</project>

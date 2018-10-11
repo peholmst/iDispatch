@@ -1,0 +1,116 @@
+// For more information, see: https://vaadin.com/book/-/page/themes.valo.html
+// Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
+
+$v-font-size: 14px;
+
+@import "../valo/valo.scss";
+
+@mixin dispatch {
+  @include valo;
+
+  .app-header {
+    background-color: cornflowerblue;
+    .title {
+      color: #fafafa;
+      font-size: 20px;
+      font-weight: 400;
+    }
+  }
+
+  .app-header.v-margin-bottom {
+    padding-bottom: 8px;
+  }
+  .app-header.v-margin-top {
+    padding-top: 8px;
+  }
+  .app-header.v-margin-left {
+    padding-left: 16px;
+  }
+  .app-header.v-margin-right {
+    padding-right: 16px;
+  }
+
+  .viewlet {
+    .title {
+      background-color: #fafafa;
+      padding: 4px 16px;
+      border-bottom: $v-grid-border;
+      .v-label {
+        font-size: 16px;
+        font-weight: 400;
+      }
+    }
+    .v-grid-tablewrapper {
+      border: none;
+    }
+  }
+
+  .view.v-margin-bottom {
+    padding-bottom: 16px;
+  }
+  .view.v-margin-top {
+    padding-top: 16px;
+  }
+  .view.v-margin-left {
+    padding-left: 16px;
+  }
+  .view.v-margin-right {
+    padding-right: 16px;
+  }
+
+  .resource-state-RESERVED {
+    .v-grid-cell {
+      background-color: rgba(255, 165, 0, 0.5);
+    }
+  }
+
+  .resource-state-DISPATCHED {
+    .v-grid-cell {
+      background-color: rgba(255, 0, 0, 0.5);
+      color: whitesmoke;
+    }
+  }
+
+  .resource-state-EN_ROUTE {
+    .v-grid-cell {
+      background-color: rgba(255, 255, 0, 0.5);
+    }
+  }
+
+  .resource-state-ON_SCENE {
+    .v-grid-cell {
+      background-color: rgba(0, 255, 255, 0.5);
+    }
+  }
+
+  .resource-state-AVAILABLE {
+    .v-grid-cell {
+      background-color: rgba(173, 255, 47, 0.5);
+    }
+  }
+
+  .resource-state-AT_STATION {
+    .v-grid-cell {
+      background-color: rgba(173, 255, 47, 0.75);
+    }
+  }
+
+  .assignment-state-NEW {
+    .v-grid-cell {
+      background-color: rgba(255, 165, 0, 0.5);
+    }
+  }
+
+  .assignment-state-DISPATCHED {
+    .v-grid-cell {
+      background-color: rgba(173, 255, 47, 0.75);
+    }
+  }
+
+  .assignment-state-ON_HOLD {
+    .v-grid-cell {
+      background-color: rgba(255, 0, 0, 0.5);
+      color: whitesmoke;
+    }
+  }
+}
