@@ -26,7 +26,9 @@ public class Resource extends AggregateRoot<ResourceId> implements ConcurrencySa
     private Resource() {
     }
 
-    public Resource(@Nonnull ResourceTypeId type, @Nonnull String designation, @Nonnull StationId stationedAt) {
+    public Resource(@Nonnull ResourceId id, @Nonnull ResourceTypeId type, @Nonnull String designation,
+                    @Nonnull StationId stationedAt) {
+        super(id);
         setType(type);
         setDesignation(designation);
         setStationedAt(stationedAt);

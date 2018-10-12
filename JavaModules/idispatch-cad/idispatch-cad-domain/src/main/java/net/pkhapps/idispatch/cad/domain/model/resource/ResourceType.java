@@ -24,7 +24,8 @@ public class ResourceType extends AggregateRoot<ResourceTypeId> implements Concu
     private ResourceType() {
     }
 
-    public ResourceType(@Nonnull String nameSv, @Nonnull String nameFi) {
+    public ResourceType(@Nonnull ResourceTypeId id, @Nonnull String nameSv, @Nonnull String nameFi) {
+        super(id);
         setNameSv(nameSv);
         setNameFi(nameFi);
         active = true;
