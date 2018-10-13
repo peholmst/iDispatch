@@ -12,4 +12,27 @@
     <artifactId>idispatch-cad-schema</artifactId>
     <name>iDispatch CAD (Computer Aided Dispatch) Database Schema</name>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <url>jdbc:postgresql://localhost:5432/idispatch</url>
+                    <user>idispatch-admin</user>
+                    <password>notasecret</password>
+                    <schemas>
+                        <schema>cad</schema>
+                    </schemas>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.postgresql</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${postgresql.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 </project>
