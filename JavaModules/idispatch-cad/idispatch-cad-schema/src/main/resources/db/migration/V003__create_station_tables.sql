@@ -8,6 +8,9 @@ CREATE TABLE cad.station (
   FOREIGN KEY (municipality_id) REFERENCES cad.municipality (id)
 );
 
+ALTER TABLE cad.station
+  OWNER TO idispatch_cad;
+
 CREATE TABLE cad.station_name (
   station_id varchar(36)  not null,
   locale     varchar(3)   not null,
@@ -15,6 +18,9 @@ CREATE TABLE cad.station_name (
   PRIMARY KEY (station_id, locale),
   FOREIGN KEY (station_id) REFERENCES cad.station (id)
 );
+
+ALTER TABLE cad.station_name
+  OWNER TO idispatch_cad;
 
 CREATE INDEX station_name_idx
   ON cad.station_name (name);
