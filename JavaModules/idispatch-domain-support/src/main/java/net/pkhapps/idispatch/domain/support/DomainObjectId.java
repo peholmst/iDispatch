@@ -18,10 +18,18 @@ public abstract class DomainObjectId implements Serializable {
 
     private final Serializable id;
 
-    public DomainObjectId(@Nonnull Serializable id) {
+    /**
+     * Creates a new domain object ID.
+     *
+     * @param id the serializable ID to wrap (such as a string or an integer).
+     */
+    protected DomainObjectId(@Nonnull Serializable id) {
         this.id = Objects.requireNonNull(id, "id must not be null");
     }
 
+    /**
+     * Returns the serializable ID that this value object wraps.
+     */
     @Nonnull
     public Serializable unwrap() {
         return id;
