@@ -110,7 +110,8 @@ public interface Configuration {
     }
 
     /**
-     * Registers a listener to be notified whenever an attribute value is changed.
+     * Registers a listener to be notified whenever an attribute value is changed. If the listener itself throws
+     * an exception when invoked, it will be silently ignored.
      *
      * @param listener the listener to register.
      * @return a registration handle used to unregister the listener when no longer needed.
