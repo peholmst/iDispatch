@@ -17,6 +17,14 @@ public class ProfileTest {
     }
 
     @Test
+    public void isProfileActive() {
+        System.setProperty("profiles.active", "HelloWorld");
+        Profile.reloadActiveProfiles();
+        assertThat(Profile.isProfileActive("HelloWorld")).isTrue();
+        assertThat(Profile.isProfileActive("non-active profile")).isFalse();
+    }
+
+    @Test
     public void activateProfile() {
         System.setProperty("profiles.active", "production, testProfile, HelloWorld");
         Profile.reloadActiveProfiles();
