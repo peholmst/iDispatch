@@ -4,13 +4,13 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Default implementation of {@link Configuration}.
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class DefaultConfiguration implements Configuration {
 
     private final ConcurrentMap<String, Object> attributeValues = new ConcurrentHashMap<>();
-    private final ConcurrentMap<Consumer<AttributeChangeEvent>, Void> listeners = new ConcurrentHashMap<>();
+    private final Set<Consumer<AttributeChangeEvent>> listeners = ConcurrentHashMap.newKeySet();
 
     private static <T> T castOrConvert(@Nonnull Class<T> type, @Nonnull Object value) {
         if (type.isInstance(value)) {
@@ -66,25 +66,32 @@ public class DefaultConfiguration implements Configuration {
     @Override
     public void setMultiple(@Nonnull Map<?, Object> valueMap) {
         Objects.requireNonNull(valueMap, "valueMap must not be null");
+        var changedAttributes = new HashSet<String>();
         valueMap.forEach((key, value) -> {
             Objects.requireNonNull(key, "valueMap must not contain null keys");
             Objects.requireNonNull(value, "valueMap must not contain any null values");
-            attributeValues.put(key.toString(), value);
+            var previous = attributeValues.put(key.toString(), value);
+            if (!Objects.equals(previous, value)) {
+                changedAttributes.add(key.toString());
+            }
         });
-        fireEvent(new AttributeChangeEvent(this, valueMap.keySet().stream().map(Object::toString)
-                .collect(Collectors.toSet())));
+        if (changedAttributes.size() > 0) {
+            fireEvent(new AttributeChangeEvent(this, changedAttributes));
+        }
     }
 
     @Override
     public void setOne(@Nonnull String attributeName, @Nonnull Object value) {
         Objects.requireNonNull(attributeName, "attributeName must not be null");
         Objects.requireNonNull(value, "value must not be null");
-        attributeValues.put(attributeName, value);
-        fireEvent(new AttributeChangeEvent(this, Set.of(attributeName)));
+        var previous = attributeValues.put(attributeName, value);
+        if (!Objects.equals(previous, value)) {
+            fireEvent(new AttributeChangeEvent(this, Set.of(attributeName)));
+        }
     }
 
     private void fireEvent(@Nonnull AttributeChangeEvent event) {
-        Set.copyOf(listeners.keySet()).forEach(listener -> {
+        Set.copyOf(listeners).forEach(listener -> {
             try {
                 listener.accept(event);
             } catch (Exception ex) {
@@ -97,7 +104,7 @@ public class DefaultConfiguration implements Configuration {
     @Override
     public ListenerRegistration registerListener(@Nonnull Consumer<AttributeChangeEvent> listener) {
         Objects.requireNonNull(listener, "listener must not be null");
-        listeners.put(listener, null);
+        listeners.add(listener);
         return () -> listeners.remove(listener);
     }
 }
