@@ -82,6 +82,7 @@ class PersistenceManager {
                 configuration.attribute(Attributes.IDLE_TIMEOUT_MS, String.class));
         properties.put("hibernate.hikari.connectionTimeout",
                 configuration.attribute(Attributes.CONNECTION_TIMEOUT_MS, String.class));
+        properties.put(AvailableSettings.HBM2DDL_AUTO, "validate");
 
         log.info("Creating new EntityManagerFactory");
         return Persistence.createEntityManagerFactory(PERSITENCE_UNIT_NAME, properties);
