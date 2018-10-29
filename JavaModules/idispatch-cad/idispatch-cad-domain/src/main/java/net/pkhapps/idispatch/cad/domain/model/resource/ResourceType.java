@@ -1,5 +1,6 @@
 package net.pkhapps.idispatch.cad.domain.model.resource;
 
+import net.pkhapps.idispatch.cad.domain.model.common.MultilingualString;
 import net.pkhapps.idispatch.domain.support.AggregateRoot;
 import net.pkhapps.idispatch.domain.support.ConcurrencySafeDomainObject;
 import net.pkhapps.idispatch.domain.support.DeactivatableDomainObject;
@@ -17,17 +18,14 @@ public class ResourceType extends AggregateRoot<ResourceTypeId> implements Concu
     @UsedByPersistenceFramework
     private long version;
     private boolean active;
-    private String nameSv;
-    private String nameFi;
+    private MultilingualString name;
 
     @UsedByPersistenceFramework
-    private ResourceType() {
+    protected ResourceType() {
     }
 
-    public ResourceType(@Nonnull ResourceTypeId id, @Nonnull String nameSv, @Nonnull String nameFi) {
+    public ResourceType(@Nonnull ResourceTypeId id) { // TODO name
         super(id);
-        setNameSv(nameSv);
-        setNameFi(nameFi);
         active = true;
     }
 
@@ -49,23 +47,5 @@ public class ResourceType extends AggregateRoot<ResourceTypeId> implements Concu
     @Override
     public void activate() {
         active = true;
-    }
-
-    @Nonnull
-    public String nameFi() {
-        return nameFi;
-    }
-
-    private void setNameFi(@Nonnull String nameFi) {
-        this.nameFi = Objects.requireNonNull(nameFi, "nameFi must not be null");
-    }
-
-    @Nonnull
-    public String nameSv() {
-        return nameSv;
-    }
-
-    private void setNameSv(@Nonnull String nameSv) {
-        this.nameSv = Objects.requireNonNull(nameSv, "nameSv must not be null");
     }
 }

@@ -5,6 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
+/**
+ * TODO Document me!
+ *
+ * @param <ID>
+ * @param <T>
+ */
 @Slf4j
 public abstract class AbstractRepository<ID extends DomainObjectId, T extends AggregateRoot<ID>>
         implements Repository<ID, T> {
@@ -31,7 +37,7 @@ public abstract class AbstractRepository<ID extends DomainObjectId, T extends Ag
     protected void storeDomainEvents(@Nonnull T aggregateRoot) {
         Objects.requireNonNull(aggregateRoot, "aggregateRoot must not be null");
         log.trace("Storing domain events of {}", aggregateRoot);
-        aggregateRoot.domainEvents().forEach(domainEventStore::append);
+        aggregateRoot.domainEvents().forEach(domainEventStore::add);
     }
 
     protected void publishDomainEvents(@Nonnull T aggregateRoot) {

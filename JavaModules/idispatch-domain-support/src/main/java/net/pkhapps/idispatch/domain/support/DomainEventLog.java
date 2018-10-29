@@ -2,9 +2,13 @@ package net.pkhapps.idispatch.domain.support;
 
 import java.util.List;
 
+/**
+ * TODO Document me!
+ * @param <E>
+ */
 public interface DomainEventLog<E extends DomainEvent> {
 
-    List<DomainEventRecord<E>> events();
+    List<DomainEventRecord> events();
 
     long offset();
 

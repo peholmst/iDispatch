@@ -2,9 +2,12 @@ package net.pkhapps.idispatch.domain.support;
 
 import javax.annotation.Nonnull;
 
+/**
+ * TODO Document me!
+ */
 public interface DomainEventStore {
 
-    void append(@Nonnull DomainEvent domainEvent);
+    void add(@Nonnull DomainEvent domainEvent);
 
     @Nonnull
     DomainEventLog<? extends DomainEvent> currentLog();

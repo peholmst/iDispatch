@@ -1,0 +1,24 @@
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd">
+
+    <entity class="net.pkhapps.idispatch.cad.infrastructure.jpa.event.DomainEventRecordEntity" access="FIELD">
+        <table name="domain_event" schema="cad"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="SEQUENCE"/>
+                <sequence-generator name="domain_event_id" schema="cad"/>
+            </id>
+            <basic name="occurredOn">
+                <column name="occurred_on"/>
+            </basic>
+            <basic name="eventType">
+                <column name="event_type"/>
+            </basic>
+            <basic name="eventContent">
+                <column name="event"/>
+            </basic>
+            <transient name="event"/>
+        </attributes>
+    </entity>
+</entity-mappings>

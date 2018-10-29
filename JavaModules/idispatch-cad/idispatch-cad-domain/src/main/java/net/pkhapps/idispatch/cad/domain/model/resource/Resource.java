@@ -23,7 +23,7 @@ public class Resource extends AggregateRoot<ResourceId> implements ConcurrencySa
     private StationId stationedAt;
 
     @UsedByPersistenceFramework
-    private Resource() {
+    protected Resource() {
     }
 
     public Resource(@Nonnull ResourceId id, @Nonnull ResourceTypeId type, @Nonnull String designation,

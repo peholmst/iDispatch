@@ -63,9 +63,7 @@ class AssignmentDetailsView extends VerticalLayout implements ViewWithTitle { //
         if (request.getAssignmentId() != null) {
             model.loadAssignmentIntoModel(request.getAssignmentId());
         }
-        if (model.isEmpty()) {
-            // TODO Show error
-        }
+
     }
 
     @Override

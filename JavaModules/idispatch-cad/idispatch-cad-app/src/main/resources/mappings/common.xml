@@ -1,0 +1,12 @@
+<entity-mappings xmlns="http://xmlns.jcp.org/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2"
+                 xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence/orm http://xmlns.jcp.org/xml/ns/persistence/orm_2_2.xsd">
+
+    <embeddable class="net.pkhapps.idispatch.cad.domain.model.common.MultilingualString" access="FIELD">
+        <attributes>
+            <element-collection name="values">
+                
+            </element-collection>
+        </attributes>
+    </embeddable>
+</entity-mappings>

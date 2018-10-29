@@ -2,11 +2,11 @@ package net.pkhapps.idispatch.domain.support;
 
 import javax.annotation.Nonnull;
 
-public interface DomainEventRecord<E extends DomainEvent> {
+/**
+ * TODO Document me!
+ */
+public interface DomainEventRecord extends IdentifiableDomainObject<DomainEventRecordId> {
 
     @Nonnull
-    DomainObjectId id();
-
-    @Nonnull
-    E event();
+    DomainEvent event();
 }
