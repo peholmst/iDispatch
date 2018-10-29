@@ -7,4 +7,5 @@ rebel.xml
 nb-configuration.xml
 nbactions.xml
 widgetsets/
+jetty-distribution-*/
 
