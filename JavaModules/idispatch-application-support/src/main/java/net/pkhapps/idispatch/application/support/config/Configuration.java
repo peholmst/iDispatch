@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.config;
+package net.pkhapps.idispatch.application.support.config;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;

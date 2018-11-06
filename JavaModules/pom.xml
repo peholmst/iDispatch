@@ -157,12 +157,13 @@
         <!--<module>idispatch-domain</module>-->
         <!--<module>idispatch-application</module>-->
         <!--<module>idispatch-web</module>-->
-        <module>idispatch-reporting</module>
+        <!--<module>idispatch-reporting</module>-->
         <!--<module>idispatch-server</module>-->
-        <module>idispatch-workstation</module>
-        <module>idispatch-client</module>
+        <!--<module>idispatch-workstation</module>-->
+        <!--<module>idispatch-client</module>-->
         <module>idispatch-cad</module>
         <module>idispatch-domain-support</module>
+        <module>idispatch-application-support</module>
     </modules>
 
     <repositories>

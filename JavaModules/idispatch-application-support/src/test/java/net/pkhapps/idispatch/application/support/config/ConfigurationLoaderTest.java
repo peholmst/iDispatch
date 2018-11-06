@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.config;
+package net.pkhapps.idispatch.application.support.config;
 
 import lombok.AllArgsConstructor;
 import org.junit.Test;

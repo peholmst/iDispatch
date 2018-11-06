@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.config;
+package net.pkhapps.idispatch.application.support.config;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebListener;
 @Slf4j
 public class ApplicationContext implements ServletContextListener {
 
-    private static final String PERSITENCE_UNIT_NAME = "idispatch-cad";
     private PersistenceManager persistenceManager;
 
     @Override

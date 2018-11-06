@@ -19,6 +19,11 @@
             <artifactId>idispatch-cad-domain</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.pkhapps.idispatch</groupId>
+            <artifactId>idispatch-application-support</artifactId>
+            <version>${project.version}</version>
+        </dependency>
 
         <!-- Persistence -->
         <dependency>
