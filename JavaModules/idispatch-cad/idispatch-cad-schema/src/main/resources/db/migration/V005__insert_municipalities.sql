@@ -2,7 +2,7 @@ CREATE OR REPLACE FUNCTION cad.create_municipality(integer, text, text, text)
   RETURNS void
 AS
 $$
-INSERT INTO cad.municipality (id, version, active)
+INSERT INTO cad.municipality (municipality_id, version, active)
 VALUES ($1, 1, true);
 INSERT INTO cad.municipality_name (municipality_id, locale, name)
 VALUES ($1, 'fin', $2);
