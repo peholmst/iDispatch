@@ -4,7 +4,6 @@ import net.pkhapps.idispatch.domain.support.DomainObjectId;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.io.Serializable;
 
 /**
  * ID class for {@link Station}.
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @Immutable
 public class StationId extends DomainObjectId {
 
-    public StationId(@Nonnull Serializable id) {
+    public StationId(@Nonnull String id) {
         super(id);
     }
 }

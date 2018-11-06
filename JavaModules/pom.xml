@@ -30,6 +30,7 @@
         <postgresql.version>42.2.5</postgresql.version>
         <hibernate.version>5.3.6.Final</hibernate.version>
         <hikari.version>3.1.0</hikari.version>
+        <jooq.version>3.11.7</jooq.version>
     </properties>
 
     <dependencyManagement>
@@ -135,6 +136,11 @@
                 <artifactId>HikariCP</artifactId>
                 <version>${hikari.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq</artifactId>
+                <version>${jooq.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -145,6 +151,11 @@
                     <groupId>org.flywaydb</groupId>
                     <artifactId>flyway-maven-plugin</artifactId>
                     <version>${flyway.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${jooq.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

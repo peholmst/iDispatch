@@ -4,7 +4,6 @@ import net.pkhapps.idispatch.domain.support.DomainObjectId;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.io.Serializable;
 
 /**
  * ID class for {@link Municipality}.
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @Immutable
 public class MunicipalityId extends DomainObjectId {
 
-    public MunicipalityId(@Nonnull Serializable id) {
+    public MunicipalityId(@Nonnull Integer id) {
         super(id);
     }
 }
