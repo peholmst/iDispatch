@@ -1,6 +1,6 @@
 package net.pkhapps.idispatch.cad.infrastructure.jpa.event;
 
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWorkManager;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWorkManager;
 import net.pkhapps.idispatch.domain.support.DomainEvent;
 import net.pkhapps.idispatch.domain.support.DomainEventLog;
 import net.pkhapps.idispatch.domain.support.DomainEventStore;

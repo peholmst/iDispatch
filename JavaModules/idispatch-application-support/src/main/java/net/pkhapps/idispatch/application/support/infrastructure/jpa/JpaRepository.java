@@ -1,7 +1,7 @@
-package net.pkhapps.idispatch.cad.infrastructure.jpa;
+package net.pkhapps.idispatch.application.support.infrastructure.jpa;
 
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWork;
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWorkManager;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWork;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWorkManager;
 import net.pkhapps.idispatch.domain.support.*;
 
 import javax.annotation.Nonnull;

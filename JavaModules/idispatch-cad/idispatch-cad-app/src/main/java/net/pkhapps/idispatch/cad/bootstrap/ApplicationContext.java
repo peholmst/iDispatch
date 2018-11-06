@@ -1,8 +1,8 @@
 package net.pkhapps.idispatch.cad.bootstrap;
 
 import lombok.extern.slf4j.Slf4j;
-import net.pkhapps.idispatch.cad.infrastructure.jpa.JpaUnitOfWorkFactory;
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWorkManager;
+import net.pkhapps.idispatch.application.support.infrastructure.jpa.JpaUnitOfWorkFactory;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWorkManager;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;

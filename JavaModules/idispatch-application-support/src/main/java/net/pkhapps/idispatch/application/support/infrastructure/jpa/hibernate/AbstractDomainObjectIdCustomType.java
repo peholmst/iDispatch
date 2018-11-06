@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.infrastructure.jpa.hibernate;
+package net.pkhapps.idispatch.application.support.infrastructure.jpa.hibernate;
 
 import net.pkhapps.idispatch.domain.support.DomainObjectId;
 import org.hibernate.id.ResultSetIdentifierConsumer;
@@ -16,11 +16,11 @@ import java.sql.SQLException;
  *
  * @param <ID>
  */
-abstract class AbstractDomainObjectIdCustomType<ID extends DomainObjectId>
+public abstract class AbstractDomainObjectIdCustomType<ID extends DomainObjectId>
         extends AbstractSingleColumnStandardBasicType<ID> implements ResultSetIdentifierConsumer {
 
-    AbstractDomainObjectIdCustomType(@Nonnull SqlTypeDescriptor sqlTypeDescriptor,
-                                     @Nonnull JavaTypeDescriptor<ID> javaTypeDescriptor) {
+    public AbstractDomainObjectIdCustomType(@Nonnull SqlTypeDescriptor sqlTypeDescriptor,
+                                            @Nonnull JavaTypeDescriptor<ID> javaTypeDescriptor) {
         super(sqlTypeDescriptor, javaTypeDescriptor);
     }
 

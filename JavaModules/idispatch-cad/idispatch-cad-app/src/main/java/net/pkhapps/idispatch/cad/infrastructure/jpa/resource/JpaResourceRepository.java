@@ -1,10 +1,10 @@
 package net.pkhapps.idispatch.cad.infrastructure.jpa.resource;
 
+import net.pkhapps.idispatch.application.support.infrastructure.jpa.JpaRepository;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWorkManager;
 import net.pkhapps.idispatch.cad.domain.model.resource.Resource;
 import net.pkhapps.idispatch.cad.domain.model.resource.ResourceId;
 import net.pkhapps.idispatch.cad.domain.model.resource.ResourceRepository;
-import net.pkhapps.idispatch.cad.infrastructure.jpa.JpaRepository;
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWorkManager;
 import net.pkhapps.idispatch.domain.support.DomainEventPublisher;
 import net.pkhapps.idispatch.domain.support.DomainEventStore;
 

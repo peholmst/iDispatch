@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.infrastructure.tx;
+package net.pkhapps.idispatch.application.support.infrastructure.tx;
 
 import javax.annotation.Nonnull;
 

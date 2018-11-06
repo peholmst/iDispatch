@@ -1,8 +1,8 @@
-package net.pkhapps.idispatch.cad.infrastructure.jpa;
+package net.pkhapps.idispatch.application.support.infrastructure.jpa;
 
 import lombok.extern.slf4j.Slf4j;
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWork;
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWorkFactory;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWork;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWorkFactory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.ThreadSafe;

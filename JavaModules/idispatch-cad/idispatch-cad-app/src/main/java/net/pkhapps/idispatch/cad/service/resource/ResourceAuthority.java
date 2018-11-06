@@ -1,6 +1,6 @@
 package net.pkhapps.idispatch.cad.service.resource;
 
-import net.pkhapps.idispatch.cad.infrastructure.security.Authority;
+import net.pkhapps.idispatch.application.support.infrastructure.security.Authority;
 
 /**
  * TODO document me

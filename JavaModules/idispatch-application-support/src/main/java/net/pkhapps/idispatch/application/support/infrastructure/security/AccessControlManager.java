@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.infrastructure.security;
+package net.pkhapps.idispatch.application.support.infrastructure.security;
 
 import javax.annotation.Nonnull;
 

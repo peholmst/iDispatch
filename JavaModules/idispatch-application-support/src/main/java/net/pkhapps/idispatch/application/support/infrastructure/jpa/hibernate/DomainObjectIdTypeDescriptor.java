@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.cad.infrastructure.jpa.hibernate;
+package net.pkhapps.idispatch.application.support.infrastructure.jpa.hibernate;
 
 import net.pkhapps.idispatch.domain.support.DomainObjectId;
 import org.hibernate.type.descriptor.WrapperOptions;
@@ -14,11 +14,11 @@ import java.util.Objects;
  *
  * @param <ID>
  */
-class DomainObjectIdTypeDescriptor<ID extends DomainObjectId> extends AbstractTypeDescriptor<ID> {
+public class DomainObjectIdTypeDescriptor<ID extends DomainObjectId> extends AbstractTypeDescriptor<ID> {
 
     private final Constructor<ID> constructor;
 
-    DomainObjectIdTypeDescriptor(@Nonnull Class<ID> type) {
+    public DomainObjectIdTypeDescriptor(@Nonnull Class<ID> type) {
         super(type);
         try {
             constructor = type.getConstructor(Serializable.class);
