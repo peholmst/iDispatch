@@ -152,7 +152,8 @@
                                             <expression>.*\.municipality_id</expression>
                                         </forcedType>
                                         <forcedType>
-                                            <userType>net.pkhapps.idispatch.cad.domain.model.resource.ResourceId
+                                            <userType>
+                                                net.pkhapps.idispatch.cad.domain.model.resource.ResourceId
                                             </userType>
                                             <converter>
                                                 net.pkhapps.idispatch.cad.infrastructure.jooq.converter.ResourceIdConverter
@@ -160,7 +161,8 @@
                                             <expression>.*\.resource_id</expression>
                                         </forcedType>
                                         <forcedType>
-                                            <userType>net.pkhapps.idispatch.cad.domain.model.resource.ResourceTypeId
+                                            <userType>
+                                                net.pkhapps.idispatch.cad.domain.model.resource.ResourceTypeId
                                             </userType>
                                             <converter>
                                                 net.pkhapps.idispatch.cad.infrastructure.jooq.converter.ResourceTypeIdConverter
@@ -168,12 +170,22 @@
                                             <expression>.*\.resource_type_id</expression>
                                         </forcedType>
                                         <forcedType>
-                                            <userType>net.pkhapps.idispatch.cad.domain.model.station.StationId
+                                            <userType>
+                                                net.pkhapps.idispatch.cad.domain.model.station.StationId
                                             </userType>
                                             <converter>
                                                 net.pkhapps.idispatch.cad.infrastructure.jooq.converter.StationIdConverter
                                             </converter>
                                             <expression>.*\.station_id</expression>
+                                        </forcedType>
+                                        <forcedType>
+                                            <userType>
+                                                com.google.gson.JsonElement
+                                            </userType>
+                                            <binding>
+                                                net.pkhapps.idispatch.application.support.infrastructure.jooq.binding.JsonBinding
+                                            </binding>
+                                            <types>json</types>
                                         </forcedType>
                                     </forcedTypes>
                                 </database>

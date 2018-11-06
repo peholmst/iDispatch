@@ -25,7 +25,13 @@
             <artifactId>jsr305</artifactId>
         </dependency>
 
-        <!-- Testing -->
+        <!-- JSON -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+        </dependency>
+
+        <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
