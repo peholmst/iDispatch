@@ -18,13 +18,22 @@
                 <groupId>org.flywaydb</groupId>
                 <artifactId>flyway-maven-plugin</artifactId>
                 <configuration>
-                    <url>jdbc:postgresql://localhost:5432/idispatch</url>
-                    <user>idispatch-admin</user>
-                    <password>notasecret</password>
+                    <url>${jdbc.url}</url>
+                    <user>${jdbc.user}</user>
+                    <password>${jdbc.password}</password>
                     <schemas>
                         <schema>cad</schema>
                     </schemas>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>flyway</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>migrate</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>org.postgresql</groupId>

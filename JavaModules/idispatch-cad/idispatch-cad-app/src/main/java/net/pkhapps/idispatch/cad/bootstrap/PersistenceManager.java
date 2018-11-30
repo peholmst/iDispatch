@@ -2,9 +2,9 @@ package net.pkhapps.idispatch.cad.bootstrap;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.pkhapps.idispatch.cad.config.Configuration;
-import net.pkhapps.idispatch.cad.config.ConfigurationLoader;
-import net.pkhapps.idispatch.cad.config.DefaultConfiguration;
+import net.pkhapps.idispatch.application.support.config.Configuration;
+import net.pkhapps.idispatch.application.support.config.ConfigurationLoader;
+import net.pkhapps.idispatch.application.support.config.DefaultConfiguration;
 import org.hibernate.cfg.AvailableSettings;
 import org.hibernate.hikaricp.internal.HikariCPConnectionProvider;
 
@@ -23,7 +23,7 @@ import java.util.HashMap;
 @Slf4j
 class PersistenceManager {
 
-    private static final String PERSITENCE_UNIT_NAME = "idispatch-cad";
+    private static final String PERSISTENCE_UNIT_NAME = "idispatch-cad";
     private static final String BASE_NAME = "persistence";
     private final Configuration configuration;
     private final EntityManagerFactory entityManagerFactory;
@@ -85,7 +85,7 @@ class PersistenceManager {
         properties.put(AvailableSettings.HBM2DDL_AUTO, "validate");
 
         log.info("Creating new EntityManagerFactory");
-        return Persistence.createEntityManagerFactory(PERSITENCE_UNIT_NAME, properties);
+        return Persistence.createEntityManagerFactory(PERSISTENCE_UNIT_NAME, properties);
     }
 
     @AllArgsConstructor

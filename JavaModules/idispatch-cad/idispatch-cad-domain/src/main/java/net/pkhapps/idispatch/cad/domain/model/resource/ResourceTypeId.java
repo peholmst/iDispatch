@@ -4,7 +4,6 @@ import net.pkhapps.idispatch.domain.support.DomainObjectId;
 
 import javax.annotation.Nonnull;
 import javax.annotation.concurrent.Immutable;
-import java.io.Serializable;
 
 /**
  * ID class for {@link ResourceType}.
@@ -12,7 +11,7 @@ import java.io.Serializable;
 @Immutable
 public class ResourceTypeId extends DomainObjectId {
 
-    public ResourceTypeId(@Nonnull Serializable id) {
+    public ResourceTypeId(@Nonnull String id) {
         super(id);
     }
 }

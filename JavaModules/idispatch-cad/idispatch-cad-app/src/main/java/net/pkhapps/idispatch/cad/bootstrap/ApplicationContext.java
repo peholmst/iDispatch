@@ -1,8 +1,8 @@
 package net.pkhapps.idispatch.cad.bootstrap;
 
 import lombok.extern.slf4j.Slf4j;
-import net.pkhapps.idispatch.cad.infrastructure.jpa.JpaUnitOfWorkFactory;
-import net.pkhapps.idispatch.cad.infrastructure.tx.UnitOfWorkManager;
+import net.pkhapps.idispatch.application.support.infrastructure.jpa.JpaUnitOfWorkFactory;
+import net.pkhapps.idispatch.application.support.infrastructure.tx.UnitOfWorkManager;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -12,7 +12,6 @@ import javax.servlet.annotation.WebListener;
 @Slf4j
 public class ApplicationContext implements ServletContextListener {
 
-    private static final String PERSITENCE_UNIT_NAME = "idispatch-cad";
     private PersistenceManager persistenceManager;
 
     @Override

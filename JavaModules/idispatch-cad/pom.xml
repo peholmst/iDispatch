@@ -14,10 +14,19 @@
     <name>iDispatch CAD (Computer Aided Dispatch) Master POM</name>
     <packaging>pom</packaging>
 
+    <properties>
+        <jdbc.url>jdbc:postgresql://localhost:5432/idispatch</jdbc.url>
+        <jdbc.user>idispatch-admin</jdbc.user>
+        <jdbc.password>notasecret</jdbc.password>
+    </properties>
+
     <modules>
+        <!-- Schema first -->
+        <module>idispatch-cad-schema</module>
+
+        <!-- Then the rest of the stuff -->
         <module>idispatch-cad-domain</module>
         <module>idispatch-cad-app</module>
-        <module>idispatch-cad-schema</module>
         <module>idispatch-cad-client</module>
     </modules>
 </project>
