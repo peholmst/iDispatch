@@ -10,11 +10,11 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.5.RELEASE</version>
+        <version>2.1.0.RELEASE</version>
     </parent>
 
     <properties>
-        <java.version>10</java.version>
+        <java.version>11</java.version>
         <jersey.version>2.27</jersey.version>
         <jaxb-api.version>2.3.0</jaxb-api.version>
         <activation-api.version>1.2.0</activation-api.version>
@@ -34,6 +34,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.jetbrains</groupId>
+                <artifactId>annotations</artifactId>
+                <version>16.0.3</version> <!-- TODO Extract property -->
+            </dependency>
             <dependency>
                 <groupId>com.squareup.retrofit2</groupId>
                 <artifactId>retrofit</artifactId>
@@ -163,6 +168,7 @@
         <module>idispatch-client</module>
         <module>idispatch-cad</module>
         <module>idispatch-domain-support</module>
+        <module>idispatch-shared</module>
     </modules>
 
     <repositories>
