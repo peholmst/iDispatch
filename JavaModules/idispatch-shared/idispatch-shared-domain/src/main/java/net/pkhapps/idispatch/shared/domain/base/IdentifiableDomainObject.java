@@ -1,6 +1,6 @@
 package net.pkhapps.idispatch.shared.domain.base;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface for domain objects that can be uniquely identified.
@@ -10,8 +10,16 @@ import org.jetbrains.annotations.Nullable;
 public interface IdentifiableDomainObject<ID extends DomainObjectId<?>> extends DomainObject {
 
     /**
-     * Returns the ID of this domain object if one has been assigned.
+     * Returns the ID of this domain object.
+     *
+     * @throws IllegalStateException if the domain object has no ID yet.
+     * @see #hasId()
      */
-    @Nullable
-    ID getId();
+    @NotNull
+    ID id();
+
+    /**
+     * Returns whether this domain object has an {@link #id() ID} already.
+     */
+    boolean hasId();
 }

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.pkhapps.idispatch.shared</groupId>
-    <artifactId>idispatch-shared</artifactId>
+    <artifactId>idispatch-shared</artifactId> <!-- TODO Rename -->
     <packaging>pom</packaging>
     <name>iDispatch Shared Kernel Master POM</name>
 

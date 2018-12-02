@@ -20,13 +20,13 @@ public abstract class BaseEntity<ID extends Serializable, DomainId extends Domai
         implements IdentifiableDomainObject<DomainId> {
 
     @Id
-    @GeneratedValue
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
     private ID id;
 
     @SuppressWarnings("unused")
     @Version
-    @Column(name = "_opt_lock_ver", nullable = false)
+    @Column(name = "version", nullable = false)
     private Long version;
 
     @Transient
@@ -50,13 +50,21 @@ public abstract class BaseEntity<ID extends Serializable, DomainId extends Domai
         this.version = source.version;
     }
 
-    @Nullable
+    @NotNull
     @Override
-    public DomainId getId() {
+    public final DomainId id() {
         if (domainId == null && id != null) {
-            domainId = DomainObjectId.wrap(getDomainIdType(), id);
+            domainId = DomainObjectId.wrap(domainIdType(), id);
+        }
+        if (domainId == null) {
+            throw new IllegalStateException("Entity has no ID yet");
         }
         return domainId;
+    }
+
+    @Override
+    public boolean hasId() {
+        return id != null;
     }
 
     private void setId(@Nullable DomainId id) {
@@ -68,17 +76,17 @@ public abstract class BaseEntity<ID extends Serializable, DomainId extends Domai
      * Returns the optimistic locking version or {@code null} if the entity has not been persisted yet.
      */
     @Nullable
-    protected Long getVersion() {
+    protected Long version() {
         return version;
     }
 
     /**
-     * Returns the {@link DomainObjectId} subclass used for {@link #getId() entity IDs}. The default implementation will
+     * Returns the {@link DomainObjectId} subclass used for {@link #id() entity IDs}. The default implementation will
      * use introspection to determine the type. If it does not work, you need to override this method.
      */
     @NotNull
     @SuppressWarnings("unchecked")
-    protected Class<DomainId> getDomainIdType() {
+    protected Class<DomainId> domainIdType() {
         return (Class<DomainId>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
     }
 

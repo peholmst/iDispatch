@@ -22,4 +22,8 @@ public interface BaseRepository<ID extends Serializable, DomainId extends Domain
     default Optional<T> findById(@NotNull DomainId id) {
         return findById(id.unwrap());
     }
+
+    default boolean existsById(@NotNull DomainId id) {
+        return existsById(id.unwrap());
+    }
 }

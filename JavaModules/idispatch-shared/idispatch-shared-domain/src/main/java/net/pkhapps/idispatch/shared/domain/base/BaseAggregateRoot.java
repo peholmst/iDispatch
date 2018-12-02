@@ -58,7 +58,7 @@ public abstract class BaseAggregateRoot<ID extends Serializable, DomainId extend
      * Returns all domain events currently registered by the aggregate root.
      */
     @DomainEvents
-    protected Collection<DomainEvent> getDomainEvents() {
+    protected Collection<DomainEvent> domainEvents() {
         return Collections.unmodifiableList(domainEvents);
     }
 }
