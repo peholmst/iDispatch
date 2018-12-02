@@ -6,7 +6,6 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.time.Instant;
 
@@ -19,7 +18,6 @@ import static net.pkhapps.idispatch.shared.domain.util.StringUtils.ensureMaxLeng
  */
 @Entity
 @Table(name = "material_import", schema = "gis")
-@SequenceGenerator(name = "materialImportId", sequenceName = "material_import_id_seq", schema = "gis")
 public class MaterialImport extends BaseAggregateRoot<Long, MaterialImportId> {
 
     @Column(name = "imported_on", nullable = false)

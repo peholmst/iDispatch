@@ -5,7 +5,7 @@ ALTER SEQUENCE gis.material_import_id_seq
 
 CREATE TABLE gis.material_import
 (
-  id          bigint                   not null,
+  id          bigint                   not null default nextval('gis.material_import_id_seq'),
   version     bigint                   not null,
   imported_on timestamp with time zone not null,
   source      varchar(200)             not null,
