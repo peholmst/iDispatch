@@ -21,11 +21,11 @@ CREATE TABLE gis.municipality
 ALTER TABLE gis.municipality
   OWNER TO idispatch_gis;
 
-CREATE INDEX municipality_name_fin
+CREATE INDEX municipality_name_fin_ix
   ON gis.municipality (name_fin);
 
-CREATE INDEX municipality_name_swe
+CREATE INDEX municipality_name_swe_ix
   ON gis.municipality (name_swe);
 
-CREATE INDEX municipality_validity
+CREATE INDEX municipality_validity_ix
   ON gis.municipality (valid_from, valid_to);
