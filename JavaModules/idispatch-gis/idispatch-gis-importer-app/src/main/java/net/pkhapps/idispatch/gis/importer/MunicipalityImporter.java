@@ -23,10 +23,10 @@ import static javax.xml.stream.XMLStreamConstants.END_ELEMENT;
 import static javax.xml.stream.XMLStreamConstants.START_ELEMENT;
 
 /**
- * TODO Document me
+ * Importer that imports the municipality names and codes from the NLS XML schema.
  */
 @Component
-public class MunicipalityImporter extends BaseImporter {
+public class MunicipalityImporter extends BaseImporter<Void> {
 
     private static final String SOURCE = "http://xml.nls.fi/Nimisto/Nimistorekisteri/kunta.xsd";
     private final MunicipalityRepository municipalityRepository;
@@ -40,7 +40,7 @@ public class MunicipalityImporter extends BaseImporter {
     }
 
     @Override
-    public void importData() {
+    public void importData(Void argument) {
         var count = new AtomicInteger();
         var importId = createMaterialImport(SOURCE);
         logger().info("Reading data from {}", SOURCE);
@@ -53,7 +53,7 @@ public class MunicipalityImporter extends BaseImporter {
                     readEnumeration(importId, reader, this::importMunicipality, count);
                 }
             }
-            logger().info("Processed {} municipalities");
+            logger().info("Processed {} municipalities", count.get());
         } catch (Exception ex) {
             logger().error("Error importing municipalities", ex);
         }
@@ -64,10 +64,10 @@ public class MunicipalityImporter extends BaseImporter {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
                 if (!municipalityRepository.existsByCode(municipality.code())) {
-                    logger().debug("Importing {}", municipality);
+                    logger().trace("Importing {}", municipality);
                     municipalityRepository.save(municipality);
                 } else {
-                    logger().debug("{} already exists in the database, skipping", municipality);
+                    logger().trace("{} already exists in the database, skipping", municipality);
                 }
             }
         });
