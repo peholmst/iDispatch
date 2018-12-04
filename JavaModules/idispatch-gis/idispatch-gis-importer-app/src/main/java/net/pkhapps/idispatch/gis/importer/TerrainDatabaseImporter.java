@@ -99,6 +99,9 @@ public class TerrainDatabaseImporter extends GmlFileImporter {
         geometry.geometryChanged();
     }
 
+    // TODO Checking for existing stuff by GID will result in elements with duplicate GIDs being skipped completely.
+    // This has to be fixed in some way. Maybe compute a check-sum to check the contents?
+
     private abstract class BaseImporter<T extends ImportedGeographicalMaterial<?, ?>> implements Importer {
 
         private final QName featureType;

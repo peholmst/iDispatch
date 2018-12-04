@@ -12,10 +12,11 @@
     <groupId>net.pkhapps.idispatch.gis</groupId>
     <artifactId>idispatch-gis-master</artifactId>
     <packaging>pom</packaging>
+    <name>iDispatch GIS Master POM</name>
+
     <modules>
         <module>idispatch-gis-schema</module>
         <module>idispatch-gis-domain</module>
         <module>idispatch-gis-importer-app</module>
     </modules>
-
 </project>

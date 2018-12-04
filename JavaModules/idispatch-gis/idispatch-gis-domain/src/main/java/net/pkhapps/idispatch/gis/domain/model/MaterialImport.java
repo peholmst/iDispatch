@@ -27,7 +27,7 @@ public class MaterialImport extends BaseAggregateRoot<Long, MaterialImportId> {
     private String source;
 
     @SuppressWarnings("unused") // Used by JPA only
-    protected MaterialImport() {
+    MaterialImport() {
     }
 
     public MaterialImport(@NotNull Instant importedOn, @NotNull String source) {
@@ -35,8 +35,7 @@ public class MaterialImport extends BaseAggregateRoot<Long, MaterialImportId> {
         setSource(source);
     }
 
-    @NotNull
-    public Instant importedOn() {
+    public @NotNull Instant importedOn() {
         return importedOn;
     }
 
@@ -44,8 +43,7 @@ public class MaterialImport extends BaseAggregateRoot<Long, MaterialImportId> {
         this.importedOn = requireNonNull(importedOn, "importedOn must not be null");
     }
 
-    @NotNull
-    public String source() {
+    public @NotNull String source() {
         return source;
     }
 

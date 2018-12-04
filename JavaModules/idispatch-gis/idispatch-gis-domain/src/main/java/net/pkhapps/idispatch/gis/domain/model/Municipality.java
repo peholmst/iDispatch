@@ -32,17 +32,17 @@ public class Municipality extends ImportedGeographicalMaterial<Long, Municipalit
     @Column(name = "name_swe", nullable = false, length = NAME_MAX_LENGTH)
     private String nameSwe;
 
-    @SuppressWarnings("unused") // Used by JPA only
-    protected Municipality() {
+    @SuppressWarnings("unused")
+        // Used by JPA only
+    Municipality() {
     }
 
     public Municipality(int code, @NotNull String nameFin, @NotNull String nameSwe,
                         @NotNull LocalDate validFrom, @NotNull MaterialImportId materialImport) {
+        super(validFrom, materialImport);
         setCode(code);
         setNameFin(nameFin);
         setNameSwe(nameSwe);
-        setValidFrom(validFrom);
-        setMaterialImport(materialImport);
     }
 
     public int code() {
@@ -53,19 +53,24 @@ public class Municipality extends ImportedGeographicalMaterial<Long, Municipalit
         this.code = code;
     }
 
-    @NotNull
-    public MultilingualString name() {
+    public @NotNull MultilingualString name() {
         return new MultilingualString.Builder()
                 .with(Language.FINNISH, nameFin)
                 .with(Language.SWEDISH, nameSwe)
                 .build();
     }
 
-    private void setNameFin(@NotNull String nameFin) {
+    public void setNameFin(@NotNull String nameFin) {
         this.nameFin = ensureMaxLength(requireNonNull(nameFin, "nameFin must not be null"), NAME_MAX_LENGTH);
     }
 
-    private void setNameSwe(@NotNull String nameSwe) {
+    public void setNameSwe(@NotNull String nameSwe) {
         this.nameSwe = ensureMaxLength(requireNonNull(nameSwe, "nameSwe must not be null"), NAME_MAX_LENGTH);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s[code=%d, nameFin=%s, nameSwe=%s]", super.toString(), code,
+                nameFin, nameSwe);
     }
 }

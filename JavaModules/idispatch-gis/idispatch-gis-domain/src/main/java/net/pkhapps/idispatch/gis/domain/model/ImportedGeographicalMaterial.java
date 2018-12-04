@@ -29,26 +29,31 @@ public abstract class ImportedGeographicalMaterial<ID extends Serializable, Doma
     @Column(name = "valid_to")
     private LocalDate validTo;
 
-    @NotNull
-    public MaterialImportId materialImport() {
+    ImportedGeographicalMaterial() {
+    }
+
+    ImportedGeographicalMaterial(@NotNull LocalDate validFrom, @NotNull MaterialImportId materialImport) {
+        setValidFrom(validFrom);
+        setMaterialImport(materialImport);
+    }
+
+    public @NotNull MaterialImportId materialImport() {
         return materialImport;
     }
 
-    protected void setMaterialImport(@NotNull MaterialImportId materialImport) {
+    private void setMaterialImport(@NotNull MaterialImportId materialImport) {
         this.materialImport = Objects.requireNonNull(materialImport, "materialImport must not be null");
     }
 
-    @NotNull
-    public LocalDate validFrom() {
+    public @NotNull LocalDate validFrom() {
         return validFrom;
     }
 
-    protected void setValidFrom(@NotNull LocalDate validFrom) {
+    private void setValidFrom(@NotNull LocalDate validFrom) {
         this.validFrom = Objects.requireNonNull(validFrom, "validFrom must not be null");
     }
 
-    @NotNull
-    public Optional<LocalDate> validTo() {
+    public @NotNull Optional<LocalDate> validTo() {
         return Optional.ofNullable(validTo);
     }
 

@@ -5,8 +5,8 @@ import net.pkhapps.idispatch.shared.domain.base.DomainObjectIdConverter;
 import javax.persistence.Converter;
 
 /**
- * JPA attribute converter for {@link RoadSegmentId}.
+ * JPA attribute converter for {@link AddressPointId}.
  */
 @Converter(autoApply = true)
-public class RoadSegmentIdConverter extends DomainObjectIdConverter<Long, RoadSegmentId> {
+public class AddressPointIdConverter extends DomainObjectIdConverter<Long, AddressPointId> {
 }
