@@ -111,6 +111,6 @@ public abstract class BaseEntity<ID extends Serializable, DomainId extends Domai
 
     @Override
     public String toString() {
-        return String.format("%s[%s]", getClass().getSimpleName(), id);
+        return String.format("%s@%s", getClass().getSimpleName(), id);
     }
 }

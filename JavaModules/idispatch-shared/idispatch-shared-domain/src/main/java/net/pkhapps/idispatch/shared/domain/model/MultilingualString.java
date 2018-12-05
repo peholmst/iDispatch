@@ -96,5 +96,8 @@ public class MultilingualString implements ValueObject {
             return new MultilingualString();
         }
 
+        public Optional<MultilingualString> buildOptional() {
+            return Optional.empty();
+        }
     }
 }
