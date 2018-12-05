@@ -20,19 +20,26 @@ import static net.pkhapps.idispatch.shared.domain.util.StringUtils.ensureMaxLeng
 @Table(name = "material_import", schema = "gis")
 public class MaterialImport extends BaseAggregateRoot<Long, MaterialImportId> {
 
+    private static final int SOURCE_MAX_LENGTH = 300;
+
     @Column(name = "imported_on", nullable = false)
     private Instant importedOn;
 
-    @Column(name = "source", nullable = false, length = 200)
+    @Column(name = "source", nullable = false, unique = true, length = SOURCE_MAX_LENGTH)
     private String source;
 
-    @SuppressWarnings("unused") // Used by JPA only
+    @Column(name = "source_timestamp", nullable = false)
+    private Instant sourceTimestamp;
+
+    @SuppressWarnings("unused")
+        // Used by JPA only
     MaterialImport() {
     }
 
-    public MaterialImport(@NotNull Instant importedOn, @NotNull String source) {
+    public MaterialImport(@NotNull Instant importedOn, @NotNull String source, @NotNull Instant sourceTimestamp) {
         setImportedOn(importedOn);
         setSource(source);
+        setSourceTimestamp(sourceTimestamp);
     }
 
     public @NotNull Instant importedOn() {
@@ -48,6 +55,14 @@ public class MaterialImport extends BaseAggregateRoot<Long, MaterialImportId> {
     }
 
     private void setSource(@NotNull String source) {
-        this.source = ensureMaxLength(requireNonNull(source, "source must not be null"), 200);
+        this.source = ensureMaxLength(requireNonNull(source, "source must not be null"), SOURCE_MAX_LENGTH);
+    }
+
+    public @NotNull Instant sourceTimestamp() {
+        return sourceTimestamp;
+    }
+
+    private void setSourceTimestamp(@NotNull Instant sourceTimestamp) {
+        this.sourceTimestamp = requireNonNull(sourceTimestamp, "sourceTimestamp must not be null");
     }
 }

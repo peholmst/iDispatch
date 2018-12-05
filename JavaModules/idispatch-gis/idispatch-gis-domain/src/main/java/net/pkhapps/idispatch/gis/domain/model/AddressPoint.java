@@ -1,16 +1,17 @@
 package net.pkhapps.idispatch.gis.domain.model;
 
 import com.vividsolutions.jts.geom.Point;
-import net.pkhapps.idispatch.gis.domain.model.identity.AddressPointId;
-import net.pkhapps.idispatch.gis.domain.model.identity.MaterialImportId;
 import net.pkhapps.idispatch.gis.domain.model.identity.MunicipalityId;
 import net.pkhapps.idispatch.shared.domain.model.Language;
 import net.pkhapps.idispatch.shared.domain.model.MultilingualString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -21,17 +22,10 @@ import static net.pkhapps.idispatch.shared.domain.util.StringUtils.ensureMaxLeng
  */
 @Entity
 @Table(name = "address_point", schema = "gis")
-public class AddressPoint extends ImportedGeographicalMaterial<Long, AddressPointId> {
+public class AddressPoint extends ImportedGeographicalMaterial {
 
     private static final int NUMBER_MAX_LENGTH = 50;
     private static final int NAME_MAX_LENGTH = 200;
-
-    @Column(name = "gid", nullable = false)
-    private long gid;
-
-    @Column(name = "location_accuracy", nullable = false)
-    @Enumerated(EnumType.STRING)
-    private LocationAccuracy locationAccuracy;
 
     @Column(name = "location", nullable = false)
     private Point location;
@@ -54,67 +48,70 @@ public class AddressPoint extends ImportedGeographicalMaterial<Long, AddressPoin
     }
 
     public AddressPoint(long gid, @NotNull LocationAccuracy locationAccuracy, @NotNull Point location,
-                        @NotNull MunicipalityId municipality, @NotNull LocalDate validFrom,
-                        @NotNull MaterialImportId materialImport) {
-        super(validFrom, materialImport);
-        setGid(gid);
-        setLocationAccuracy(locationAccuracy);
-        setLocation((Point) location.clone());
+                        @Nullable String number, @Nullable String nameSwe, @Nullable String nameFin,
+                        @NotNull MunicipalityId municipality, @NotNull LocalDate validFrom, @Nullable LocalDate validTo) {
+        super(gid, locationAccuracy, validFrom, validTo);
+        setLocation(location);
+        setNumber(number);
+        setNameFin(nameFin);
+        setNameSwe(nameSwe);
         setMunicipality(municipality);
     }
 
-    public long gid() {
-        return gid;
-    }
-
-    private void setGid(long gid) {
-        this.gid = gid;
-    }
-
-    public @NotNull LocationAccuracy locationAccuracy() {
-        return locationAccuracy;
-    }
-
-    public void setLocationAccuracy(@NotNull LocationAccuracy locationAccuracy) {
-        this.locationAccuracy = requireNonNull(locationAccuracy, "locationAccuracy must not be null");
-    }
-
     public @NotNull Point location() {
-        return location;
+        return (Point) location.clone();
     }
 
-    public void setLocation(@NotNull Point location) {
-        this.location = requireNonNull(location, "location must not be null");
+    private void setLocation(@NotNull Point location) {
+        this.location = (Point) requireNonNull(location, "location must not be null").clone();
     }
 
     public @NotNull Optional<String> number() {
         return Optional.ofNullable(number);
     }
 
-    public void setNumber(@Nullable String number) {
+    private void setNumber(@Nullable String number) {
         this.number = number;
     }
 
-    public @NotNull MultilingualString name() {
+    public @NotNull Optional<MultilingualString> name() {
         return new MultilingualString.Builder()
                 .with(Language.FINNISH, nameFin)
                 .with(Language.SWEDISH, nameSwe)
-                .build();
+                .buildOptional();
     }
 
-    public void setNameFin(@NotNull String nameFin) {
-        this.nameFin = ensureMaxLength(requireNonNull(nameFin, "nameFin must not be null"), NAME_MAX_LENGTH);
+    private void setNameFin(@Nullable String nameFin) {
+        this.nameFin = ensureMaxLength(nameFin, NAME_MAX_LENGTH);
     }
 
-    public void setNameSwe(@NotNull String nameSwe) {
-        this.nameSwe = ensureMaxLength(requireNonNull(nameSwe, "nameFin must not be null"), NAME_MAX_LENGTH);
+    private void setNameSwe(@Nullable String nameSwe) {
+        this.nameSwe = ensureMaxLength(nameSwe, NAME_MAX_LENGTH);
     }
 
     public @NotNull MunicipalityId municipality() {
         return municipality;
     }
 
-    public void setMunicipality(@NotNull MunicipalityId municipality) {
+    private void setMunicipality(@NotNull MunicipalityId municipality) {
         this.municipality = requireNonNull(municipality, "municipality must not be null");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        AddressPoint that = (AddressPoint) o;
+        return Objects.equals(location, that.location) &&
+                Objects.equals(number, that.number) &&
+                Objects.equals(nameFin, that.nameFin) &&
+                Objects.equals(nameSwe, that.nameSwe) &&
+                Objects.equals(municipality, that.municipality);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), location, number, nameFin, nameSwe, municipality);
     }
 }

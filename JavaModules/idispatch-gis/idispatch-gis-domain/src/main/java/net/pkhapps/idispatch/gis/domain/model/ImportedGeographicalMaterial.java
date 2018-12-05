@@ -1,24 +1,34 @@
 package net.pkhapps.idispatch.gis.domain.model;
 
 import net.pkhapps.idispatch.gis.domain.model.identity.MaterialImportId;
-import net.pkhapps.idispatch.shared.domain.base.BaseAggregateRoot;
-import net.pkhapps.idispatch.shared.domain.base.DomainObjectId;
+import net.pkhapps.idispatch.shared.domain.base.ValueObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
-import java.io.Serializable;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Base class for aggregates that have been imported from NLS / National Land Survey of Finland / Maanmittauslaitos.
  */
 @MappedSuperclass
-public abstract class ImportedGeographicalMaterial<ID extends Serializable, DomainId extends DomainObjectId<ID>>
-        extends BaseAggregateRoot<ID, DomainId> {
+public abstract class ImportedGeographicalMaterial implements ValueObject {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SuppressWarnings("unused")
+    private long id;
+
+    @Column(name = "gid", nullable = false)
+    private long gid;
+
+    @Column(name = "location_accuracy", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private LocationAccuracy locationAccuracy;
 
     @Column(name = "material_import_id", nullable = false)
     private MaterialImportId materialImport;
@@ -32,16 +42,35 @@ public abstract class ImportedGeographicalMaterial<ID extends Serializable, Doma
     ImportedGeographicalMaterial() {
     }
 
-    ImportedGeographicalMaterial(@NotNull LocalDate validFrom, @NotNull MaterialImportId materialImport) {
+    ImportedGeographicalMaterial(long gid, LocationAccuracy locationAccuracy, @NotNull LocalDate validFrom,
+                                 @Nullable LocalDate validTo) {
+        setGid(gid);
+        setLocationAccuracy(locationAccuracy);
         setValidFrom(validFrom);
-        setMaterialImport(materialImport);
+        setValidTo(validTo);
+    }
+
+    public long gid() {
+        return gid;
+    }
+
+    private void setGid(long gid) {
+        this.gid = gid;
+    }
+
+    public @NotNull LocationAccuracy locationAccuracy() {
+        return locationAccuracy;
+    }
+
+    private void setLocationAccuracy(@NotNull LocationAccuracy locationAccuracy) {
+        this.locationAccuracy = requireNonNull(locationAccuracy, "locationAccuracy must not be null");
     }
 
     public @NotNull MaterialImportId materialImport() {
         return materialImport;
     }
 
-    private void setMaterialImport(@NotNull MaterialImportId materialImport) {
+    void setMaterialImport(@NotNull MaterialImportId materialImport) {
         this.materialImport = Objects.requireNonNull(materialImport, "materialImport must not be null");
     }
 
@@ -57,10 +86,26 @@ public abstract class ImportedGeographicalMaterial<ID extends Serializable, Doma
         return Optional.ofNullable(validTo);
     }
 
-    public void setValidTo(@Nullable LocalDate validTo) {
+    private void setValidTo(@Nullable LocalDate validTo) {
         if (validTo != null && validTo.isBefore(validFrom)) {
             throw new IllegalArgumentException("validTo must not be before " + validFrom);
         }
         this.validTo = validTo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ImportedGeographicalMaterial that = (ImportedGeographicalMaterial) o;
+        return gid == that.gid &&
+                locationAccuracy == that.locationAccuracy &&
+                Objects.equals(validFrom, that.validFrom) &&
+                Objects.equals(validTo, that.validTo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(gid, locationAccuracy, validFrom, validTo);
     }
 }

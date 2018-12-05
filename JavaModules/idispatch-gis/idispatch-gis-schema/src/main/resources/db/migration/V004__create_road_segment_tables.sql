@@ -6,7 +6,6 @@ ALTER SEQUENCE gis.road_segment_id_seq
 CREATE TABLE gis.road_segment
 (
   id                    bigint                     not null default nextval('gis.road_segment_id_seq'),
-  version               bigint                     not null,
   gid                   bigint                     not null,
   location_accuracy     varchar(50)                not null default '0',
   location              geometry(LINESTRING, 3067) not null,

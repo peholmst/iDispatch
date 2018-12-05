@@ -6,7 +6,6 @@ ALTER SEQUENCE gis.address_point_id_seq
 CREATE TABLE gis.address_point
 (
   id                 bigint                not null default nextval('gis.address_point_id_seq'),
-  version            bigint                not null,
   gid                bigint                not null,
   location_accuracy  varchar(50)           not null default '0',
   location           geometry(POINT, 3067) not null,

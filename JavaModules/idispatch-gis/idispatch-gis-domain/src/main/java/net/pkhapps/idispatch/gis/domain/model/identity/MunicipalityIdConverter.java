@@ -8,5 +8,5 @@ import javax.persistence.Converter;
  * JPA attribute converter for {@link MunicipalityId}.
  */
 @Converter(autoApply = true)
-public class MunicipalityIdConverter extends DomainObjectIdConverter<Long, MunicipalityId> {
+public class MunicipalityIdConverter extends DomainObjectIdConverter<Integer, MunicipalityId> {
 }

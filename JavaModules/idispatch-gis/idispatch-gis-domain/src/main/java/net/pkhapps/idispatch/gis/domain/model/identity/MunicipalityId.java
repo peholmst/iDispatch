@@ -6,9 +6,9 @@ import org.jetbrains.annotations.NotNull;
 /**
  * ID type for {@link net.pkhapps.idispatch.gis.domain.model.Municipality}.
  */
-public class MunicipalityId extends DomainObjectId<Long> {
+public class MunicipalityId extends DomainObjectId<Integer> {
 
-    public MunicipalityId(@NotNull Long id) {
+    public MunicipalityId(@NotNull Integer id) {
         super(id);
     }
 }
