@@ -3,11 +3,9 @@ package net.pkhapps.idispatch.gis.importer;
 import net.pkhapps.idispatch.gis.domain.GisDomainConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.io.File;
-import java.time.Clock;
 import java.util.Arrays;
 
 /**
@@ -30,10 +28,5 @@ public class ImporterApp {
                 context.getBean(TerrainDatabaseImporter.class).importData(path);
             }
         }
-    }
-
-    @Bean
-    public Clock clock() {
-        return Clock.systemUTC();
     }
 }

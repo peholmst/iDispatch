@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.gis.importer;
 
-import net.pkhapps.idispatch.gis.domain.model.MaterialImportRepository;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -8,23 +7,20 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.time.Clock;
 import java.util.Objects;
 
 /**
  * Base class for importers that scan a particular directory for a particular type of files and imports them one
  * by one. The directory to scan is taken as an argument to {@link #importData(File)} and the {@code glob} for
- * filtering the directory is passed as a {@link #DirectoryScanningImporter(Clock, PlatformTransactionManager, MaterialImportRepository, String) constructor argument}.
+ * filtering the directory is passed as a {@link #DirectoryScanningImporter(PlatformTransactionManager, String) constructor argument}.
  */
 public abstract class DirectoryScanningImporter extends BaseImporter<File> {
 
     private final String glob;
 
-    public DirectoryScanningImporter(@NotNull Clock clock,
-                                     @NotNull PlatformTransactionManager platformTransactionManager,
-                                     @NotNull MaterialImportRepository materialImportRepository,
+    public DirectoryScanningImporter(@NotNull PlatformTransactionManager platformTransactionManager,
                                      @NotNull String glob) {
-        super(clock, platformTransactionManager, materialImportRepository);
+        super(platformTransactionManager);
         this.glob = glob;
     }
 

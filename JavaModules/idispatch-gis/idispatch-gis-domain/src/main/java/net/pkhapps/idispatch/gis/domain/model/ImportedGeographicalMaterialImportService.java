@@ -15,7 +15,7 @@ import java.util.Iterator;
  *
  * @param <T>
  */
-abstract class ImportedGeographicalMaterialImportService<T extends ImportedGeographicalMaterial> {
+public abstract class ImportedGeographicalMaterialImportService<T extends ImportedGeographicalMaterial> {
 
     private static final int BATCH_SIZE = 50;
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -82,6 +82,6 @@ abstract class ImportedGeographicalMaterialImportService<T extends ImportedGeogr
         if (batchContent.size() > 0) {
             repository.saveAll(batchContent);
         }
-        logger.info("Imported {} items", count);
+        logger.info("Imported {} items of type {}", count, materialClass.getName());
     }
 }

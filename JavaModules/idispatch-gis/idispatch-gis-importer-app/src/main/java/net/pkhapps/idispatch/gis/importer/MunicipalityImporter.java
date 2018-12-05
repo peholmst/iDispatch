@@ -1,9 +1,7 @@
 package net.pkhapps.idispatch.gis.importer;
 
-import net.pkhapps.idispatch.gis.domain.model.MaterialImportRepository;
 import net.pkhapps.idispatch.gis.domain.model.Municipality;
 import net.pkhapps.idispatch.gis.domain.model.MunicipalityRepository;
-import net.pkhapps.idispatch.gis.domain.model.identity.MaterialImportId;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -14,8 +12,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.Clock;
-import java.time.LocalDate;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
@@ -31,18 +27,15 @@ public class MunicipalityImporter extends BaseImporter<Void> {
     private static final String SOURCE = "http://xml.nls.fi/Nimisto/Nimistorekisteri/kunta.xsd";
     private final MunicipalityRepository municipalityRepository;
 
-    public MunicipalityImporter(Clock clock,
-                                PlatformTransactionManager platformTransactionManager,
-                                MaterialImportRepository materialImportRepository,
+    public MunicipalityImporter(PlatformTransactionManager platformTransactionManager,
                                 MunicipalityRepository municipalityRepository) {
-        super(clock, platformTransactionManager, materialImportRepository);
+        super(platformTransactionManager);
         this.municipalityRepository = municipalityRepository;
     }
 
     @Override
     public void importData(Void argument) {
         var count = new AtomicInteger();
-        var importId = createMaterialImport(SOURCE);
         logger().info("Reading data from {}", SOURCE);
         XMLInputFactory inputFactory = XMLInputFactory.newFactory();
         try (InputStream is = new URL(SOURCE).openStream()) {
@@ -50,7 +43,7 @@ public class MunicipalityImporter extends BaseImporter<Void> {
             while (reader.hasNext()) {
                 int eventType = reader.next();
                 if (eventType == START_ELEMENT && reader.getLocalName().equals("enumeration")) {
-                    readEnumeration(importId, reader, this::importMunicipality, count);
+                    readEnumeration(reader, this::importMunicipality, count);
                 }
             }
             logger().info("Processed {} municipalities", count.get());
@@ -63,7 +56,7 @@ public class MunicipalityImporter extends BaseImporter<Void> {
         transactionTemplate().execute(new TransactionCallbackWithoutResult() {
             @Override
             protected void doInTransactionWithoutResult(TransactionStatus status) {
-                if (!municipalityRepository.existsByCode(municipality.code())) {
+                if (!municipalityRepository.existsById(municipality.id())) {
                     logger().trace("Importing {}", municipality);
                     municipalityRepository.save(municipality);
                 } else {
@@ -73,8 +66,8 @@ public class MunicipalityImporter extends BaseImporter<Void> {
         });
     }
 
-    private void readEnumeration(@NotNull MaterialImportId materialImportId, @NotNull XMLStreamReader reader,
-                                 @NotNull Consumer<Municipality> consumer, @NotNull AtomicInteger count)
+    private void readEnumeration(@NotNull XMLStreamReader reader, @NotNull Consumer<Municipality> consumer,
+                                 @NotNull AtomicInteger count)
             throws Exception {
         int code = Integer.parseInt(reader.getAttributeValue(null, "value"));
         String nameFi = "";
@@ -90,7 +83,7 @@ public class MunicipalityImporter extends BaseImporter<Void> {
                     nameSv = value;
                 }
             } else if (eventType == END_ELEMENT && reader.getLocalName().equals("enumeration")) {
-                consumer.accept(new Municipality(code, nameFi, nameSv, LocalDate.now(), materialImportId));
+                consumer.accept(new Municipality(code, nameFi, nameSv));
                 count.incrementAndGet();
                 return;
             }

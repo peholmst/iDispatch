@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.gis.domain.model;
 
-import net.pkhapps.idispatch.gis.domain.model.identity.MaterialImportId;
 import net.pkhapps.idispatch.gis.domain.model.identity.MunicipalityId;
 import net.pkhapps.idispatch.shared.domain.base.IdentifiableDomainObject;
 import net.pkhapps.idispatch.shared.domain.model.Language;
@@ -35,20 +34,15 @@ public class Municipality implements IdentifiableDomainObject<MunicipalityId>, S
     @Column(name = "name_swe", nullable = false, length = NAME_MAX_LENGTH)
     private String nameSwe;
 
-    @Column(name = "material_import_id", nullable = false)
-    private MaterialImportId materialImport;
-
     @SuppressWarnings("unused")
         // Used by JPA only
     Municipality() {
     }
 
-    public Municipality(int id, @NotNull String nameFin, @NotNull String nameSwe,
-                        @NotNull MaterialImportId materialImport) {
+    public Municipality(int id, @NotNull String nameFin, @NotNull String nameSwe) {
         this.id = id;
         setNameFin(nameFin);
         setNameSwe(nameSwe);
-        setMaterialImport(materialImport);
     }
 
     @NotNull
@@ -76,15 +70,6 @@ public class Municipality implements IdentifiableDomainObject<MunicipalityId>, S
 
     private void setNameSwe(@NotNull String nameSwe) {
         this.nameSwe = ensureMaxLength(requireNonNull(nameSwe, "nameSwe must not be null"), NAME_MAX_LENGTH);
-    }
-
-    @NotNull
-    public MaterialImportId materialImport() {
-        return materialImport;
-    }
-
-    private void setMaterialImport(@NotNull MaterialImportId materialImport) {
-        this.materialImport = requireNonNull(materialImport, "materialImport must not be null");
     }
 
     @Override

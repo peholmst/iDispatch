@@ -1,7 +1,7 @@
 package net.pkhapps.idispatch.gis.importer;
 
-import net.pkhapps.idispatch.gis.domain.model.MaterialImportRepository;
-import net.pkhapps.idispatch.gis.domain.model.identity.MaterialImportId;
+import net.pkhapps.idispatch.gis.domain.model.ImportedGeographicalMaterial;
+import net.pkhapps.idispatch.gis.domain.model.ImportedGeographicalMaterialImportService;
 import org.geotools.gml3.GMLConfiguration;
 import org.geotools.xml.AppSchemaConfiguration;
 import org.geotools.xml.PullParser;
@@ -15,7 +15,7 @@ import javax.xml.namespace.QName;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.Paths;
-import java.time.Clock;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -28,12 +28,10 @@ public abstract class GmlFileImporter extends DirectoryScanningImporter {
     private final AppSchemaConfiguration configuration;
     private final String namespace;
 
-    public GmlFileImporter(@NotNull Clock clock,
-                           @NotNull PlatformTransactionManager platformTransactionManager,
-                           @NotNull MaterialImportRepository materialImportRepository,
+    public GmlFileImporter(@NotNull PlatformTransactionManager platformTransactionManager,
                            @NotNull String namespace,
                            @NotNull String schemaLocation) {
-        super(clock, platformTransactionManager, materialImportRepository, "*.xml");
+        super(platformTransactionManager, "*.xml");
         this.namespace = namespace;
         var cacheDirectory = Paths.get("idispatch-gis-importer-schema-cache").toAbsolutePath().toFile();
         if (!cacheDirectory.exists()) {
@@ -63,21 +61,29 @@ public abstract class GmlFileImporter extends DirectoryScanningImporter {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     protected void importDataFromFile(@NotNull File file) {
-        var materialImport = createMaterialImport(file.getName());
         logger().info("Importing data from {}", file);
+        var sourceFileName = file.getName();
+        var sourceTimestamp = extractMaterialTimestamp(file);
         importers().forEach(importer -> {
             try (var is = new FileInputStream(file)) {
-                PullParser parser = new PullParser(configuration, is, importer.featureType());
-                importer.importFeatures(createIterator(parser), materialImport);
+                var parser = new PullParser(configuration, is, importer.featureType());
+                importer.importService().importData(sourceFileName, sourceTimestamp, createIterator(parser, importer));
             } catch (Exception ex) {
                 logger().error("Error importing " + importer.featureType() + " from " + file, ex);
             }
         });
     }
 
-    @NotNull
-    private Iterator<Map<String, Object>> createIterator(@NotNull PullParser parser) {
+    protected @NotNull String namespace() {
+        return namespace;
+    }
+
+    protected abstract @NotNull Instant extractMaterialTimestamp(@NotNull File file);
+
+    private <T extends ImportedGeographicalMaterial> @NotNull Iterator<T> createIterator(@NotNull PullParser parser,
+                                                                                         @NotNull Importer<T> importer) {
         return new Iterator<>() {
 
             private Map<String, Object> next = parse();
@@ -88,9 +94,9 @@ public abstract class GmlFileImporter extends DirectoryScanningImporter {
             }
 
             @Override
-            public Map<String, Object> next() {
+            public T next() {
                 try {
-                    return next;
+                    return importer.mapFeature(next);
                 } finally {
                     next = parse();
                 }
@@ -110,26 +116,24 @@ public abstract class GmlFileImporter extends DirectoryScanningImporter {
     /**
      * Returns a stream of importers to delegate the actual importing to once the GML file has been parsed.
      */
-    @NotNull
-    protected abstract Stream<Importer> importers();
+    protected abstract @NotNull Stream<Importer> importers();
 
     /**
      * Creates a new {@link QName} with the namespace that was passed in as a
-     * {@link #GmlFileImporter(Clock, PlatformTransactionManager, MaterialImportRepository, String, String) constructor argument}.
+     * {@link #GmlFileImporter(PlatformTransactionManager, String, String)} constructor argument}.
      * Mainly intended to be used by implementations of {@link Importer}.
      *
      * @param localPart the local part of the name.
      * @return the new {@link QName}.
      */
-    @NotNull
-    protected QName createFeatureTypeName(@NotNull String localPart) {
+    protected @NotNull QName createFeatureTypeName(@NotNull String localPart) {
         return new QName(namespace, localPart);
     }
 
     /**
      * Interface defining an importer that will import features of a specific type from a parsed GML file.
      */
-    public interface Importer {
+    public interface Importer<T extends ImportedGeographicalMaterial> {
 
         /**
          * The fully qualified name of the type of features that this importer knows how to handle.
@@ -138,12 +142,18 @@ public abstract class GmlFileImporter extends DirectoryScanningImporter {
         QName featureType();
 
         /**
-         * Imports the features in the feature iterator.
+         * TODO Document me
          *
-         * @param featureIterator  an iterator of features where each feature is represented by a map.
-         * @param materialImportId the ID of the {@link net.pkhapps.idispatch.gis.domain.model.MaterialImport} to associate with the imported material.
+         * @param feature
+         * @return
          */
-        void importFeatures(@NotNull Iterator<Map<String, Object>> featureIterator,
-                            @NotNull MaterialImportId materialImportId);
+        @NotNull T mapFeature(@NotNull Map<String, Object> feature);
+
+        /**
+         * TODO Document me
+         *
+         * @return
+         */
+        @NotNull ImportedGeographicalMaterialImportService<T> importService();
     }
 }
