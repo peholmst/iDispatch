@@ -20,7 +20,7 @@ import static net.pkhapps.idispatch.shared.domain.util.StringUtils.ensureMaxLeng
  */
 @Entity
 @Table(name = "road_segment", schema = "gis")
-public class RoadSegment extends ImportedGeographicalMaterial {
+public class RoadSegment extends ImportedGML {
 
     private static final int NAME_MAX_LENGTH = 200;
 
