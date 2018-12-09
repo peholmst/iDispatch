@@ -139,7 +139,7 @@ public class TerrainDatabaseImporter extends GmlFileImporter {
             var gid = getRequired(feature, "gid", Long.class);
             var locationAccuracy = Code.findByCode(LocationAccuracy.class, getRequired(feature, "sijaintitarkkuus", String.class));
             var location = getRequired(feature, "sijainti", LineString.class);
-            location.setSRID(3067); // NLS material use this SRID
+            location.setSRID(CRS.ETRS89_TM35FIN_SRID); // NLS material use this SRID
             convertToTwoDimensions(location);
 
             var elevation = Code.findByCode(Elevation.class, getRequired(feature, "tasosijainti", String.class));

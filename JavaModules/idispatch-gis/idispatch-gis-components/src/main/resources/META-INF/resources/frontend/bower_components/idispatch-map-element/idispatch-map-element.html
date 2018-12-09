@@ -1,0 +1,203 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<dom-module id="idispatch-map-element">
+    <template>
+        <style>
+            :host {
+                display: flex;
+            }
+
+            #canvas {
+                width: 100%;
+                height: 100%;
+            }
+        </style>
+        <canvas id="canvas" width="100%" height="100%"></canvas>
+    </template>
+    <script>
+        class IDispatchMapElement extends Polymer.Element {
+            static get is() {
+                return 'idispatch-map-element';
+            }
+
+            static get properties() {
+                return {
+                    zoom: {
+                        type: Number,
+                        value: 3,
+                        observer() {
+                            this._onZoomChanged();
+                        }
+                    },
+                    center: {
+                        type: Object,
+                        value: {
+                            east: 6694822,
+                            north: 240476
+                        },
+                        observer() {
+                            this._onCenterChanged();
+                        }
+                    },
+                    tileHeight: {
+                        type: Number,
+                        value: 200
+                    },
+                    tileWidth: {
+                        type: Number,
+                        value: 200
+                    }
+                };
+            }
+
+            constructor() {
+                super();
+            }
+
+            _resizeCanvas() {
+                this.$.canvas.width = this.clientWidth;
+                this.$.canvas.height = this.clientHeight;
+            }
+
+            _repaintCanvas() {
+                let ctx = this.$.canvas.getContext('2d');
+                ctx.beginPath();
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                this._drawTiles(ctx); // TODO Consider repainting in different canvas
+                this._drawCenterCrosshair(ctx);
+                this._drawCenterCoordinates(ctx);
+            }
+
+            _drawCenterCrosshair(ctx) {
+                let centerX = ctx.canvas.width / 2;
+                let centerY = ctx.canvas.height / 2;
+                ctx.lineWidth = 1;
+                ctx.moveTo(centerX - 15, centerY);
+                ctx.lineTo(centerX + 15, centerY);
+                ctx.moveTo(centerX, centerY - 15);
+                ctx.lineTo(centerX, centerY + 15);
+                ctx.stroke();
+            }
+
+            _drawCenterCoordinates(ctx) {
+                let text = `N: ${this.center.north} E: ${this.center.east} (ETRS-TM35FIN)`;
+                ctx.font = "12px Arial";
+                ctx.fillStyle = "#000";
+                let x = ctx.canvas.width - ctx.measureText(text).width;
+                let y = ctx.canvas.height - 5;
+                ctx.fillText(text, x, y);
+            }
+
+            _drawTiles(ctx) {
+                // Start with south-west (minimum) tile
+                let col = Math.floor(this.bounds.min.east / (this.tileWidth * this.scale));
+                let row = Math.floor(this.bounds.min.north / (this.tileHeight * this.scale));
+
+                let colsToDraw = Math.ceil(ctx.canvas.width / this.tileWidth);
+                let rowsToDraw = Math.ceil(ctx.canvas.height / this.tileHeight);
+
+                for (let c = col; c <= col + colsToDraw; ++c) {
+                    for (let r = row; r <= row + rowsToDraw; ++r) {
+                        this._drawTile(ctx, c, r);
+                    }
+                }
+            }
+
+            _drawTile(ctx, col, row) {
+                // These coordinates will be the south-west corner of the tile
+                let east = this.tileWidth * this.scale * col;
+                let north = this.tileHeight * this.scale * row;
+                let pixels = this._translateCoordinatesToPixels(ctx, east, north);
+
+                ctx.rect(pixels.x, pixels.y - this.tileHeight, this.tileWidth, this.tileHeight);
+
+                ctx.font = "10px Arial";
+                ctx.fillStyle = "#f00";
+                ctx.fillText(`col: ${col} row: ${row}`, pixels.x + 10, pixels.y - 25);
+                ctx.fillText(`north: ${north} east: ${east}`, pixels.x + 10, pixels.y - 10);
+            }
+
+            ready() {
+                super.ready();
+                this.$.canvas.addEventListener('mousedown', this._onMouseDown.bind(this), true);
+                this.$.canvas.addEventListener('mousemove', this._onMouseMove.bind(this), true);
+                this.$.canvas.addEventListener('mouseup', this._onMouseUp.bind(this), true);
+                this._resizeCanvas();
+                this._computeScale();
+                this._computeBounds();
+                this.initialized = true;
+                this._repaintCanvas();
+            }
+
+            _onResize(event) {
+                console.log("Map element resized");
+                this._resizeCanvas();
+            }
+
+            _onMouseDown(event) {
+                this.dragging = true;
+                this.draggingFrom = {x: event.clientX, y: event.clientY};
+                this.draggingCenter = this.center;
+            }
+
+            _onMouseMove(event) {
+                if (this.dragging) {
+                    let deltaX = this.draggingFrom.x - event.clientX;
+                    let deltaY = this.draggingFrom.y - event.clientY;
+
+                    let newEast = this.draggingCenter.east + this.scale * deltaX;
+                    let newNorth = this.draggingCenter.north + -this.scale * deltaY;
+
+                    this.center = {east: newEast, north: newNorth};
+                }
+            }
+
+            _onMouseUp(event) {
+                this.dragging = false;
+                this.draggingFrom = null;
+                this.draggingCenter = null;
+            }
+
+            _onCenterChanged() {
+                if (this.initialized) {
+                    this._computeBounds();
+                    this._repaintCanvas();
+                }
+            }
+
+            _onZoomChanged() {
+                if (this.initialized) {
+                    this._computeScale();
+                    this._computeBounds();
+                    this._repaintCanvas();
+                }
+            }
+
+            _computeScale() {
+                this.scale = Math.pow(2, this.zoom) / 2;
+            }
+
+            _computeBounds() {
+                let scaledHalfWidth = (this.$.canvas.width / 2) * this.scale;
+                let scaledHalfHeight = (this.$.canvas.height / 2) * this.scale;
+
+                let minEast = this.center.east - scaledHalfWidth;
+                let minNorth = this.center.north - scaledHalfHeight;
+
+                let maxEast = this.center.east + scaledHalfWidth;
+                let maxNorth = this.center.north + scaledHalfWidth;
+
+                this.bounds = {min: {east: minEast, north: minNorth}, max: {east: maxEast, north: maxNorth}};
+            }
+
+            _translateCoordinatesToPixels(ctx, east, north) {
+                let eastOffset = this.center.east - (ctx.canvas.width / 2) * this.scale;
+                let northOffset = this.center.north - (ctx.canvas.height / 2) * this.scale;
+                let x = (east - eastOffset) / this.scale;
+                let y = ctx.canvas.height - ((north - northOffset) / this.scale);
+                return {x: x, y: y};
+            }
+        }
+
+        window.customElements.define(IDispatchMapElement.is, IDispatchMapElement);
+    </script>
+</dom-module>

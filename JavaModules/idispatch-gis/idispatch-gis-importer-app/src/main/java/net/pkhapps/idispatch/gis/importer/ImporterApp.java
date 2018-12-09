@@ -26,7 +26,12 @@ public class ImporterApp {
             } else if (arg.equals("terrain")) {
                 var path = new File(argumentIterator.next());
                 context.getBean(TerrainDatabaseImporter.class).importData(path);
+            } else if (arg.equals("raster")) {
+                var path = new File(argumentIterator.next());
+                context.getBean(MapTileImporter.class).importData(path);
             }
         }
     }
+
+    // TODO Use CommandLineRunner?
 }

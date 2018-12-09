@@ -12,10 +12,6 @@
     <artifactId>idispatch-gis-importer-app</artifactId>
     <name>iDispatch GIS Importer Application</name>
 
-    <properties>
-        <geotools.version>19.3</geotools.version>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>net.pkhapps.idispatch.gis</groupId>
@@ -36,6 +32,11 @@
             <artifactId>gt-app-schema</artifactId>
             <version>${geotools.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.geotools</groupId>
+            <artifactId>gt-image</artifactId>
+            <version>${geotools.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -46,16 +47,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>geotools</id>
-            <url>http://repo.boundlessgeo.com/main/</url>
-        </repository>
-        <repository>
-            <id>osgeo</id>
-            <name>Open Source Geospatial Foundation Repository</name>
-            <url>http://download.osgeo.org/webdav/geotools/</url>
-        </repository>
-    </repositories>
 </project>
