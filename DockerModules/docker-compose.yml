@@ -1,0 +1,17 @@
+version: '3'
+services:
+  idispatch-db:
+    build: ./idispatch-db
+    restart: on-failure
+
+  idispatch-identity:
+    build: ./idispatch-identity
+    restart: on-failure
+    depends_on: 
+      - idispatch-db
+
+  idispatch-proxy:
+    build: ./idispatch-proxy
+    restart: on-failure
+    ports:
+      - "8080:8080"
