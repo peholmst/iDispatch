@@ -9,7 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -244,14 +243,12 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     @Getter
-    public static abstract class UserDomainEvent implements Serializable {
+    public static abstract class UserDomainEvent extends DomainEvent {
 
         private final User user;
-        private final Instant occurredOn;
 
         UserDomainEvent(@NonNull User user) {
             this.user = Objects.requireNonNull(user, "user must not be null");
-            this.occurredOn = DomainServices.getInstance().clock().instant();
         }
     }
 
