@@ -1,6 +1,7 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,8 +19,13 @@ import static org.mockito.Mockito.when;
  * Unit test for {@link User}.
  */
 public class UserTest {
-    
+
     private MockDomainServices domainServices;
+
+    @BeforeClass
+    public static void setUpClass() {
+        DomainServices.setInstanceHolderStrategy(DomainServices.ThreadLocalInstanceHolderStrategy.class);
+    }
 
     @Before
     public void setUp() {
@@ -275,6 +281,6 @@ public class UserTest {
     }
 
     private Organization createTestOrganization() {
-        return new Organization();
+        return new Organization("Test Organization");
     }
 }

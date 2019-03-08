@@ -40,7 +40,7 @@ public abstract class DomainServices {
      * <p>
      * This method is not thread-safe.
      */
-    static void setInstanceHolderStrategy(@NonNull Class<InstanceHolderStrategy> instanceHolderStrategyClass) {
+    static void setInstanceHolderStrategy(@NonNull Class<? extends InstanceHolderStrategy> instanceHolderStrategyClass) {
         Objects.requireNonNull(instanceHolderStrategyClass, "instanceHolderStrategyClass must not be null");
         if (!instanceHolderStrategyClass.isInstance(instanceHolderStrategy)) {
             try {
