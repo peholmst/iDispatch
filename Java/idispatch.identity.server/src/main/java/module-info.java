@@ -19,4 +19,6 @@ module idispatch.identity.server {
     requires spring.security.core;
     requires spring.security.jwt;
     requires spring.security.oauth2;
+    requires spring.security.config;
+    requires spring.security.web;
 }

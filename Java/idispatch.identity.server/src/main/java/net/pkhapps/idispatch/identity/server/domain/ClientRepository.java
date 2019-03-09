@@ -6,10 +6,10 @@ import org.springframework.lang.NonNull;
 import java.util.Optional;
 
 /**
- * Repository interface for {@link Organization}.
+ * Repository interface for {@link Client}.
  */
-public interface OrganizationRepository extends JpaRepository<Organization, Long> {
+public interface ClientRepository extends JpaRepository<Client, Long> {
 
     @NonNull
-    Optional<Organization> findByName(@NonNull String name);
+    Optional<Client> findByClientId(@NonNull String clientId);
 }

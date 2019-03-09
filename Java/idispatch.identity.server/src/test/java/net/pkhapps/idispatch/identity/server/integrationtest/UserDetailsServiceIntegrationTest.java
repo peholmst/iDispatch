@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@ActiveProfiles("test")
+@ActiveProfiles({"test", "devel"})
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserDetailsServiceIntegrationTest {

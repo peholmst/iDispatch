@@ -16,6 +16,9 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLength;
+
 /**
  * Aggregate root representing a user of the system.
  */
@@ -23,6 +26,8 @@ import java.util.stream.Collectors;
 @Table(name = "user", schema = "idispatch_identity")
 @Getter
 public class User extends AggregateRoot<User> implements UserDetails {
+
+    private static final int STRING_MAX_LENGTH = 255;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -44,7 +49,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "organization_id", nullable = false)
     private Organization organization;
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_authority", schema = "idispatch_identity", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "authority", nullable = false)
     @Getter(AccessLevel.NONE)
@@ -78,7 +83,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
      * @param encodedPassword the encoded password or {@code null}.
      */
     public void setPassword(@Nullable String encodedPassword) {
-        this.password = encodedPassword;
+        this.password = requireMaxLength(encodedPassword, STRING_MAX_LENGTH);
         registerEvent(new PasswordChangedEvent(this));
     }
 
@@ -88,7 +93,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     public void setUsername(@NonNull String username) {
-        Objects.requireNonNull(username, "username must not be null");
+        requireNonNull(requireMaxLength(username, STRING_MAX_LENGTH));
         if (!username.equals(this.username)) {
             var old = this.username;
             this.username = username;
@@ -149,7 +154,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     public void setFullName(@NonNull String fullName) {
-        Objects.requireNonNull(fullName, "fullName must not be null");
+        requireNonNull(requireMaxLength(fullName, STRING_MAX_LENGTH));
         if (!fullName.equals(this.fullName)) {
             var old = this.fullName;
             this.fullName = fullName;
@@ -158,7 +163,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     public void setValidFrom(@NonNull Instant validFrom) {
-        Objects.requireNonNull(validFrom, "validFrom must not be null");
+        requireNonNull(validFrom);
         if (validTo != null && validFrom.isAfter(validTo)) {
             throw new IllegalArgumentException("validFrom cannot be after validTo");
         }
@@ -189,8 +194,8 @@ public class User extends AggregateRoot<User> implements UserDetails {
      * @throws IllegalStateException           if this user account currently has no password to change (need to use {@link #setPassword(String)} instead in this case).
      */
     public void changePassword(@NonNull String currentPassword, @NonNull String newPassword) throws InvalidCurrentPasswordException {
-        Objects.requireNonNull(newPassword, "newPassword must not be null");
-        Objects.requireNonNull(currentPassword, "currentPassword must not be null");
+        requireNonNull(newPassword);
+        requireNonNull(currentPassword);
         // TODO Add password validation
         if (this.password == null) {
             throw new IllegalStateException("This user account has no password to change");
@@ -204,7 +209,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     public void setUserType(@NonNull UserType userType) {
-        Objects.requireNonNull(userType, "userType must not be null");
+        requireNonNull(userType);
         if (!userType.equals(this.userType)) {
             var old = this.userType;
             this.userType = userType;
@@ -213,7 +218,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     public void setOrganization(@NonNull Organization organization) {
-        Objects.requireNonNull(organization, "organization must not be null");
+        requireNonNull(organization);
         if (!organization.equals(this.organization)) {
             var old = this.organization;
             this.organization = organization;
@@ -222,14 +227,15 @@ public class User extends AggregateRoot<User> implements UserDetails {
     }
 
     public void addAuthority(@NonNull GrantedAuthority authority) {
-        Objects.requireNonNull(authority, "authority must not be null");
+        requireNonNull(authority);
+        requireMaxLength(authority.getAuthority(), STRING_MAX_LENGTH);
         if (this.authorities.add(authority.getAuthority())) {
             registerEvent(new AuthorityAddedEvent(this, authority));
         }
     }
 
     public void removeAuthority(@NonNull GrantedAuthority authority) {
-        Objects.requireNonNull(authority, "authority must not be null");
+        requireNonNull(authority);
         if (this.authorities.remove(authority.getAuthority())) {
             registerEvent(new AuthorityRemovedEvent(this, authority));
         }
@@ -248,7 +254,7 @@ public class User extends AggregateRoot<User> implements UserDetails {
         private final User user;
 
         UserDomainEvent(@NonNull User user) {
-            this.user = Objects.requireNonNull(user, "user must not be null");
+            this.user = requireNonNull(user, "user must not be null");
         }
     }
 

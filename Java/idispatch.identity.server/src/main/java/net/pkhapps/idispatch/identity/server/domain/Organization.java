@@ -4,10 +4,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.springframework.lang.Nullable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
+import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLength;
 
 /**
  * Entity representing an organization that uses iDispatch.
@@ -17,8 +19,11 @@ import java.util.Objects;
 @Getter
 public class Organization extends AggregateRoot<Organization> {
 
-    @NotEmpty
+    private static final int STRING_MAX_LENGTH = 255;
+
+    @Column(name = "name", nullable = false, unique = true)
     private String name;
+    @Column(name = "enabled", nullable = false)
     private boolean enabled;
 
     Organization() {
@@ -30,7 +35,7 @@ public class Organization extends AggregateRoot<Organization> {
     }
 
     public void setName(@NonNull String name) {
-        Objects.requireNonNull(name, "name must not be null");
+        requireNonNull(requireMaxLength(name, STRING_MAX_LENGTH));
         if (!name.equals(this.name)) {
             var old = this.name;
             this.name = name;
@@ -54,8 +59,8 @@ public class Organization extends AggregateRoot<Organization> {
 
         private final Organization organization;
 
-        public OrganizationDomainEvent(@NonNull Organization organization) {
-            this.organization = Objects.requireNonNull(organization, "organization must not be null");
+        OrganizationDomainEvent(@NonNull Organization organization) {
+            this.organization = requireNonNull(organization, "organization must not be null");
         }
     }
 
