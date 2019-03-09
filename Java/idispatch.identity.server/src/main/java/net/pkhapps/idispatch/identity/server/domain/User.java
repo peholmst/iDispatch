@@ -1,7 +1,5 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,7 +22,6 @@ import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLengt
  */
 @Entity
 @Table(name = "user", schema = "idispatch_identity")
-@Getter
 public class User extends AggregateRoot<User> implements UserDetails {
 
     private static final int STRING_MAX_LENGTH = 255;
@@ -52,7 +49,6 @@ public class User extends AggregateRoot<User> implements UserDetails {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_authority", schema = "idispatch_identity", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "authority", nullable = false)
-    @Getter(AccessLevel.NONE)
     private Set<String> authorities = new HashSet<>();
 
     User() {
@@ -138,6 +134,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
+    @Nullable
+    public Instant getLockedAt() {
+        return lockedAt;
+    }
+
     public void lock() {
         var now = DomainServices.getInstance().clock().instant();
         if (!now.equals(this.lockedAt)) {
@@ -153,6 +154,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
+    @NonNull
+    public String getFullName() {
+        return fullName;
+    }
+
     public void setFullName(@NonNull String fullName) {
         requireNonNull(requireMaxLength(fullName, STRING_MAX_LENGTH));
         if (!fullName.equals(this.fullName)) {
@@ -160,6 +166,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
             this.fullName = fullName;
             registerEvent(new FullNameChangedEvent(this, old, fullName));
         }
+    }
+
+    @NonNull
+    public Instant getValidFrom() {
+        return validFrom;
     }
 
     public void setValidFrom(@NonNull Instant validFrom) {
@@ -172,6 +183,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
             this.validFrom = validFrom;
             registerEvent(new ValidFromChangedEvent(this, old, validFrom));
         }
+    }
+
+    @Nullable
+    public Instant getValidTo() {
+        return validTo;
     }
 
     public void setValidTo(@Nullable Instant validTo) {
@@ -208,6 +224,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
         setPassword(encoder.encode(newPassword));
     }
 
+    @NonNull
+    public UserType getUserType() {
+        return userType;
+    }
+
     public void setUserType(@NonNull UserType userType) {
         requireNonNull(userType);
         if (!userType.equals(this.userType)) {
@@ -215,6 +236,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
             this.userType = userType;
             registerEvent(new UserTypeChangedEvent(this, old, userType));
         }
+    }
+
+    @NonNull
+    public Organization getOrganization() {
+        return organization;
     }
 
     public void setOrganization(@NonNull Organization organization) {
@@ -248,7 +274,6 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
-    @Getter
     public static abstract class UserDomainEvent extends DomainEvent {
 
         private final User user;
@@ -256,9 +281,13 @@ public class User extends AggregateRoot<User> implements UserDetails {
         UserDomainEvent(@NonNull User user) {
             this.user = requireNonNull(user, "user must not be null");
         }
+
+        @NonNull
+        public User getUser() {
+            return user;
+        }
     }
 
-    @Getter
     public static class AuthorityAddedEvent extends UserDomainEvent {
 
         private final GrantedAuthority addedAuthority;
@@ -267,9 +296,13 @@ public class User extends AggregateRoot<User> implements UserDetails {
             super(user);
             this.addedAuthority = addedAuthority;
         }
+
+        @NonNull
+        public GrantedAuthority getAddedAuthority() {
+            return addedAuthority;
+        }
     }
 
-    @Getter
     public static class AuthorityRemovedEvent extends UserDomainEvent {
 
         private final GrantedAuthority removedAuthority;
@@ -277,6 +310,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
         AuthorityRemovedEvent(@NonNull User user, @NonNull GrantedAuthority removedAuthority) {
             super(user);
             this.removedAuthority = removedAuthority;
+        }
+
+        @NonNull
+        public GrantedAuthority getRemovedAuthority() {
+            return removedAuthority;
         }
     }
 
@@ -315,7 +353,6 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
-    @Getter
     public static abstract class UserPropertyChangeEvent<T> extends UserDomainEvent {
 
         private final T oldValue;
@@ -325,6 +362,14 @@ public class User extends AggregateRoot<User> implements UserDetails {
             super(user);
             this.oldValue = oldValue;
             this.newValue = newValue;
+        }
+
+        public T getOldValue() {
+            return oldValue;
+        }
+
+        public T getNewValue() {
+            return newValue;
         }
     }
 

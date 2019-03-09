@@ -1,7 +1,6 @@
 package net.pkhapps.idispatch.identity.server.integrationtest;
 
 import io.restassured.RestAssured;
-import lombok.extern.slf4j.Slf4j;
 import net.pkhapps.idispatch.identity.server.domain.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -24,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles({"test", "devel"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Slf4j
 public class OAuthClientIntegrationTest {
 
     private static final String CLIENT_ID = "test-client";
@@ -55,7 +53,6 @@ public class OAuthClientIntegrationTest {
     @Before
     public void init() {
         client = clientRepository.findByClientId(CLIENT_ID).orElseGet(() -> {
-            log.info("Creating test client");
             var c = new Client(CLIENT_ID);
             c.setClientSecret(passwordEncoder.encode(CLIENT_SECRET));
             c.addGrantType(GrantType.PASSWORD);
@@ -63,13 +60,11 @@ public class OAuthClientIntegrationTest {
         });
 
         organization = organizationRepository.findByName(ORGANIZATION).orElseGet(() -> {
-            log.info("Creating test organization");
             var o = new Organization(ORGANIZATION);
             return organizationRepository.save(o);
         });
 
         user = userRepository.findByUsername(USERNAME).orElseGet(() -> {
-            log.info("Creating test user");
             var u = new User(USERNAME, UserType.INDIVIDUAL, organization);
             u.setFullName(FULL_NAME);
             u.setPassword(passwordEncoder.encode(PASSWORD));

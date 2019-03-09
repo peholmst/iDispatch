@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.identity.server.config;
 
-import lombok.Setter;
 import net.pkhapps.idispatch.identity.server.domain.DomainProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,6 @@ import java.time.Duration;
  * properties.
  */
 @Component
-@Setter
 @ConfigurationProperties(prefix = "idispatch.identity-server.domain")
 class DomainPropertiesImpl implements DomainProperties {
 
@@ -21,5 +19,9 @@ class DomainPropertiesImpl implements DomainProperties {
     @Override
     public Duration getUserAccountLockDuration() {
         return userAccountLockDuration;
+    }
+
+    public void setUserAccountLockDuration(Duration userAccountLockDuration) {
+        this.userAccountLockDuration = userAccountLockDuration;
     }
 }

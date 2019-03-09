@@ -1,7 +1,5 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
-import lombok.AccessLevel;
-import lombok.Setter;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.domain.Persistable;
 import org.springframework.data.util.ProxyUtils;
@@ -20,12 +18,15 @@ public abstract class AggregateRoot<A extends AggregateRoot<A>> extends Abstract
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
     @Override
     public Long getId() {
         return id;
+    }
+
+    protected void setId(Long id) {
+        this.id = id;
     }
 
     @Override

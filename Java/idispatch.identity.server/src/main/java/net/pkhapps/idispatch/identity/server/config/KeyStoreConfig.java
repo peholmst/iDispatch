@@ -1,6 +1,6 @@
 package net.pkhapps.idispatch.identity.server.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,6 @@ import java.security.KeyStore;
  * Configuration for the Java Key Store used by this application.
  */
 @Configuration
-@Slf4j
 class KeyStoreConfig {
 
     @Value("${application.key-store.location}")
@@ -22,7 +21,7 @@ class KeyStoreConfig {
 
     @Bean
     public KeyStore keyStore() throws Exception {
-        log.info("Using key store in file {}", keystoreLocation);
+        LoggerFactory.getLogger(getClass()).info("Using key store in file {}", keystoreLocation);
         return KeyStore.getInstance(keystoreLocation, keystorePassword.toCharArray());
     }
 }

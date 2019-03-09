@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
-import lombok.Setter;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,7 +31,6 @@ public class Client extends AggregateRoot<Client> implements ClientDetails {
     @Column(name = "resource_id", nullable = false)
     private Set<String> resourceIds = new HashSet<>();
     @Column(name = "client_secret")
-    @Setter
     private String clientSecret;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "client_grant_type", schema = "idispatch_identity", joinColumns = @JoinColumn(name = "client_id"))
@@ -47,10 +45,8 @@ public class Client extends AggregateRoot<Client> implements ClientDetails {
     @Column(name = "authority", nullable = false)
     private Set<String> authorities = new HashSet<>();
     @Column(name = "access_token_validity", nullable = false)
-    @Setter
     private int accessTokenValiditySeconds = (int) Duration.ofHours(1).toSeconds();
     @Column(name = "refresh_token_validity", nullable = false)
-    @Setter
     private int refreshTokenValiditySeconds = (int) Duration.ofHours(12).toSeconds();
 
     Client() {
@@ -63,6 +59,10 @@ public class Client extends AggregateRoot<Client> implements ClientDetails {
     @Override
     public String getClientId() {
         return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     @Override
@@ -86,6 +86,10 @@ public class Client extends AggregateRoot<Client> implements ClientDetails {
     @Override
     public String getClientSecret() {
         return clientSecret;
+    }
+
+    public void setClientSecret(String clientSecret) {
+        this.clientSecret = clientSecret;
     }
 
     // For some reason, isScoped() returning false and using an empty scope will always throw an InvalidScopeException.
@@ -155,9 +159,17 @@ public class Client extends AggregateRoot<Client> implements ClientDetails {
         return accessTokenValiditySeconds;
     }
 
+    public void setAccessTokenValiditySeconds(int accessTokenValiditySeconds) {
+        this.accessTokenValiditySeconds = accessTokenValiditySeconds;
+    }
+
     @Override
     public Integer getRefreshTokenValiditySeconds() {
         return refreshTokenValiditySeconds;
+    }
+
+    public void setRefreshTokenValiditySeconds(int refreshTokenValiditySeconds) {
+        this.refreshTokenValiditySeconds = refreshTokenValiditySeconds;
     }
 
     @Override

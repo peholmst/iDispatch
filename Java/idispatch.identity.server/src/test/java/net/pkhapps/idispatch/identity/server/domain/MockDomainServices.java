@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
-import lombok.Setter;
 import org.mockito.Mockito;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +15,6 @@ import java.time.Clock;
  * </ul>
  * Developers can replace the defaults by invoking their respective setter methods.
  */
-@Setter
 public class MockDomainServices extends DomainServices {
 
     private Clock clock = Clock.systemUTC();
@@ -28,13 +26,25 @@ public class MockDomainServices extends DomainServices {
         return clock;
     }
 
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+
     @Override
     public DomainProperties properties() {
         return properties;
     }
 
+    public void setProperties(DomainProperties properties) {
+        this.properties = properties;
+    }
+
     @Override
     public PasswordEncoder passwordEncoder() {
         return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 }

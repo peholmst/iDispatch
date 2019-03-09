@@ -1,7 +1,6 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
-import lombok.Getter;
-import lombok.NonNull;
+import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.Column;
@@ -16,7 +15,6 @@ import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLengt
  */
 @Entity
 @Table(name = "organization", schema = "idispatch_identity")
-@Getter
 public class Organization extends AggregateRoot<Organization> {
 
     private static final int STRING_MAX_LENGTH = 255;
@@ -34,6 +32,11 @@ public class Organization extends AggregateRoot<Organization> {
         setEnabled(true);
     }
 
+    @NonNull
+    public String getName() {
+        return name;
+    }
+
     public void setName(@NonNull String name) {
         requireNonNull(requireMaxLength(name, STRING_MAX_LENGTH));
         if (!name.equals(this.name)) {
@@ -41,6 +44,10 @@ public class Organization extends AggregateRoot<Organization> {
             this.name = name;
             registerEvent(new NameChangedEvent(this, old, name));
         }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void setEnabled(boolean enabled) {
@@ -54,7 +61,6 @@ public class Organization extends AggregateRoot<Organization> {
         }
     }
 
-    @Getter
     public static abstract class OrganizationDomainEvent extends DomainEvent {
 
         private final Organization organization;
@@ -62,9 +68,13 @@ public class Organization extends AggregateRoot<Organization> {
         OrganizationDomainEvent(@NonNull Organization organization) {
             this.organization = requireNonNull(organization, "organization must not be null");
         }
+
+        @NonNull
+        public Organization getOrganization() {
+            return organization;
+        }
     }
 
-    @Getter
     public static class NameChangedEvent extends OrganizationDomainEvent {
 
         private final String oldValue;
@@ -74,6 +84,16 @@ public class Organization extends AggregateRoot<Organization> {
             super(organization);
             this.oldValue = oldValue;
             this.newValue = newValue;
+        }
+
+        @Nullable
+        public String getOldValue() {
+            return oldValue;
+        }
+
+        @NonNull
+        public String getNewValue() {
+            return newValue;
         }
     }
 
