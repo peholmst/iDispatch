@@ -33,10 +33,14 @@ public class UserDetailsServiceIntegrationTest {
 
     @Test
     public void loadUserByUsername_userExists_userReturned() {
-        var org = organizationRepository.save(new Organization("Test Organization"));
-        var user = userRepository.save(new User("joecool", UserType.INDIVIDUAL, org));
+        var orgName = getClass().getName() + ".TestOrg";
+        var org = organizationRepository.findByName(orgName).orElseGet(() ->
+                organizationRepository.save(new Organization(orgName)));
+        var username = getClass().getName() + ".TestUser";
+        var user = userRepository.findByUsername(username).orElseGet(() ->
+                userRepository.save(new User(username, UserType.INDIVIDUAL, org)));
 
-        var result = userDetailsService.loadUserByUsername("joecool");
+        var result = userDetailsService.loadUserByUsername(username);
         assertThat(result).isEqualTo(user);
     }
 }

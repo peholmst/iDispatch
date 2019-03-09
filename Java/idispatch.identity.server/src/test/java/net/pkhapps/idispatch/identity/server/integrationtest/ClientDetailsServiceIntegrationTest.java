@@ -32,13 +32,16 @@ public class ClientDetailsServiceIntegrationTest {
 
     @Test
     public void loadClientByClientId_clientExists_clientReturned() {
-        var client = new Client("test-client");
-        client.addGrantType(GrantType.AUTHORIZATION_CODE);
-        client.addResourceId("hello world");
-        client.addRedirectUri("http://foo.bar/");
-        clientRepository.save(client);
+        var clientName = getClass().getName() + ".TestClient";
+        var client = clientRepository.findByClientId(clientName).orElseGet(() -> {
+            var c = new Client(clientName);
+            c.addGrantType(GrantType.AUTHORIZATION_CODE);
+            c.addResourceId("hello world");
+            c.addRedirectUri("http://foo.bar/");
+            return clientRepository.save(c);
+        });
 
-        var result = clientDetailsService.loadClientByClientId("test-client");
+        var result = clientDetailsService.loadClientByClientId(clientName);
         assertThat(result).isEqualTo(client);
     }
 }
