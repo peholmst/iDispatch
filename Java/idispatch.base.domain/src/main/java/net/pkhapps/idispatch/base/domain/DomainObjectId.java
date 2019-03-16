@@ -5,7 +5,8 @@ import org.springframework.lang.NonNull;
 import java.util.Objects;
 
 /**
- * Base class for value objects that identify some other domain object (by wrapping a long integer).
+ * Base class for value objects that identify some other domain object (by wrapping a long integer). You can also
+ * use this class directly if a subclass is not needed for your particular use case.
  */
 public class DomainObjectId implements ValueObject {
 

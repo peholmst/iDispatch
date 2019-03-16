@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.identity.server.domain;
+package net.pkhapps.idispatch.base.domain;
 
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
@@ -21,7 +21,11 @@ public class AggregateRootTestUtils {
         }
     }
 
-    public static void assertDomainEvent(@NonNull AggregateRoot aggregateRoot, @NonNull Class<?> eventType) {
+    public static void assertDomainEvent(@NonNull AggregateRoot<?> aggregateRoot, @NonNull Class<?> eventType) {
         assertDomainEvent(aggregateRoot, eventType, null);
+    }
+
+    public static void clearDomainEvents(@NonNull AggregateRoot<?> aggregateRoot) {
+        aggregateRoot.clearDomainEvents();
     }
 }

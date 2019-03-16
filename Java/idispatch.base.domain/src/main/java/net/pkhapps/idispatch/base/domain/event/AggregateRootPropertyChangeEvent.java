@@ -3,6 +3,7 @@ package net.pkhapps.idispatch.base.domain.event;
 import net.pkhapps.idispatch.base.domain.AggregateRoot;
 import org.springframework.lang.NonNull;
 
+import java.time.Clock;
 import java.time.Instant;
 
 /**
@@ -20,6 +21,10 @@ public abstract class AggregateRootPropertyChangeEvent<P, T extends AggregateRoo
         super(sender, occurredOn);
         this.oldValue = oldValue;
         this.newValue = newValue;
+    }
+
+    protected AggregateRootPropertyChangeEvent(@NonNull T sender, @NonNull Clock clock, P oldValue, P newValue) {
+        this(sender, clock.instant(), oldValue, newValue);
     }
 
     public P getOldValue() {

@@ -4,6 +4,7 @@ import net.pkhapps.idispatch.base.domain.AggregateRoot;
 import net.pkhapps.idispatch.base.domain.DomainEvent;
 import org.springframework.lang.NonNull;
 
+import java.time.Clock;
 import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
@@ -20,6 +21,10 @@ public abstract class AggregateRootDomainEvent<T extends AggregateRoot<?>> imple
     protected AggregateRootDomainEvent(@NonNull T sender, @NonNull Instant occurredOn) {
         this.sender = requireNonNull(sender);
         this.occurredOn = requireNonNull(occurredOn);
+    }
+
+    protected AggregateRootDomainEvent(@NonNull T sender, @NonNull Clock clock) {
+        this(sender, clock.instant());
     }
 
     /**

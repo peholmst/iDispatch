@@ -56,7 +56,7 @@ public class DomainObjectIdConverter<T extends DomainObjectId> implements Attrib
     @Override
     public T convertToEntityAttribute(Long dbData) {
         try {
-            return dbData == null ? null : domainObjectIdClass.getDeclaredConstructor(Long.class).newInstance(dbData);
+            return dbData == null ? null : domainObjectIdClass.getDeclaredConstructor(Long.TYPE).newInstance(dbData);
         } catch (Exception ex) {
             throw new UnsupportedOperationException("Could not convert " + dbData + " to instance of " + domainObjectIdClass, ex);
         }
