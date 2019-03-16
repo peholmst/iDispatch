@@ -11,7 +11,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 
-import static net.pkhapps.idispatch.identity.server.domain.AggregateRootTestUtils.assertDomainEvent;
+import static net.pkhapps.idispatch.base.domain.AggregateRootTestUtils.assertDomainEvent;
+import static net.pkhapps.idispatch.base.domain.AggregateRootTestUtils.clearDomainEvents;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -81,7 +82,7 @@ public class UserTest {
     public void changePassword_currentPasswordCorrect_passwordChanged() throws Exception {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
         user.setPassword("{noop}current");
-        user.clearDomainEvents();
+        clearDomainEvents(user);
 
         user.changePassword("current", "new");
         assertThat(user.getPassword()).startsWith("{bcrypt}");
@@ -135,7 +136,7 @@ public class UserTest {
     @Test
     public void setFullName() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.setFullName("Joe Cool");
 
         assertThat(user.getFullName()).isEqualTo("Joe Cool");
@@ -148,7 +149,7 @@ public class UserTest {
     @Test
     public void setUserType() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.setUserType(UserType.ROLE);
 
         assertThat(user.getUserType()).isEqualTo(UserType.ROLE);
@@ -161,7 +162,7 @@ public class UserTest {
     @Test
     public void addAuthority() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.addAuthority(new SimpleGrantedAuthority("ROLE_FOOBAR"));
 
         assertThat(user.getAuthorities().stream().map(GrantedAuthority::getAuthority)).containsExactly("ROLE_FOOBAR");
@@ -172,7 +173,7 @@ public class UserTest {
     public void removeAuthority() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
         user.addAuthority(new SimpleGrantedAuthority("ROLE_FOOBAR"));
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.removeAuthority(new SimpleGrantedAuthority("ROLE_FOOBAR"));
 
         assertThat(user.getAuthorities()).isEmpty();
@@ -192,7 +193,7 @@ public class UserTest {
     public void unlock() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
         user.lock();
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.unlock();
 
         assertThat(user.getLockedAt()).isNull();
@@ -254,7 +255,7 @@ public class UserTest {
     @Test
     public void disableUser() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.setEnabled(false);
 
         assertThat(user.isEnabled()).isFalse();
@@ -265,7 +266,7 @@ public class UserTest {
     public void enableUser() {
         var user = new User("joecool", UserType.INDIVIDUAL, createTestOrganization());
         user.setEnabled(false);
-        user.clearDomainEvents();
+        clearDomainEvents(user);
         user.setEnabled(true);
 
         assertThat(user.isEnabled()).isTrue();

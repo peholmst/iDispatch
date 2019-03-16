@@ -95,9 +95,9 @@ public class OAuthClientIntegrationTest {
         var details = (Map<String, Object>) authentication.getDetails();
         assertThat(details.get("full_name")).isEqualTo(FULL_NAME);
         assertThat(details.get("organization")).isEqualTo(ORGANIZATION);
-        assertThat(details.get("organization_id")).isEqualTo(organization.getId().intValue());
+        assertThat(details.get("organization_id")).isEqualTo(organization.getId().toLong().intValue());
         assertThat(details.get("user_type")).isEqualTo(user.getUserType().name());
-        assertThat(details.get("user_id")).isEqualTo(user.getId().intValue());
+        assertThat(details.get("user_id")).isEqualTo(user.getId().toLong().intValue());
     }
 
     @Test

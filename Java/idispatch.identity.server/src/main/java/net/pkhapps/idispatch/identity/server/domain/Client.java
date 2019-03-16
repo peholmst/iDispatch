@@ -1,5 +1,8 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
+import net.pkhapps.idispatch.base.domain.AggregateRoot;
+import net.pkhapps.idispatch.base.domain.DomainObjectId;
+import net.pkhapps.idispatch.base.domain.DomainObjectIdConverter;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLength;
+import static net.pkhapps.idispatch.base.domain.util.Strings.requireMaxLength;
 
 /**
  * Aggregate root representing a client of the system, i.e. an application that uses the identity server for
@@ -19,7 +22,7 @@ import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLengt
  */
 @Entity
 @Table(name = "client", schema = "idispatch_identity")
-public class Client extends AggregateRoot<Client> implements ClientDetails {
+public class Client extends AggregateRoot<DomainObjectId> implements ClientDetails {
 
     private static final int STRING_MAX_LENGTH = 255;
     private static final String DEFAULT_SCOPE = "default";
@@ -50,9 +53,11 @@ public class Client extends AggregateRoot<Client> implements ClientDetails {
     private int refreshTokenValiditySeconds = (int) Duration.ofHours(12).toSeconds();
 
     Client() {
+        super(new DomainObjectIdConverter<>(DomainObjectId.class));
     }
 
     public Client(@NonNull String clientId) {
+        this();
         this.clientId = requireNonNull(requireMaxLength(clientId, STRING_MAX_LENGTH));
     }
 

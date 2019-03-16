@@ -1,5 +1,10 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
+import net.pkhapps.idispatch.base.domain.AggregateRoot;
+import net.pkhapps.idispatch.base.domain.UserId;
+import net.pkhapps.idispatch.base.domain.UserIdConverter;
+import net.pkhapps.idispatch.base.domain.event.AggregateRootDomainEvent;
+import net.pkhapps.idispatch.base.domain.event.AggregateRootPropertyChangeEvent;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -15,14 +20,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
-import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLength;
+import static net.pkhapps.idispatch.base.domain.util.Strings.requireMaxLength;
 
 /**
  * Aggregate root representing a user of the system.
  */
 @Entity
 @Table(name = "user", schema = "idispatch_identity")
-public class User extends AggregateRoot<User> implements UserDetails {
+public class User extends AggregateRoot<UserId> implements UserDetails {
 
     private static final int STRING_MAX_LENGTH = 255;
 
@@ -52,9 +57,11 @@ public class User extends AggregateRoot<User> implements UserDetails {
     private Set<String> authorities = new HashSet<>();
 
     User() {
+        super(new UserIdConverter());
     }
 
     public User(@NonNull String username, @NonNull UserType userType, @NonNull Organization organization) {
+        this();
         setUsername(username);
         setFullName(username);
         setUserType(userType);
@@ -274,26 +281,12 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
-    public static abstract class UserDomainEvent extends DomainEvent {
-
-        private final User user;
-
-        UserDomainEvent(@NonNull User user) {
-            this.user = requireNonNull(user, "user must not be null");
-        }
-
-        @NonNull
-        public User getUser() {
-            return user;
-        }
-    }
-
-    public static class AuthorityAddedEvent extends UserDomainEvent {
+    public static class AuthorityAddedEvent extends AggregateRootDomainEvent<User> {
 
         private final GrantedAuthority addedAuthority;
 
         AuthorityAddedEvent(@NonNull User user, @NonNull GrantedAuthority addedAuthority) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
             this.addedAuthority = addedAuthority;
         }
 
@@ -303,12 +296,12 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
-    public static class AuthorityRemovedEvent extends UserDomainEvent {
+    public static class AuthorityRemovedEvent extends AggregateRootDomainEvent<User> {
 
         private final GrantedAuthority removedAuthority;
 
         AuthorityRemovedEvent(@NonNull User user, @NonNull GrantedAuthority removedAuthority) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
             this.removedAuthority = removedAuthority;
         }
 
@@ -318,100 +311,80 @@ public class User extends AggregateRoot<User> implements UserDetails {
         }
     }
 
-    public static class PasswordChangedEvent extends UserDomainEvent {
+    public static class PasswordChangedEvent extends AggregateRootDomainEvent<User> {
 
         PasswordChangedEvent(@NonNull User user) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
         }
     }
 
-    public static class AccountLockedEvent extends UserDomainEvent {
+    public static class AccountLockedEvent extends AggregateRootDomainEvent<User> {
 
         AccountLockedEvent(@NonNull User user) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
         }
     }
 
-    public static class AccountUnlockedEvent extends UserDomainEvent {
+    public static class AccountUnlockedEvent extends AggregateRootDomainEvent<User> {
 
         AccountUnlockedEvent(@NonNull User user) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
         }
     }
 
-    public static class AccountEnabledEvent extends UserDomainEvent {
+    public static class AccountEnabledEvent extends AggregateRootDomainEvent<User> {
 
         AccountEnabledEvent(@NonNull User user) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
         }
     }
 
-    public static class AccountDisabledEvent extends UserDomainEvent {
+    public static class AccountDisabledEvent extends AggregateRootDomainEvent<User> {
 
         AccountDisabledEvent(@NonNull User user) {
-            super(user);
+            super(user, DomainServices.getInstance().clock());
         }
     }
 
-    public static abstract class UserPropertyChangeEvent<T> extends UserDomainEvent {
-
-        private final T oldValue;
-        private final T newValue;
-
-        UserPropertyChangeEvent(@NonNull User user, T oldValue, T newValue) {
-            super(user);
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-        }
-
-        public T getOldValue() {
-            return oldValue;
-        }
-
-        public T getNewValue() {
-            return newValue;
-        }
-    }
-
-    public static class UsernameChangedEvent extends UserPropertyChangeEvent<String> {
+    public static class UsernameChangedEvent extends AggregateRootPropertyChangeEvent<String, User> {
 
         UsernameChangedEvent(@NonNull User user, @Nullable String oldUsername, @NonNull String newUsername) {
-            super(user, oldUsername, newUsername);
+            super(user, DomainServices.getInstance().clock(), oldUsername, newUsername);
         }
     }
 
-    public static class OrganizationChangedEvent extends UserPropertyChangeEvent<Organization> {
+    public static class OrganizationChangedEvent extends AggregateRootPropertyChangeEvent<Organization, User> {
 
         OrganizationChangedEvent(@NonNull User user, @Nullable Organization oldOrganization, @NonNull Organization newOrganization) {
-            super(user, oldOrganization, newOrganization);
+            super(user, DomainServices.getInstance().clock(), oldOrganization, newOrganization);
         }
     }
 
-    public static class UserTypeChangedEvent extends UserPropertyChangeEvent<UserType> {
+    public static class UserTypeChangedEvent extends AggregateRootPropertyChangeEvent<UserType, User> {
 
         UserTypeChangedEvent(@NonNull User user, @Nullable UserType oldUserType, @NonNull UserType newUserType) {
-            super(user, oldUserType, newUserType);
+            super(user, DomainServices.getInstance().clock(), oldUserType, newUserType);
         }
     }
 
-    public static class FullNameChangedEvent extends UserPropertyChangeEvent<String> {
+    public static class FullNameChangedEvent extends AggregateRootPropertyChangeEvent<String, User> {
 
         FullNameChangedEvent(@NonNull User user, @Nullable String oldFullName, @NonNull String newFullName) {
-            super(user, oldFullName, newFullName);
+            super(user, DomainServices.getInstance().clock(), oldFullName, newFullName);
         }
     }
 
-    public static class ValidFromChangedEvent extends UserPropertyChangeEvent<Instant> {
+    public static class ValidFromChangedEvent extends AggregateRootPropertyChangeEvent<Instant, User> {
 
         ValidFromChangedEvent(@NonNull User user, @Nullable Instant oldValue, @NonNull Instant newValue) {
-            super(user, oldValue, newValue);
+            super(user, DomainServices.getInstance().clock(), oldValue, newValue);
         }
     }
 
-    public static class ValidToChangedEvent extends UserPropertyChangeEvent<Instant> {
+    public static class ValidToChangedEvent extends AggregateRootPropertyChangeEvent<Instant, User> {
 
         ValidToChangedEvent(@NonNull User user, @Nullable Instant oldValue, @Nullable Instant newValue) {
-            super(user, oldValue, newValue);
+            super(user, DomainServices.getInstance().clock(), oldValue, newValue);
         }
     }
 }

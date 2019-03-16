@@ -126,11 +126,11 @@ class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
             if (principal instanceof User && accessToken instanceof DefaultOAuth2AccessToken) {
                 var user = (User) principal;
                 var additionalInfo = new HashMap<String, Object>();
-                additionalInfo.put("user_id", user.getId());
+                additionalInfo.put("user_id", user.getNonNullId().toLong());
                 additionalInfo.put("full_name", user.getFullName());
                 additionalInfo.put("user_type", user.getUserType());
                 additionalInfo.put("organization", user.getOrganization().getName());
-                additionalInfo.put("organization_id", user.getOrganization().getId());
+                additionalInfo.put("organization_id", user.getOrganization().getNonNullId().toLong());
                 ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
             }
             return accessToken;

@@ -2,9 +2,10 @@ CREATE SCHEMA IF NOT EXISTS idispatch_identity;
 
 CREATE TABLE idispatch_identity.organization
 (
-  id      IDENTITY                NOT NULL,
-  name    VARCHAR_IGNORECASE(255) NOT NULL,
-  enabled BOOLEAN                 NOT NULL,
+  id               IDENTITY                NOT NULL,
+  opt_lock_version BIGINT                  NOT NULL,
+  name             VARCHAR_IGNORECASE(255) NOT NULL,
+  enabled          BOOLEAN                 NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (name)
 );
@@ -12,6 +13,7 @@ CREATE TABLE idispatch_identity.organization
 CREATE TABLE idispatch_identity.client
 (
   id                     IDENTITY                NOT NULL,
+  opt_lock_version       BIGINT                  NOT NULL,
   client_id              VARCHAR_IGNORECASE(255) NOT NULL,
   client_secret          VARCHAR_IGNORECASE(255),
   access_token_validity  INTEGER                 NOT NULL,
@@ -54,16 +56,17 @@ CREATE TABLE idispatch_identity.client_authority
 
 CREATE TABLE idispatch_identity.user
 (
-  id              IDENTITY                 NOT NULL,
-  organization_id BIGINT                   NOT NULL,
-  username        VARCHAR_IGNORECASE(255)  NOT NULL,
-  password        VARCHAR_IGNORECASE(255)  DEFAULT NULL,
-  full_name       VARCHAR_IGNORECASE(255)  NOT NULL,
-  enabled         BOOLEAN                  NOT NULL,
-  user_type       VARCHAR_IGNORECASE(255)  NOT NULL,
-  valid_from      TIMESTAMP WITH TIME ZONE NOT NULL,
-  valid_to        TIMESTAMP WITH TIME ZONE DEFAULT NULL,
-  locked_at       TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  id               IDENTITY                 NOT NULL,
+  opt_lock_version BIGINT                   NOT NULL,
+  organization_id  BIGINT                   NOT NULL,
+  username         VARCHAR_IGNORECASE(255)  NOT NULL,
+  password         VARCHAR_IGNORECASE(255)  DEFAULT NULL,
+  full_name        VARCHAR_IGNORECASE(255)  NOT NULL,
+  enabled          BOOLEAN                  NOT NULL,
+  user_type        VARCHAR_IGNORECASE(255)  NOT NULL,
+  valid_from       TIMESTAMP WITH TIME ZONE NOT NULL,
+  valid_to         TIMESTAMP WITH TIME ZONE DEFAULT NULL,
+  locked_at        TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   PRIMARY KEY (id),
   UNIQUE (username),
   FOREIGN KEY (organization_id) REFERENCES idispatch_identity.organization (id)

@@ -1,5 +1,10 @@
 package net.pkhapps.idispatch.identity.server.domain;
 
+import net.pkhapps.idispatch.base.domain.AggregateRoot;
+import net.pkhapps.idispatch.base.domain.OrganizationId;
+import net.pkhapps.idispatch.base.domain.OrganizationIdConverter;
+import net.pkhapps.idispatch.base.domain.event.AggregateRootDomainEvent;
+import net.pkhapps.idispatch.base.domain.event.AggregateRootPropertyChangeEvent;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
@@ -8,14 +13,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import static java.util.Objects.requireNonNull;
-import static net.pkhapps.idispatch.identity.server.util.Strings.requireMaxLength;
+import static net.pkhapps.idispatch.base.domain.util.Strings.requireMaxLength;
 
 /**
  * Entity representing an organization that uses iDispatch.
  */
 @Entity
 @Table(name = "organization", schema = "idispatch_identity")
-public class Organization extends AggregateRoot<Organization> {
+public class Organization extends AggregateRoot<OrganizationId> {
 
     private static final int STRING_MAX_LENGTH = 255;
 
@@ -25,9 +30,11 @@ public class Organization extends AggregateRoot<Organization> {
     private boolean enabled;
 
     Organization() {
+        super(new OrganizationIdConverter());
     }
 
     public Organization(@NonNull String name) {
+        this();
         setName(name);
         setEnabled(true);
     }
@@ -61,53 +68,24 @@ public class Organization extends AggregateRoot<Organization> {
         }
     }
 
-    public static abstract class OrganizationDomainEvent extends DomainEvent {
-
-        private final Organization organization;
-
-        OrganizationDomainEvent(@NonNull Organization organization) {
-            this.organization = requireNonNull(organization, "organization must not be null");
-        }
-
-        @NonNull
-        public Organization getOrganization() {
-            return organization;
-        }
-    }
-
-    public static class NameChangedEvent extends OrganizationDomainEvent {
-
-        private final String oldValue;
-        private final String newValue;
+    public static class NameChangedEvent extends AggregateRootPropertyChangeEvent<String, Organization> {
 
         NameChangedEvent(@NonNull Organization organization, @Nullable String oldValue, @NonNull String newValue) {
-            super(organization);
-            this.oldValue = oldValue;
-            this.newValue = newValue;
-        }
-
-        @Nullable
-        public String getOldValue() {
-            return oldValue;
-        }
-
-        @NonNull
-        public String getNewValue() {
-            return newValue;
+            super(organization, DomainServices.getInstance().clock(), oldValue, newValue);
         }
     }
 
-    public static class EnabledEvent extends OrganizationDomainEvent {
+    public static class EnabledEvent extends AggregateRootDomainEvent<Organization> {
 
         EnabledEvent(@NonNull Organization organization) {
-            super(organization);
+            super(organization, DomainServices.getInstance().clock());
         }
     }
 
-    public static class DisabledEvent extends OrganizationDomainEvent {
+    public static class DisabledEvent extends AggregateRootDomainEvent<Organization> {
 
         DisabledEvent(@NonNull Organization organization) {
-            super(organization);
+            super(organization, DomainServices.getInstance().clock());
         }
     }
 }
