@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Base class for value objects that identify some other domain object (by wrapping a long integer).
  */
-public abstract class DomainObjectId implements ValueObject {
+public class DomainObjectId implements ValueObject {
 
     private final long wrappedId;
 

@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Base class for attribute converters that convert between {@code long}s and {@link DomainObjectId} instances.
  */
-public abstract class DomainObjectIdConverter<T extends DomainObjectId> implements AttributeConverter<T, Long>, Serializable {
+public class DomainObjectIdConverter<T extends DomainObjectId> implements AttributeConverter<T, Long>, Serializable {
 
     private final Class<T> domainObjectIdClass;
 
