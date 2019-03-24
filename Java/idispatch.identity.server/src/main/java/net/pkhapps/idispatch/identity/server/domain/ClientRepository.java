@@ -13,4 +13,6 @@ public interface ClientRepository extends Repository<Client, DomainObjectId> {
 
     @NonNull
     Optional<Client> findByClientId(@NonNull String clientId);
+
+    boolean existsByClientId(@NonNull String clientId);
 }

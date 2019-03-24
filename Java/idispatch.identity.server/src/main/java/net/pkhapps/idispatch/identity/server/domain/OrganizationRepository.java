@@ -13,4 +13,6 @@ public interface OrganizationRepository extends Repository<Organization, Organiz
 
     @NonNull
     Optional<Organization> findByName(@NonNull String name);
+
+    boolean existsByName(@NonNull String name);
 }

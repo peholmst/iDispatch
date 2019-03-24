@@ -13,4 +13,6 @@ public interface UserRepository extends Repository<User, UserId> {
 
     @NonNull
     Optional<User> findByUsername(@NonNull String username);
+
+    boolean existsByUsername(@NonNull String username);
 }
