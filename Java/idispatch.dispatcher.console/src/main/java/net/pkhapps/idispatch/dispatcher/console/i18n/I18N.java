@@ -67,4 +67,8 @@ public class I18N {
         }
         return translation;
     }
+
+    public @NotNull ObservableStringValue translate(@NotNull String key, @NotNull Object... params) {
+        return Bindings.createStringBinding(() -> getTranslator().get(key, params), translatorProperty());
+    }
 }

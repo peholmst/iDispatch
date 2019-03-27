@@ -1,9 +1,12 @@
 package net.pkhapps.idispatch.dispatcher.console.component;
 
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import net.pkhapps.idispatch.dispatcher.console.i18n.I18N;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +39,12 @@ public final class ComponentFactory {
         comboBox.setCellFactory(param -> new ListCellWithCaptionProvider<>(itemCaptionProvider));
         comboBox.setButtonCell(new ListCellWithCaptionProvider<>(itemCaptionProvider));
         return comboBox;
+    }
+
+    public static @NotNull Node hBoxSpacer() {
+        var spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        return spacer;
     }
 
     private static class ListCellWithCaptionProvider<V> extends ListCell<V> {

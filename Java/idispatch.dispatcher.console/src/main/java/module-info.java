@@ -18,6 +18,10 @@ module net.pkhapps.idispatch.dispatcher.console {
 
     requires org.jetbrains.annotations;
 
+    requires org.kordamp.iconli.core;
+    requires org.kordamp.ikonli.javafx;
+    requires org.kordamp.ikonli.fontawesome5;
+
     requires org.locationtech.jts;
 
     requires org.slf4j;
