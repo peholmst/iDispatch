@@ -13,6 +13,7 @@
     <modules>
         <module>../idispatch.base.domain</module>
         <module>../idispatch.identity.server</module>
+        <module>../idispatch.gis.server</module>
         <module>../idispatch.cad.server</module>
         <module>../idispatch.dispatcher.console</module>
     </modules>
