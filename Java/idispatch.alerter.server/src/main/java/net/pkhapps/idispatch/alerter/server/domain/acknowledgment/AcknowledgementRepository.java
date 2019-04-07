@@ -18,4 +18,6 @@ public interface AcknowledgementRepository extends Repository<Acknowledgement, A
     Page<Acknowledgement> findByRecipient(RecipientId recipient, Pageable pageable);
 
     Optional<Acknowledgement> findByRecipientAndAlert(RecipientId recipient, AlertId alert);
+
+    boolean existsByRecipientAndAlert(RecipientId recipient, AlertId alert);
 }

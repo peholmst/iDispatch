@@ -39,6 +39,7 @@ public class Acknowledgement extends AggregateRoot<AcknowledgementId> {
         setAcknowledgementDate(acknowledgementDate);
         setAlert(alert);
         setRecipient(recipient);
+        registerEvent(new AlertAcknowledgedEvent(this));
     }
 
     private void setAcknowledgementDate(Instant acknowledgementDate) {

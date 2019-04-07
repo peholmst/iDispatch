@@ -54,6 +54,7 @@ public class Alert extends AggregateRoot<AlertId> {
         setContentType(contentType);
         setContent(content);
         setRecipients(recipients);
+        registerEvent(new AlertSentEvent(this));
     }
 
     private void setPriority(AlertPriority priority) {
