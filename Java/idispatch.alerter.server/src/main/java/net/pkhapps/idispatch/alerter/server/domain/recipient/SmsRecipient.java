@@ -4,6 +4,7 @@ import net.pkhapps.idispatch.alerter.server.domain.DbConstants;
 import net.pkhapps.idispatch.base.domain.OrganizationId;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
@@ -26,6 +27,7 @@ public class SmsRecipient extends Recipient<SmsRecipient> {
 
     public SmsRecipient(String description, OrganizationId organization) {
         super(description, organization);
+        phoneNumbers = new HashSet<>();
     }
 
     public SmsRecipient addPhoneNumber(PhoneNumber phoneNumber) {

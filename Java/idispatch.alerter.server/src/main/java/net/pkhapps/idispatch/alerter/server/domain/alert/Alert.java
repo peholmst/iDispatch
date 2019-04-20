@@ -4,14 +4,17 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import net.pkhapps.idispatch.alerter.server.domain.DbConstants;
 import net.pkhapps.idispatch.alerter.server.domain.recipient.RecipientId;
+import net.pkhapps.idispatch.alerter.server.domain.recipient.ResourceCode;
 import net.pkhapps.idispatch.base.domain.AggregateRoot;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static net.pkhapps.idispatch.alerter.server.domain.ValidationUtils.requireNonBlankAndMaxLength;
@@ -25,7 +28,8 @@ import static net.pkhapps.idispatch.alerter.server.domain.ValidationUtils.requir
 public class Alert extends AggregateRoot<AlertId> {
 
     @Column(name = "priority")
-    private AlertPriority priority; // No need for @Enumerated, we have a converter
+    @Enumerated(EnumType.ORDINAL)
+    private AlertPriority priority;
 
     @Column(name = "alert_date")
     private Instant alertDate;
@@ -34,6 +38,11 @@ public class Alert extends AggregateRoot<AlertId> {
     @CollectionTable(schema = DbConstants.SCHEMA_NAME, name = "alert_recipient", joinColumns = @JoinColumn(name = "alert_id"))
     @Column(name = "recipient_id")
     private Set<RecipientId> recipients;
+
+    @ElementCollection
+    @CollectionTable(schema = DbConstants.SCHEMA_NAME, name = "alert_resource", joinColumns = @JoinColumn(name = "alert_id"))
+    @Column(name = "resource_code")
+    private Set<ResourceCode> resources;
 
     @Column(name = "content_type")
     private String contentType;
@@ -47,13 +56,14 @@ public class Alert extends AggregateRoot<AlertId> {
     }
 
     public Alert(AlertPriority priority, Instant alertDate, String contentType, JsonNode content,
-                 Collection<RecipientId> recipients) {
+                 Map<ResourceCode, Collection<RecipientId>> recipients) {
         this();
         setPriority(priority);
         setAlertDate(alertDate);
         setContentType(contentType);
         setContent(content);
-        setRecipients(recipients);
+        setResources(recipients.keySet().stream());
+        setRecipients(recipients.values().stream().flatMap(Collection::stream));
         registerEvent(new AlertSentEvent(this));
     }
 
@@ -65,11 +75,20 @@ public class Alert extends AggregateRoot<AlertId> {
         this.alertDate = requireNonNull(alertDate);
     }
 
-    private void setRecipients(Collection<RecipientId> recipients) {
-        if (requireNonNull(recipients).isEmpty()) {
+    private void setResources(Stream<ResourceCode> resources) {
+        var set = requireNonNull(resources).collect(Collectors.toSet());
+        if (set.isEmpty()) {
+            throw new IllegalArgumentException("Must have a least one resource");
+        }
+        this.resources = set;
+    }
+
+    private void setRecipients(Stream<RecipientId> recipients) {
+        var set = requireNonNull(recipients).collect(Collectors.toSet());
+        if (set.isEmpty()) {
             throw new IllegalArgumentException("Must have at least one recipient");
         }
-        this.recipients = new HashSet<>(recipients);
+        this.recipients = set;
     }
 
     private void setContentType(String contentType) {

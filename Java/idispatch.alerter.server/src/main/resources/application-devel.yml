@@ -1,0 +1,10 @@
+spring:
+  flyway:
+    url: jdbc:postgresql://localhost:5432/idispatch
+    user: idispatch_dba
+    password: idispatch_dba
+    schemas: idispatch_alerter
+  datasource:
+    url: jdbc:postgresql://localhost:5432/idispatch
+    username: idispatch_alerter_pool
+    password: idispatch_alerter_pool

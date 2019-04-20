@@ -1,0 +1,16 @@
+spring:
+  flyway:
+    # You have to create this database manually and make 'idispatch_dba' its owner.
+    url: jdbc:postgresql://localhost:5432/idispatch_integration_test
+    user: idispatch_dba
+    password: idispatch_dba
+    schemas: idispatch_alerter
+    init-sqls: DROP SCHEMA IF EXISTS idispatch_alerter CASCADE
+  datasource:
+    url: jdbc:postgresql://localhost:5432/idispatch_integration_test
+    username: idispatch_alerter_pool
+    password: idispatch_alerter_pool
+
+logging:
+  level:
+    net.pkhapps.idispatch.alerter.server: debug

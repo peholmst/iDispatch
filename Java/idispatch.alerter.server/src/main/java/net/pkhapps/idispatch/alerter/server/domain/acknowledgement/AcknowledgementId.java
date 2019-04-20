@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.alerter.server.domain.acknowledgment;
+package net.pkhapps.idispatch.alerter.server.domain.acknowledgement;
 
 import net.pkhapps.idispatch.base.domain.DomainObjectId;
 

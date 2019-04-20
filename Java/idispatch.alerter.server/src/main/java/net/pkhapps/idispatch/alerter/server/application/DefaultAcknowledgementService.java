@@ -2,8 +2,8 @@ package net.pkhapps.idispatch.alerter.server.application;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.pkhapps.idispatch.alerter.server.domain.acknowledgment.Acknowledgement;
-import net.pkhapps.idispatch.alerter.server.domain.acknowledgment.AcknowledgementRepository;
+import net.pkhapps.idispatch.alerter.server.domain.acknowledgement.Acknowledgement;
+import net.pkhapps.idispatch.alerter.server.domain.acknowledgement.AcknowledgementRepository;
 import net.pkhapps.idispatch.alerter.server.domain.alert.AlertId;
 import net.pkhapps.idispatch.alerter.server.domain.alert.AlertRepository;
 import net.pkhapps.idispatch.alerter.server.domain.recipient.RecipientId;

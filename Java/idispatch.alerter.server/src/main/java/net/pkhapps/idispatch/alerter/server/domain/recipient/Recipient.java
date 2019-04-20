@@ -29,6 +29,10 @@ public abstract class Recipient<R extends Recipient<R>> extends AggregateRoot<Re
     @Column(name = "org_id")
     private OrganizationId organization;
 
+    @Column(name = "priority")
+    @Enumerated(EnumType.ORDINAL)
+    private RecipientPriority priority;
+
     @Column(name = "active")
     private boolean active = true;
 
@@ -36,7 +40,7 @@ public abstract class Recipient<R extends Recipient<R>> extends AggregateRoot<Re
     @CollectionTable(schema = DbConstants.SCHEMA_NAME, name = "recipient_resource",
             joinColumns = @JoinColumn(name = "recipient_id"))
     @Column(name = "resource_code")
-    private Set<ResourceCode> resources = new HashSet<>();
+    private Set<ResourceCode> resources;
 
     protected Recipient() {
         super(RecipientIdConverter.INSTANCE);
@@ -44,8 +48,10 @@ public abstract class Recipient<R extends Recipient<R>> extends AggregateRoot<Re
 
     public Recipient(String description, OrganizationId organization) {
         this();
+        resources = new HashSet<>();
         setDescription(description);
         setOrganization(organization);
+        setPriority(RecipientPriority.NORMAL);
     }
 
     @SuppressWarnings("unchecked")
@@ -57,6 +63,12 @@ public abstract class Recipient<R extends Recipient<R>> extends AggregateRoot<Re
     @SuppressWarnings("unchecked")
     public R setOrganization(OrganizationId organization) {
         this.organization = requireNonNull(organization);
+        return (R) this;
+    }
+
+    @SuppressWarnings("unchecked")
+    public R setPriority(RecipientPriority priority) {
+        this.priority = requireNonNull(priority);
         return (R) this;
     }
 
