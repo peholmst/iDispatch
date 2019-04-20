@@ -32,13 +32,13 @@ class DefaultAcknowledgementService implements AcknowledgementService {
         if (isAlertSentToRecipient(alert, recipient)) {
             if (isAlertNotAcknowledgedYet(alert, recipient)) {
                 var ack = new Acknowledgement(clock.instant(), alert, recipient);
-                log.info("Recipient [{}] acknowledges alert [{}]", recipient, alert);
+                log.info("Recipient {} acknowledges alert {}", recipient, alert);
                 acknowledgementRepository.saveAndFlush(ack);
             } else {
-                log.info("Alert [{}] has already been acknowledged by recipient [{}], ignoring", alert, recipient);
+                log.info("Alert {} has already been acknowledged by recipient {}, ignoring", alert, recipient);
             }
         } else {
-            log.warn("Recipient [{}] tried to acknowledge alert [{}] that was not sent to it", recipient, alert);
+            log.warn("Recipient {} tried to acknowledge alert {} that was not sent to it", recipient, alert);
         }
     }
 

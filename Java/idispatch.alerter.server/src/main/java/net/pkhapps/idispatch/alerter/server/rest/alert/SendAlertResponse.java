@@ -19,5 +19,17 @@ class SendAlertResponse {
     Collection<String> alertedResources;
 
     @JsonProperty
+    @ToString.Include
+    int alertedResourcesCount() {
+        return alertedResources.size();
+    }
+
+    @JsonProperty
     Collection<String> unknownResources;
+
+    @JsonProperty
+    @ToString.Include
+    int unknownResourcesCount() {
+        return unknownResources.size();
+    }
 }

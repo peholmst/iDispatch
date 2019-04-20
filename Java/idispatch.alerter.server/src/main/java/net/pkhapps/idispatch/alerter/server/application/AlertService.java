@@ -21,7 +21,7 @@ public interface AlertService {
      * @param contentType the content type of the alert. The recipients are assumed to know what this means.
      * @param content     the content of the alert. The recipients are assumed to be able to decode this.
      * @param resources   the resources that will receive the alert (at least one).
-     * @return the ID of the sent alert.
+     * @return a response object with information about the alert.
      */
     ResourceAlertResponse sendAlertToResources(AlertPriority priority, String contentType, JsonNode content,
                                                Collection<ResourceCode> resources);

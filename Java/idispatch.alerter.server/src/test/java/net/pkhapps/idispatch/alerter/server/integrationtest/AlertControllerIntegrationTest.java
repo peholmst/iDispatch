@@ -28,13 +28,17 @@ public class AlertControllerIntegrationTest {
     @Autowired
     private RecipientRepository recipientRepository;
 
+    private RecipientId runboardRIT90;
+
     @Before
     public void init() {
-        recipientRepository.saveAndFlush(new StompRecipient("RIT90 runboard", new OrganizationId(123))
+        runboardRIT90 = recipientRepository.saveAndFlush(new StompRecipient("RIT90 runboard", new OrganizationId(123))
                 .setPriority(RecipientPriority.HIGH)
                 .addResource(new ResourceCode("RIT901"))
                 .addResource(new ResourceCode("RIT903"))
-                .addResource(new ResourceCode("RIT906")));
+                .addResource(new ResourceCode("RIT906")))
+                .getId();
+
         recipientRepository.saveAndFlush(new SmsRecipient("RIT901 SMS", new OrganizationId(123))
                 .setPriority(RecipientPriority.LOW)
                 .addPhoneNumber(new PhoneNumber("+358401230901"))
@@ -76,7 +80,9 @@ public class AlertControllerIntegrationTest {
                 .when().post(getAlertControllerUri() + "/send");
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.getBody().jsonPath().getList("alertedResources")).contains("RIT901", "RIT903", "RIT906", "RIT921", "RIT923", "RIT931");
-        assertThat(response.getBody().jsonPath().getList("unknownResources")).isEmpty();
+        assertThat(response.getBody().jsonPath().getInt("alertedResourcesCount")).isEqualTo(6);
+        assertThat(response.getBody().jsonPath().getList("unknownResources")).isNull();
+        assertThat(response.getBody().jsonPath().getInt("unknownResourcesCount")).isZero();
         var alertId = response.getBody().jsonPath().getLong("alertId");
         assertThat(alertId).isPositive();
 
@@ -85,12 +91,26 @@ public class AlertControllerIntegrationTest {
                 .when().get(getAlertControllerUri() + "/status/{alertId}", alertId);
         assertThat(statusResponse.getStatusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(statusResponse.getBody().jsonPath().getLong("alertId")).isEqualTo(alertId);
-        assertThat(statusResponse.getBody().jsonPath().getList("acknowledgedResources")).isEmpty();
-        assertThat(statusResponse.getBody().jsonPath().getList("acknowledgedRecipients")).isEmpty();
-        assertThat(statusResponse.getBody().jsonPath().getString("alertTime")).isNotBlank();
+        assertThat(statusResponse.getBody().jsonPath().getInt("ackResourcesCount")).isZero();
+        assertThat(statusResponse.getBody().jsonPath().getMap("ackResources")).isNull();
+        assertThat(statusResponse.getBody().jsonPath().getInt("ackRecipientsCount")).isZero();
+        assertThat(statusResponse.getBody().jsonPath().getMap("ackRecipients")).isNull();
+        assertThat(statusResponse.getBody().jsonPath().getString("alertDate")).isNotBlank();
 
+        // Acknowledge one recipient
+        var ackResponse = RestAssured.given()
+                .formParam("recipientId", runboardRIT90.toString())
+                .when().put(getAlertControllerUri() + "/ack/{alertId}", alertId);
+        assertThat(ackResponse.getStatusCode()).isEqualTo(HttpStatus.OK.value());
 
-        // TODO continue here...
+        // Check status again
+        statusResponse = RestAssured.given()
+                .when().get(getAlertControllerUri() + "/status/{alertId}", alertId);
+        assertThat(statusResponse.getStatusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(statusResponse.getBody().jsonPath().getMap("ackResources")).containsKeys("RIT901", "RIT903", "RIT906");
+        assertThat(statusResponse.getBody().jsonPath().getInt("ackResourcesCount")).isEqualTo(3);
+        assertThat(statusResponse.getBody().jsonPath().getMap("ackRecipients")).containsKeys(runboardRIT90.toString());
+        assertThat(statusResponse.getBody().jsonPath().getInt("ackRecipientsCount")).isEqualTo(1);
     }
 
     private String getAlertControllerUri() {
