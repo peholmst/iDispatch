@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.alerter.server.rest.alert;
+package net.pkhapps.idispatch.alerter.server.adapter.rest.alert;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

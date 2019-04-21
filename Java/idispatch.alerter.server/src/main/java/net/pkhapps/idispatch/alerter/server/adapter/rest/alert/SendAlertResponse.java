@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.alerter.server.rest.alert;
+package net.pkhapps.idispatch.alerter.server.adapter.rest.alert;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

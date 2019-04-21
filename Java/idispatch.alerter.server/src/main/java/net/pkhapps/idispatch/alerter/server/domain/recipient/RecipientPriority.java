@@ -6,7 +6,7 @@ package net.pkhapps.idispatch.alerter.server.domain.recipient;
  * being alerted at the same time.
  */
 public enum RecipientPriority {
-    LOW,
+    HIGH,
     NORMAL,
-    HIGH
+    LOW
 }

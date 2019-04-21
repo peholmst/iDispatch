@@ -5,6 +5,9 @@ import net.pkhapps.idispatch.alerter.server.domain.recipient.RecipientId;
 import java.time.Instant;
 import java.util.Optional;
 
+/**
+ * TODO Implement me
+ */
 public interface RecipientCheckInService {
 
     void checkIn(RecipientId recipient);

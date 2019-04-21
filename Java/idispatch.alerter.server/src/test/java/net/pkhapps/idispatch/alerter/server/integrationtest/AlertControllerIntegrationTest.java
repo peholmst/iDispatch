@@ -11,10 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.converter.StringMessageConverter;
+import org.springframework.messaging.simp.stomp.StompFrameHandler;
+import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.messaging.simp.stomp.StompSession;
+import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.messaging.WebSocketStompClient;
 
 import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,7 +81,32 @@ public class AlertControllerIntegrationTest {
     }
 
     @Test
-    public void sendAlert() {
+    public void sendAlert() throws Exception {
+        // Connect a STOMP client
+        var webSocketClient = new StandardWebSocketClient();
+        var stompClient = new WebSocketStompClient(webSocketClient);
+        stompClient.setMessageConverter(new StringMessageConverter());
+        var receivedStompHeaders = new AtomicReference<StompHeaders>();
+        var receivedStompPayload = new AtomicReference<String>();
+        var sessionHandler = new StompSessionHandlerAdapter() {
+            @Override
+            public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+                session.subscribe("/alerts/" + runboardRIT90.toString(), new StompFrameHandler() {
+                    @Override
+                    public Type getPayloadType(StompHeaders headers) {
+                        return String.class;
+                    }
+
+                    @Override
+                    public void handleFrame(StompHeaders headers, Object payload) {
+                        receivedStompHeaders.set(headers);
+                        receivedStompPayload.set((String) payload);
+                    }
+                });
+            }
+        };
+        var stompSession = stompClient.connect(getStompUri(), sessionHandler);
+
         // First send the alert
         var response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -97,6 +131,11 @@ public class AlertControllerIntegrationTest {
         assertThat(statusResponse.getBody().jsonPath().getMap("ackRecipients")).isNull();
         assertThat(statusResponse.getBody().jsonPath().getString("alertDate")).isNotBlank();
 
+        Thread.sleep(500); // Wait for the STOMP client to receive the alert
+        assertThat(receivedStompHeaders.get().getFirst("id")).isEqualTo(Long.toString(alertId));
+        assertThat(receivedStompHeaders.get().getFirst("contentType")).isEqualTo("IntegrationTestAlert");
+        assertThat(receivedStompHeaders.get().getFirst("priority")).isEqualTo("1");
+
         // Acknowledge one recipient
         var ackResponse = RestAssured.given()
                 .formParam("recipientId", runboardRIT90.toString())
@@ -111,10 +150,17 @@ public class AlertControllerIntegrationTest {
         assertThat(statusResponse.getBody().jsonPath().getInt("ackResourcesCount")).isEqualTo(3);
         assertThat(statusResponse.getBody().jsonPath().getMap("ackRecipients")).containsKeys(runboardRIT90.toString());
         assertThat(statusResponse.getBody().jsonPath().getInt("ackRecipientsCount")).isEqualTo(1);
+
+        // Disconnect
+        stompSession.get().disconnect();
     }
 
     private String getAlertControllerUri() {
         return String.format("http://localhost:%d/idispatch/alerter/api/alert", serverPort);
+    }
+
+    private String getStompUri() {
+        return String.format("ws://localhost:%d/idispatch/alerter/stomp", serverPort);
     }
 
     private InputStream load(String fileName) {
