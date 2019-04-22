@@ -50,4 +50,9 @@ public abstract class Entity<ID> implements IdentifiableDomainObject<ID>, Persis
     public int hashCode() {
         return ProxyUtils.getUserClass(this).hashCode() + (null == this.getId() ? 0 : this.getId().hashCode() * 31);
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s@%x(id=%s)", getClass().getSimpleName(), System.identityHashCode(this), getId());
+    }
 }
