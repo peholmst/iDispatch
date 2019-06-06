@@ -1,4 +1,5 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    iDispatchGisData
+    iDispatchGisData \
+    iDispatchGisDataTests
