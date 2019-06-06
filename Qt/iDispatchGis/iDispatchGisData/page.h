@@ -10,24 +10,29 @@
 class IDISPATCHGISDATASHARED_EXPORT PageRequest
 {
 public:
-    static PageRequest of(const int page, const int size)
+    static PageRequest of(const qint32 page, const qint32 size)
     {
         return PageRequest(page, size);
     }
 
-    long offset() const
+    qint32 offset() const
     {
         return m_offset;
     }
 
-    int pageNumber() const
+    qint32 pageNumber() const
     {
         return m_pageNumber;
     }
 
-    int pageSize() const
+    qint32 pageSize() const
     {
         return m_pageSize;
+    }
+
+    qint32 totalCount() const
+    {
+        return m_totalCount;
     }
 
     bool isPaged() const
@@ -42,7 +47,7 @@ public:
 
     bool hasNext() const
     {
-        return m_offset + m_pageSize > m_totalCount;
+        return m_offset + m_pageSize < m_totalCount;
     }
 
     PageRequest next() const
@@ -68,22 +73,26 @@ public:
         return PageRequest(m_pageNumber - 1, m_pageSize, m_totalCount);
     }
 
+    PageRequest withTotalCount(const qint32 totalCount) const
+    {
+        return PageRequest(m_pageNumber, m_pageSize, totalCount);
+    }
 protected:
-    PageRequest(const int pageNumber, const int pageSize, const long totalCount):
+    explicit PageRequest(const qint32 pageNumber, const qint32 pageSize, const qint32 totalCount):
         m_offset(pageSize * pageNumber), m_pageNumber(pageNumber), m_pageSize(pageSize), m_totalCount(totalCount)
     {
     }
 
 private:
-    PageRequest(const int pageNumber, const int pageSize):
+    explicit PageRequest(const qint32 pageNumber, const qint32 pageSize):
         m_offset(pageSize * pageNumber), m_pageNumber(pageNumber), m_pageSize(pageSize), m_totalCount(-1)
     {
     }
 
-    const long m_offset;
-    const int m_pageNumber;
-    const int m_pageSize;
-    const long m_totalCount;
+    const qint32 m_offset;
+    const qint32 m_pageNumber;
+    const qint32 m_pageSize;
+    const qint32 m_totalCount;
 };
 
 template <typename T>
