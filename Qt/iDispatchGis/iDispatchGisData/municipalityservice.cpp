@@ -76,7 +76,11 @@ Municipality MunicipalityService::findByCode(const MunicipalityCode& code)
 
     if (query.first())
     {
-        return Municipality{ query.value(0).toString(), query.value(1).toString(), query.value(2).toString() };
+        return MunicipalityBuilder()
+                .withCode(query.value(0).toString())
+                .withNameSwe(query.value(1).toString())
+                .withNameFin(query.value(2).toString())
+                .build();
     }
     else
     {
@@ -187,9 +191,11 @@ Page<Municipality> MunicipalityService::createPage(QSqlQuery& countQuery, QSqlQu
     QVector<Municipality> content;
     while (pageQuery.isValid())
     {
-        content.append(Municipality{pageQuery.value(0).toString(),
-                                    pageQuery.value(1).toString(),
-                                    pageQuery.value(2).toString()});
+        content.append(MunicipalityBuilder()
+                       .withCode(pageQuery.value(0).toString())
+                       .withNameSwe(pageQuery.value(1).toString())
+                       .withNameFin(pageQuery.value(2).toString())
+                       .build());
         pageQuery.next();
     }
     pageQuery.finish();

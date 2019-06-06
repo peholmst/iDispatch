@@ -24,6 +24,43 @@ struct IDISPATCHGISDATASHARED_EXPORT Municipality
     }
 };
 
+class IDISPATCHGISDATASHARED_EXPORT MunicipalityBuilder
+{
+public:
+    MunicipalityBuilder() {
+    }
+
+    MunicipalityBuilder(const Municipality original) : m(original)
+    {
+    }
+
+    MunicipalityBuilder& withCode(const MunicipalityCode& code)
+    {
+        m.code = code;
+        return *this;
+    }
+
+    MunicipalityBuilder& withNameSwe(const Name& nameSwe)
+    {
+        m.nameSwe = nameSwe;
+        return *this;
+    }
+
+    MunicipalityBuilder& withNameFin(const Name& nameFin)
+    {
+        m.nameFin = nameFin;
+        return *this;
+    }
+
+    Municipality build()
+    {
+        return m;
+    }
+
+private:
+    Municipality m;
+};
+
 typedef QString GID;
 
 struct IDISPATCHGISDATASHARED_EXPORT RoadSegment
