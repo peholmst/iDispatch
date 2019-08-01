@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.pkhapps.idispatch</groupId>
+    <artifactId>idispatch-projects-pom</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>iDispatch Projects</name>
+    <description>
+        An aggregator module for collecting all the different iDispatch Java modules.
+        The modules have their own parents depending on what they do.
+    </description>
+
+    <licenses>
+        <license>
+            <name>AGPL 3.0</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.en.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Petter Holmström</name>
+            <email>petter.holmstrom@outlook.com</email>
+        </developer>
+    </developers>
+</project>
