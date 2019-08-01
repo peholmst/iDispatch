@@ -1,4 +1,0 @@
-spring:
-  datasource:
-    url: jdbc:h2:~/idispatch-identity-server
-    username: sa

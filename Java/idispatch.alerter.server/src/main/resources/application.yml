@@ -1,4 +1,0 @@
-server:
-  port: 8084
-  servlet:
-    context-path: /idispatch/alerter
