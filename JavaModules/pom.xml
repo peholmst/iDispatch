@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.pkhapps.idispatch</groupId>
-    <artifactId>idispatch-projects-pom</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <artifactId>idispatch-projects</artifactId>
+    <version>3</version>
     <packaging>pom</packaging>
 
     <name>iDispatch Projects</name>
@@ -28,4 +28,8 @@
             <email>petter.holmstrom@outlook.com</email>
         </developer>
     </developers>
+
+    <modules>
+        <module>api-gateway</module>
+    </modules>
 </project>

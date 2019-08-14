@@ -1,0 +1,88 @@
+:root {
+    --button-primary-color: #ffffff;
+    --button-primary-background: #007bff;
+    --button-primary-border: var(--button-primary-background);
+    --button-primary-hover-background: #0069d9;
+    --button-primary-hover-border: #0062cc;    
+    --button-primary-active-background: var(--button-primary-hover-border);
+    --button-primary-active-border: #005cbf;
+    --button-primary-focus-shadow: #007bff80;
+
+    --button-success-color: #ffffff;
+    --button-success-background: #28a745;
+    --button-success-border: var(--button-success-background);
+    --button-success-hover-background: #218838;
+    --button-success-hover-border: #1e7e34;    
+    --button-success-active-background: var(--button-success-hover-border);
+    --button-success-active-border: #1c7430;
+    --button-success-focus-shadow: #28a74580;
+}
+
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+button {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,
+        background-color .15s ease-in-out,
+        border-color .15s ease-in-out,
+        box-shadow .15s ease-in-out;
+    outline: none;
+}
+
+button:focus, button:hover {
+    text-decoration: none;
+}
+
+/** PRIMARY **/
+
+button.primary {
+    color: var(--button-primary-color);
+    background-color: var(--button-primary-background);
+    border-color: var(--button-primary-border);
+}
+
+button.primary:hover {
+    background-color: var(--button-primary-hover-background);
+    border-color: var(--button-primary-hover-border);
+}
+
+button.primary:not(:disabled):active {
+    background-color: var(--button-primary-active-background);
+    border-color: var(--button-primary-active-border);
+}
+
+button.primary:not(:disabled):focus {
+    box-shadow: 0 0 0 0.2rem var(--button-primary-focus-shadow);
+}
+
+/** SUCCESS **/
+
+button.success {
+    color: var(--button-success-color);
+    background-color: var(--button-success-background);
+    border-color: var(--button-success-border);
+}
+
+button.success:hover {
+    background-color: var(--button-success-hover-background);
+    border-color: var(--button-success-hover-border);
+}
+
+button.success:not(:disabled):active {
+    background-color: var(--button-success-active-background);
+    border-color: var(--button-success-active-border);
+}
+
+button.success:not(:disabled):focus {
+    box-shadow: 0 0 0 0.2rem var(--button-success-focus-shadow);
+}
