@@ -31,5 +31,6 @@
 
     <modules>
         <module>api-gateway</module>
+        <module>idispatch-core</module>
     </modules>
 </project>
