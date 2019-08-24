@@ -11,13 +11,22 @@ public abstract class Entity<ID> implements IdentifiableDomainObject<ID> {
 
     private final ID id;
 
-    public Entity(@NotNull ID id) {
+    Entity(@NotNull ID id) {
         this.id = requireNonNull(id);
     }
 
+    Entity(@NotNull IdFactory<ID> idFactory) {
+        this(requireNonNull(idFactory).createId());
+    }
+
     @Override
-    public @NotNull ID id() {
+    public final @NotNull ID id() {
         return id;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s{%s}", getClass().getSimpleName(), id);
     }
 
     // TODO Equals & hashCode

@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.core.domain.incident.application;
+package net.pkhapps.idispatch.core.domain.incident.model;
 
 /**
  * Exception thrown when trying to close an incident that has not been cleared yet.

@@ -2,6 +2,8 @@ package net.pkhapps.idispatch.core.domain.incident.application;
 
 import net.pkhapps.idispatch.core.domain.common.ApplicationService;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentId;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentNotClearedException;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentNotOpenException;
 import org.jetbrains.annotations.NotNull;
 
 /**

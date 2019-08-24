@@ -39,4 +39,18 @@ public enum IncidentState {
     public boolean isOpen() {
         return this != CLOSED;
     }
+
+    /**
+     * Returns whether this state implies that the incident is closed.
+     */
+    public boolean isClosed() {
+        return this == CLOSED;
+    }
+
+    /**
+     * Returns whether this state imples that the incident can be closed.
+     */
+    public boolean canClose() {
+        return this == NEW || this == CLEARED;
+    }
 }

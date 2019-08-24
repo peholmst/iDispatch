@@ -2,6 +2,7 @@ package net.pkhapps.idispatch.core.domain.incident.application;
 
 import net.pkhapps.idispatch.core.domain.common.ApplicationService;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentId;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentNotOpenException;
 import net.pkhapps.idispatch.core.domain.resource.application.ResourceNotKnownException;
 import net.pkhapps.idispatch.core.domain.resource.model.ResourceId;
 import org.jetbrains.annotations.NotNull;

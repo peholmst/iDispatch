@@ -4,6 +4,7 @@ import net.pkhapps.idispatch.core.domain.common.ApplicationService;
 import net.pkhapps.idispatch.core.domain.common.PhoneNumber;
 import net.pkhapps.idispatch.core.domain.geo.Location;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentId;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentNotOpenException;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentPriority;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentTypeId;
 import org.jetbrains.annotations.NotNull;
