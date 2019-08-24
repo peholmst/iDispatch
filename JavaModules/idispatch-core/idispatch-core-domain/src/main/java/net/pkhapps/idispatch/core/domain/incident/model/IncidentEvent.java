@@ -1,6 +1,6 @@
 package net.pkhapps.idispatch.core.domain.incident.model;
 
-import net.pkhapps.idispatch.core.domain.common.DomainContext;
+import net.pkhapps.idispatch.core.domain.common.DomainContextHolder;
 import net.pkhapps.idispatch.core.domain.common.DomainEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +17,7 @@ public abstract class IncidentEvent implements DomainEvent {
     private final Instant occurredOn;
 
     IncidentEvent(@NotNull Incident incident) {
-        this(requireNonNull(incident).id(), DomainContext.instance().clock().instant());
+        this(requireNonNull(incident).id(), DomainContextHolder.get().clock().instant());
     }
 
     IncidentEvent(@NotNull IncidentId incident, @NotNull Instant occurredOn) {

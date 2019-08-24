@@ -1,9 +1,13 @@
 package net.pkhapps.idispatch.core.domain.incident.model;
 
 import net.pkhapps.idispatch.core.domain.common.AggregateRoot;
+import net.pkhapps.idispatch.core.domain.common.PhoneNumber;
 import net.pkhapps.idispatch.core.domain.geo.Location;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -13,16 +17,37 @@ import static java.util.Objects.requireNonNull;
  */
 public class Incident extends AggregateRoot<IncidentId> {
 
+    private final Instant openedOn;
     private IncidentId parent;
     private IncidentState state = IncidentState.NEW;
     private Location location;
     private IncidentTypeId type;
     private IncidentPriority priority = IncidentPriority.NO_PRIORITY;
     private String onHoldReason;
+    private Instant closedOn;
+    private String details;
+    private String informerName;
+    private PhoneNumber informerPhoneNumber;
 
     Incident(@NotNull IncidentId incidentId) {
         super(incidentId);
-        publishEvent(new IncidentOpenedEvent(this));
+        final var openedEvent = new IncidentOpenedEvent(this);
+        openedOn = openedEvent.occurredOn();
+        publishEvent(openedEvent);
+    }
+
+    /**
+     * The date and time on which the incident was opened.
+     */
+    public @NotNull Instant openedOn() {
+        return openedOn;
+    }
+
+    /**
+     * The date and time on which the incident was closed.
+     */
+    public @NotNull Optional<Instant> closedOn() {
+        return Optional.ofNullable(closedOn);
     }
 
     /**
@@ -80,11 +105,33 @@ public class Incident extends AggregateRoot<IncidentId> {
     }
 
     /**
+     * Any additional details about the incident.
+     */
+    public @NotNull Optional<String> details() {
+        return Optional.ofNullable(details);
+    }
+
+    /**
+     * The name of the informer that called in the incident.
+     */
+    public @NotNull Optional<String> informerName() {
+        return Optional.ofNullable(informerName);
+    }
+
+    /**
+     * The phone number of the informer that called in the incident.
+     */
+    public @NotNull Optional<PhoneNumber> informerPhoneNumber() {
+        return Optional.ofNullable(informerPhoneNumber);
+    }
+
+    /**
      * Pinpoints the location of the incident.
      *
      * @param location the new location of the incident.
      */
     public void pinpoint(@NotNull Location location) {
+        requireOpen();
         this.location = requireNonNull(location);
         publishEvent(new IncidentPinpointedEvent(this));
         checkIfReadyForDispatch();
@@ -97,6 +144,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      * @param priority the priority of the incident.
      */
     public void categorize(@NotNull IncidentTypeId type, @NotNull IncidentPriority priority) {
+        requireOpen();
         this.type = requireNonNull(type);
         this.priority = requireNonNull(priority);
         publishEvent(new IncidentCategorizedEvent(this));
@@ -108,6 +156,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      * not change the state of the aggregate.
      */
     public void resourcesHaveBeenDispatched() {
+        requireOpen();
         if (state == IncidentState.READY_FOR_DISPATCH || state == IncidentState.CLEARED
                 || state == IncidentState.ON_HOLD) {
             setState(IncidentState.DISPATCHED);
@@ -119,6 +168,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      * the aggregate.
      */
     public void resourcesAreOnScene() {
+        requireOpen();
         if (state == IncidentState.READY_FOR_DISPATCH || state == IncidentState.DISPATCHED
                 || state == IncidentState.CLEARED || state == IncidentState.ON_HOLD) {
             setState(IncidentState.RESOURCES_ON_SCENE);
@@ -130,6 +180,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      * dispatched to the scene. This may or may not change the state of the aggregate.
      */
     public void resourcesHaveClearedTheScene() {
+        requireOpen();
         if (state == IncidentState.DISPATCHED) {
             // This means the incidents were dispatched but for some reason never reached the scene of the incident.
             // Maybe they were cancelled, maybe they were re-routed to higher priority incident.
@@ -147,6 +198,8 @@ public class Incident extends AggregateRoot<IncidentId> {
      * @throws IllegalIncidentStateTransitionException if the incident cannot be put on hold right now.
      */
     public void putOnHold(@NotNull String reason) {
+        requireOpen();
+
         if (state == IncidentState.ON_HOLD) {
             return;
         }
@@ -167,12 +220,50 @@ public class Incident extends AggregateRoot<IncidentId> {
      *                                     open.
      */
     public void close(@NotNull IncidentRepository incidentRepository) {
+        if (state.isClosed()) {
+            return;
+        }
+        if (!state.canClose()) {
+            throw new IncidentNotClearedException();
+        }
         state = IncidentState.CLOSED;
+        final var closedEvent = new IncidentClosedEvent(this);
+        closedOn = closedEvent.occurredOn();
+        publishEvent(closedEvent);
+    }
+
+    /**
+     * Updates the details of this incident.
+     */
+    public void updateDetails(@NotNull String details) {
+        requireOpen();
+        if (!Objects.equals(details, this.details)) {
+            this.details = requireNonNull(details);
+            publishEvent(new IncidentDetailsUpdatedEvent(this));
+        }
+    }
+
+    /**
+     * Updates the details about the informer that called in this incident.
+     */
+    public void updateInformerDetails(@Nullable String name, @Nullable PhoneNumber phoneNumber) {
+        requireOpen();
+        if (!Objects.equals(name, informerName) || !Objects.equals(phoneNumber, informerPhoneNumber)) {
+            this.informerName = name;
+            this.informerPhoneNumber = phoneNumber;
+            publishEvent(new IncidentInformerDetailsUpdatedEvent(this));
+        }
     }
 
     private void checkIfReadyForDispatch() {
         if (state == IncidentState.NEW && location != null && type != null) {
             setState(IncidentState.READY_FOR_DISPATCH);
+        }
+    }
+
+    private void requireOpen() {
+        if (state().isClosed()) {
+            throw new IncidentNotOpenException();
         }
     }
 

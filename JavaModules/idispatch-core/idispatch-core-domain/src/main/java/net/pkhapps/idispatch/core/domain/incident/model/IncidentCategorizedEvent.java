@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Domain event published when an {@link Incident} has been categorized.
  */
-public class IncidentCategorizedEvent extends IncidentEvent {
+public final class IncidentCategorizedEvent extends IncidentEvent {
 
     private final IncidentTypeId type;
     private final IncidentPriority priority;

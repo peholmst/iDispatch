@@ -1,7 +1,7 @@
 module idispatch.core.domain {
-//    requires org.geotools.opengis;
-    requires org.geotools.referencing;
     requires java.desktop;
+    requires org.geotools.referencing;
+    requires org.slf4j;
 
     requires static org.jetbrains.annotations;
 }

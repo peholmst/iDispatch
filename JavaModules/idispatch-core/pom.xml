@@ -34,6 +34,7 @@
         <os-plugin.version>1.6.2</os-plugin.version>
         <protoc.version>3.9.1</protoc.version>
         <protobuf-plugin.version>0.6.1</protobuf-plugin.version>
+        <slf4j.version>1.7.28</slf4j.version>
     </properties>
 
     <dependencies>
@@ -47,6 +48,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-main</artifactId>

@@ -48,9 +48,9 @@ public enum IncidentState {
     }
 
     /**
-     * Returns whether this state imples that the incident can be closed.
+     * Returns whether this state implies that the incident can be closed.
      */
     public boolean canClose() {
-        return this == NEW || this == CLEARED;
+        return this == NEW || this == READY_FOR_DISPATCH || this == ON_HOLD || this == CLEARED;
     }
 }
