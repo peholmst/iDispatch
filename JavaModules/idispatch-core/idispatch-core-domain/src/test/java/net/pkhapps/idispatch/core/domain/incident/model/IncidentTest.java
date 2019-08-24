@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 public class IncidentTest extends AggregateRootTestBase {
 
     private IncidentRepository repositoryMock;
+    private IncidentFactory factoryMock;
     private DomainContext domainContextMock;
     private Clock clock;
 
@@ -51,6 +52,7 @@ public class IncidentTest extends AggregateRootTestBase {
     @BeforeTest
     public void setUpTest() {
         repositoryMock = mock(IncidentRepository.class);
+        factoryMock = mock(IncidentFactory.class);
         domainContextMock = mock(DomainContext.class);
         DomainContextHolder.setProvider(() -> domainContextMock);
     }
@@ -58,7 +60,7 @@ public class IncidentTest extends AggregateRootTestBase {
     @BeforeMethod
     public void setUpTestMethod() {
         clock = Clock.systemUTC();
-        reset(repositoryMock, domainContextMock);
+        reset(repositoryMock, factoryMock, domainContextMock);
         when(domainContextMock.clock()).thenAnswer(invocationOnMock -> clock);
     }
 
@@ -549,6 +551,12 @@ public class IncidentTest extends AggregateRootTestBase {
         final var incident = createIncident();
         incident.close(repositoryMock);
         incident.updateInformerDetails("name", createPhoneNumber());
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void createSubIncident_notImplementedYet() {
+        final var incident = createIncident();
+        incident.createSubIncident(factoryMock);
     }
 
     private @NotNull Incident createIncident() {

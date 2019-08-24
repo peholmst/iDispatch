@@ -13,12 +13,25 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TODO Document me!
+ * Aggregate root representing an incident.
+ * <p>
+ * An incident is opened when a dispatcher receives a report from an informer
+ * that something has happened. Once the incident has been {@link #pinpoint(Location) pinpointed} and
+ * {@link #categorize(IncidentTypeId, IncidentPriority) categorized}, resources can be
+ * {@link #resourcesHaveBeenDispatched() dispatched} to the scene of the incident. Resources will (hopefully)
+ * {@link #resourcesAreOnScene() reach} the scene of the incident and eventually
+ * {@link #resourcesHaveClearedTheScene() clear} it. If needed, the dispatcher can also put the incident
+ * {@link #putOnHold(String) on hold}.
+ * <p>
+ * This aggregate acts as a state machine and keeps track of the different states an incident transitions to.
+ * Domain events are published for the most important changes. The aggregate does not keep track of which
+ * resources are actually dispatched to the incident.
+ * <p>
+ * Once an incident has been cleared, it can be {@link #close(IncidentRepository) closed}.
  */
 public class Incident extends AggregateRoot<IncidentId> {
 
     private final Instant openedOn;
-    private IncidentId parent;
     private IncidentState state = IncidentState.NEW;
     private Location location;
     private IncidentTypeId type;
@@ -54,7 +67,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      * The parent of the incident if it has one.
      */
     public @NotNull Optional<IncidentId> parent() {
-        return Optional.ofNullable(parent);
+        return Optional.empty();
     }
 
     /**
@@ -129,6 +142,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      * Pinpoints the location of the incident.
      *
      * @param location the new location of the incident.
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void pinpoint(@NotNull Location location) {
         requireOpen();
@@ -142,6 +156,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      *
      * @param type     the type of the incident.
      * @param priority the priority of the incident.
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void categorize(@NotNull IncidentTypeId type, @NotNull IncidentPriority priority) {
         requireOpen();
@@ -154,6 +169,8 @@ public class Incident extends AggregateRoot<IncidentId> {
     /**
      * Informs the aggregate that resources have been dispatched to the location of the incident. This may or may
      * not change the state of the aggregate.
+     *
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void resourcesHaveBeenDispatched() {
         requireOpen();
@@ -166,6 +183,8 @@ public class Incident extends AggregateRoot<IncidentId> {
     /**
      * Informs the aggregate that resources are on the scene of the incident. This may or may not change the state of
      * the aggregate.
+     *
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void resourcesAreOnScene() {
         requireOpen();
@@ -178,6 +197,8 @@ public class Incident extends AggregateRoot<IncidentId> {
     /**
      * Informs the aggregate that no resources are on the scene of the incident any longer, nor are there any resources
      * dispatched to the scene. This may or may not change the state of the aggregate.
+     *
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void resourcesHaveClearedTheScene() {
         requireOpen();
@@ -196,6 +217,7 @@ public class Incident extends AggregateRoot<IncidentId> {
      *
      * @param reason the reason why the incident is on hold.
      * @throws IllegalIncidentStateTransitionException if the incident cannot be put on hold right now.
+     * @throws IncidentNotOpenException                if the incident is not open.
      */
     public void putOnHold(@NotNull String reason) {
         requireOpen();
@@ -234,6 +256,9 @@ public class Incident extends AggregateRoot<IncidentId> {
 
     /**
      * Updates the details of this incident.
+     *
+     * @param details additional details about the incident.
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void updateDetails(@NotNull String details) {
         requireOpen();
@@ -245,6 +270,10 @@ public class Incident extends AggregateRoot<IncidentId> {
 
     /**
      * Updates the details about the informer that called in this incident.
+     *
+     * @param name        the name of the informer, if known or applicable.
+     * @param phoneNumber the phone number of the informer, if known or applicable.
+     * @throws IncidentNotOpenException if the incident is not open.
      */
     public void updateInformerDetails(@Nullable String name, @Nullable PhoneNumber phoneNumber) {
         requireOpen();
@@ -267,12 +296,16 @@ public class Incident extends AggregateRoot<IncidentId> {
         }
     }
 
+    /**
+     * Creates a new sub-incident of this incident. The sub-incident will initially contain the same information as
+     * this incident (but with different IDs and timestamps of course).
+     *
+     * @param incidentFactory the factory to use when creating the new {@link Incident} instance.
+     * @return the sub-incident.
+     * @throws IncidentNotOpenException if the incident is not open.
+     */
     public @NotNull Incident createSubIncident(@NotNull IncidentFactory incidentFactory) {
-        if (state().isClosed()) {
-            throw new IncidentNotOpenException();
-        }
-        final var subIncident = incidentFactory.createIncident();
-        subIncident.parent = id();
-        return subIncident;
+        // TODO Implement createSubIncident
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }
