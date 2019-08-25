@@ -28,21 +28,21 @@ public abstract class Location implements ValueObject {
     }
 
     /**
-     * Returns the coordinates of the location.
+     * The coordinates of the location.
      */
     public final @NotNull DirectPosition2D coordinates() {
         return coordinates.clone();
     }
 
     /**
-     * Returns the municipality of the location, if known or applicable.
+     * The municipality of the location, if known or applicable.
      */
     public final @NotNull Optional<MunicipalityId> municipality() {
         return Optional.ofNullable(municipality);
     }
 
     /**
-     * Returns any additional details about the location.
+     * Any additional details about the location.
      */
     public final @NotNull Optional<String> additionalDetails() {
         return Optional.ofNullable(additionalDetails);

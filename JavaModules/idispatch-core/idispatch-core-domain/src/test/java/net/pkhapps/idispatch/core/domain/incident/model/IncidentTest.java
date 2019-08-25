@@ -12,6 +12,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.time.Clock;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -67,7 +68,7 @@ public class IncidentTest extends AggregateRootTestBase {
     @Test
     @Override
     public void initialState_newlyCreatedAggregateIsInValidState() {
-        final var id = IncidentId.random();
+        final var id = new IncidentId(UUID.randomUUID());
         final var incident = new Incident(id);
 
         assertNew(incident);
@@ -560,7 +561,7 @@ public class IncidentTest extends AggregateRootTestBase {
     }
 
     private @NotNull Incident createIncident() {
-        return new Incident(IncidentId.random());
+        return new Incident(new IncidentId(UUID.randomUUID()));
     }
 
     private @NotNull Location createLocation() {

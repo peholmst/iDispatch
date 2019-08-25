@@ -49,6 +49,20 @@ public class Incident extends AggregateRoot<IncidentId> {
         publishEvent(openedEvent);
     }
 
+    Incident(@NotNull Essence essence) {
+        super(essence);
+        openedOn = essence.openedOn;
+        state = essence.state;
+        location = essence.location;
+        type = essence.type;
+        priority = essence.priority;
+        onHoldReason = essence.onHoldReason;
+        closedOn = essence.closedOn;
+        details = essence.details;
+        informerName = essence.informerName;
+        informerPhoneNumber = essence.informerPhoneNumber;
+    }
+
     /**
      * The date and time on which the incident was opened.
      */
@@ -307,5 +321,124 @@ public class Incident extends AggregateRoot<IncidentId> {
     public @NotNull Incident createSubIncident(@NotNull IncidentFactory incidentFactory) {
         // TODO Implement createSubIncident
         throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    /**
+     * Essence class to be used by repositories when creating populating instances of {@link Incident}.
+     */
+    public static class Essence extends AggregateRoot.Essence<IncidentId> {
+
+        private Instant openedOn;
+        private IncidentState state;
+        private Location location;
+        private IncidentTypeId type;
+        private IncidentPriority priority;
+        private String onHoldReason;
+        private Instant closedOn;
+        private String details;
+        private String informerName;
+        private PhoneNumber informerPhoneNumber;
+
+        public Essence() {
+        }
+
+        public Essence(@NotNull Incident source) {
+            super(source);
+            openedOn = source.openedOn;
+            state = source.state;
+            location = source.location;
+            type = source.type;
+            priority = source.priority;
+            onHoldReason = source.onHoldReason;
+            closedOn = source.closedOn;
+            details = source.details;
+            informerName = source.informerName;
+            informerPhoneNumber = source.informerPhoneNumber;
+        }
+
+        public Instant getOpenedOn() {
+            return openedOn;
+        }
+
+        public void setOpenedOn(Instant openedOn) {
+            this.openedOn = openedOn;
+        }
+
+        public IncidentState getState() {
+            return state;
+        }
+
+        public void setState(IncidentState state) {
+            this.state = state;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
+        public IncidentTypeId getType() {
+            return type;
+        }
+
+        public void setType(IncidentTypeId type) {
+            this.type = type;
+        }
+
+        public IncidentPriority getPriority() {
+            return priority;
+        }
+
+        public void setPriority(IncidentPriority priority) {
+            this.priority = priority;
+        }
+
+        public String getOnHoldReason() {
+            return onHoldReason;
+        }
+
+        public void setOnHoldReason(String onHoldReason) {
+            this.onHoldReason = onHoldReason;
+        }
+
+        public Instant getClosedOn() {
+            return closedOn;
+        }
+
+        public void setClosedOn(Instant closedOn) {
+            this.closedOn = closedOn;
+        }
+
+        public String getDetails() {
+            return details;
+        }
+
+        public void setDetails(String details) {
+            this.details = details;
+        }
+
+        public String getInformerName() {
+            return informerName;
+        }
+
+        public void setInformerName(String informerName) {
+            this.informerName = informerName;
+        }
+
+        public PhoneNumber getInformerPhoneNumber() {
+            return informerPhoneNumber;
+        }
+
+        public void setInformerPhoneNumber(PhoneNumber informerPhoneNumber) {
+            this.informerPhoneNumber = informerPhoneNumber;
+        }
+
+        @Override
+        protected boolean isValid() {
+            return super.isValid() && state != null && openedOn != null && priority != null;
+        }
     }
 }

@@ -25,7 +25,7 @@ public class RoadLocation extends Location {
     }
 
     /**
-     * Returns the name of the road that the location is on.
+     * The name of the road that the location is on.
      */
     public final @NotNull LocationName roadName() {
         return roadName;

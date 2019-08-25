@@ -4,4 +4,8 @@ module idispatch.core.domain {
     requires org.slf4j;
 
     requires static org.jetbrains.annotations;
+
+    exports net.pkhapps.idispatch.core.domain.common;
+    exports net.pkhapps.idispatch.core.domain.geo;
+    exports net.pkhapps.idispatch.core.domain.incident.model;
 }

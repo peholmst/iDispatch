@@ -4,8 +4,11 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Factory for creating domain object IDs.
+ *
+ * @deprecated Not sure this is actually needed. Implement a full-stack feature and see what it would look like.
  */
 @FunctionalInterface
+@Deprecated
 public interface IdFactory<ID> {
 
     /**

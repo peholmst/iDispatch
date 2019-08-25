@@ -6,6 +6,7 @@ import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -22,7 +23,7 @@ public class IncidentLifecycleServiceImplTest {
 
     @BeforeTest
     public void setUpTest() {
-        incidentFactory = new DefaultIncidentFactory();
+        incidentFactory = new DefaultIncidentFactory(() -> new IncidentId(UUID.randomUUID()));
         incidentFactoryMock = mock(IncidentFactory.class);
         incidentRepositoryMock = mock(IncidentRepository.class);
         lifecycleService = new IncidentLifecycleServiceImpl(incidentFactoryMock, incidentRepositoryMock);
@@ -60,7 +61,7 @@ public class IncidentLifecycleServiceImplTest {
 
     @Test(expectedExceptions = IncidentNotKnownException.class)
     public void openSubIncident_parentDoesNotExist_exceptionThrown() {
-        var parentId = IncidentId.random();
+        var parentId = new IncidentId(UUID.randomUUID());
         when(incidentRepositoryMock.findById(parentId)).thenReturn(Optional.empty());
         verifyNoMoreInteractions(incidentRepositoryMock);
         verifyNoMoreInteractions(incidentFactoryMock);

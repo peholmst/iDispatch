@@ -12,10 +12,6 @@ public class DefaultIncidentFactory implements IncidentFactory {
 
     private final IdFactory<IncidentId> idFactory;
 
-    public DefaultIncidentFactory() {
-        this(IncidentId::random);
-    }
-
     public DefaultIncidentFactory(@NotNull IdFactory<IncidentId> idFactory) {
         this.idFactory = requireNonNull(idFactory);
     }

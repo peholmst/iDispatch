@@ -2,6 +2,7 @@ package net.pkhapps.idispatch.core.domain.common;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.testng.annotations.Test;
 
 import java.util.function.Predicate;
 
@@ -40,5 +41,6 @@ public abstract class AggregateRootTestBase {
         aggregateRoot.clearDomainEvents();
     }
 
+    @Test
     public abstract void initialState_newlyCreatedAggregateIsInValidState();
 }

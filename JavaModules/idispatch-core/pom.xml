@@ -18,6 +18,7 @@
         <module>idispatch-core-app</module>
         <module>idispatch-core-domain</module>
         <module>idispatch-core-grpc</module>
+        <module>idispatch-core-mongodb</module>
     </modules>
 
     <properties>
@@ -35,6 +36,7 @@
         <protoc.version>3.9.1</protoc.version>
         <protobuf-plugin.version>0.6.1</protobuf-plugin.version>
         <slf4j.version>1.7.28</slf4j.version>
+        <mongodb.version>3.11.0</mongodb.version>
     </properties>
 
     <dependencies>
@@ -52,6 +54,11 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mongodb</groupId>
+                <artifactId>mongodb-driver-sync</artifactId>
+                <version>${mongodb.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.geotools</groupId>
