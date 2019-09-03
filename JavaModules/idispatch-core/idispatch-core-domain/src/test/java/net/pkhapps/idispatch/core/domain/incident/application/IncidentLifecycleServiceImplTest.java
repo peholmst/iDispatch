@@ -1,6 +1,8 @@
 package net.pkhapps.idispatch.core.domain.incident.application;
 
-import net.pkhapps.idispatch.core.domain.incident.model.*;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentFactory;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentId;
+import net.pkhapps.idispatch.core.domain.incident.model.IncidentRepository;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
@@ -23,7 +25,7 @@ public class IncidentLifecycleServiceImplTest {
 
     @BeforeTest
     public void setUpTest() {
-        incidentFactory = new DefaultIncidentFactory(() -> new IncidentId(UUID.randomUUID()));
+        incidentFactory = IncidentFactory.createDefault(() -> new IncidentId(UUID.randomUUID()));
         incidentFactoryMock = mock(IncidentFactory.class);
         incidentRepositoryMock = mock(IncidentRepository.class);
         lifecycleService = new IncidentLifecycleServiceImpl(incidentFactoryMock, incidentRepositoryMock);

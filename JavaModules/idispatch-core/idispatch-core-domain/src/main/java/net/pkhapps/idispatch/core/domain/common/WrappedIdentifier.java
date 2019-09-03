@@ -1,5 +1,6 @@
 package net.pkhapps.idispatch.core.domain.common;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
@@ -27,15 +28,38 @@ public abstract class WrappedIdentifier implements ValueObject {
      * @param <ID>
      * @return
      */
-    public static <ID extends WrappedIdentifier> @NotNull ID wrap(@NotNull Class<ID> idClass, @NotNull Object id) {
+    @Contract("!null, null -> null")
+    public static <ID extends WrappedIdentifier> ID wrap(@NotNull Class<ID> idClass, Object id) {
+        if (id == null) {
+            return null;
+        }
         requireNonNull(idClass);
-        requireNonNull(id);
         try {
             return idClass.getConstructor(Object.class).newInstance(id);
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException
                 | InvocationTargetException ex) {
             throw new RuntimeException("Error wrapping ID", ex);
         }
+    }
+
+    /**
+     * @param wrappedIdentifier
+     * @return
+     */
+    @Contract("null -> null")
+    public static Object unwrap(WrappedIdentifier wrappedIdentifier) {
+        return wrappedIdentifier == null ? null : wrappedIdentifier.unwrap();
+    }
+
+    /**
+     * @param wrappedIdentifier
+     * @param wrappedClass
+     * @param <T>
+     * @return
+     */
+    @Contract("null, !null -> null")
+    public static <T> T unwrap(WrappedIdentifier wrappedIdentifier, @NotNull Class<T> wrappedClass) {
+        return wrappedIdentifier == null ? null : wrappedIdentifier.unwrap(wrappedClass);
     }
 
     /**

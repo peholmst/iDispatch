@@ -339,10 +339,10 @@ public class Incident extends AggregateRoot<IncidentId> {
         private String informerName;
         private PhoneNumber informerPhoneNumber;
 
-        public Essence() {
+        Essence() {
         }
 
-        public Essence(@NotNull Incident source) {
+        Essence(@NotNull Incident source) {
             super(source);
             openedOn = source.openedOn;
             state = source.state;

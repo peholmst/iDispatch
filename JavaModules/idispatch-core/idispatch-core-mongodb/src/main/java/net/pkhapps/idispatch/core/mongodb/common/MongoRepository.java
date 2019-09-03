@@ -64,7 +64,9 @@ public abstract class MongoRepository<ID extends WrappedIdentifier, T extends Ag
      */
     protected @NotNull E createEssence() {
         try {
-            return essenceClass.getConstructor().newInstance();
+            final var constructor = essenceClass.getDeclaredConstructor();
+            constructor.setAccessible(true);
+            return constructor.newInstance();
         } catch (Exception ex) {
             throw new RuntimeException("Could not create new essence object - please override createEssence()", ex);
         }
@@ -77,7 +79,9 @@ public abstract class MongoRepository<ID extends WrappedIdentifier, T extends Ag
     protected @NotNull E createEssence(@NotNull T source) {
         requireNonNull(source);
         try {
-            return essenceClass.getConstructor(aggregateClass).newInstance(source);
+            final var constructor = essenceClass.getDeclaredConstructor(aggregateClass);
+            constructor.setAccessible(true);
+            return constructor.newInstance(source);
         } catch (Exception ex) {
             throw new RuntimeException("Could not create new essence object - please override createEssence(T)", ex);
         }
@@ -90,9 +94,11 @@ public abstract class MongoRepository<ID extends WrappedIdentifier, T extends Ag
     protected @NotNull T createAggregate(@NotNull E essence) {
         requireNonNull(essence);
         try {
-            return aggregateClass.getConstructor(essenceClass).newInstance(essence);
+            final var constructor = aggregateClass.getDeclaredConstructor(essenceClass);
+            constructor.setAccessible(true);
+            return constructor.newInstance(essence);
         } catch (Exception ex) {
-            throw new RuntimeException("Could not create new aggregate - please override createAggregate(E)");
+            throw new RuntimeException("Could not create new aggregate - please override createAggregate(E)", ex);
         }
     }
 

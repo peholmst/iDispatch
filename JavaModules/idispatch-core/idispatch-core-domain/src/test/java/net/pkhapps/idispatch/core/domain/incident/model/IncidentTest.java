@@ -570,7 +570,7 @@ public class IncidentTest extends AggregateRootTestBase {
     }
 
     private @NotNull IncidentTypeId createType() {
-        return new IncidentTypeId();
+        return new IncidentTypeId(UUID.randomUUID());
     }
 
     private @NotNull PhoneNumber createPhoneNumber() {
