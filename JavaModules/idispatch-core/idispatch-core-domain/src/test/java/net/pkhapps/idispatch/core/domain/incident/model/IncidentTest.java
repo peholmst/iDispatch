@@ -5,7 +5,6 @@ import net.pkhapps.idispatch.core.domain.common.DomainContext;
 import net.pkhapps.idispatch.core.domain.common.DomainContextHolder;
 import net.pkhapps.idispatch.core.domain.common.PhoneNumber;
 import net.pkhapps.idispatch.core.domain.geo.Location;
-import org.geotools.geometry.DirectPosition2D;
 import org.jetbrains.annotations.NotNull;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
@@ -565,8 +564,9 @@ public class IncidentTest extends AggregateRootTestBase {
     }
 
     private @NotNull Location createLocation() {
-        return new Location(new DirectPosition2D(60.286027, 60.286027), null, null) {
-        };
+        throw new UnsupportedOperationException("Not implemented");
+        //return new Location(new DirectPosition2D(60.286027, 60.286027), null, null) {
+        //};
     }
 
     private @NotNull IncidentTypeId createType() {

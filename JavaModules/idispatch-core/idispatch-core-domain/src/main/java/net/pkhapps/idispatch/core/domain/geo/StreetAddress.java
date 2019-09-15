@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.core.domain.geo;
 
-import org.geotools.geometry.DirectPosition2D;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,7 +14,7 @@ public class StreetAddress extends RoadLocation {
     private final String number;
     private final String apartment;
 
-    public StreetAddress(@NotNull DirectPosition2D coordinates,
+    public StreetAddress(@NotNull Position coordinates,
                          @Nullable MunicipalityId municipality,
                          @Nullable String additionalDetails,
                          @NotNull LocationName roadName,
@@ -26,10 +25,16 @@ public class StreetAddress extends RoadLocation {
         this.apartment = apartment;
     }
 
+    /**
+     * The number of the building, if known or applicable.
+     */
     public @NotNull Optional<String> number() {
         return Optional.ofNullable(number);
     }
 
+    /**
+     * The number of the apartment, if known or applicable.
+     */
     public @NotNull Optional<String> apartment() {
         return Optional.ofNullable(apartment);
     }

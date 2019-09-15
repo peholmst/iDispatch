@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * Value object representing a string in multiple languages. It is guaranteed to always contain a string in at least
  * one language, i.e. it is impossible to create completely empty multilingual strings.
  */
-public final class MultilingualString implements ValueObject {
+public class MultilingualString implements ValueObject {
 
     private final Map<Locale, String> values;
 
@@ -30,7 +30,7 @@ public final class MultilingualString implements ValueObject {
     /**
      * Returns the multilingual string as an unmodifiable map keyed by locale.
      */
-    public @NotNull Map<Locale, String> toMap() {
+    public final @NotNull Map<Locale, String> toMap() {
         return values;
     }
 

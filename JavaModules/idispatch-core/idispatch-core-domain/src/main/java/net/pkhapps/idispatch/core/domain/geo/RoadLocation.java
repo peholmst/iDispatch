@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.core.domain.geo;
 
-import org.geotools.geometry.DirectPosition2D;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +15,7 @@ public class RoadLocation extends Location {
 
     private final LocationName roadName;
 
-    public RoadLocation(@NotNull DirectPosition2D coordinates,
+    public RoadLocation(@NotNull Position coordinates,
                         @Nullable MunicipalityId municipality,
                         @Nullable String additionalDetails,
                         @NotNull LocationName roadName) {

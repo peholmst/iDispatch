@@ -1,6 +1,5 @@
 package net.pkhapps.idispatch.core.domain.geo;
 
-import org.geotools.geometry.DirectPosition2D;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,7 +12,7 @@ public class Intersection extends RoadLocation {
 
     private final LocationName intersectingRoad;
 
-    public Intersection(@NotNull DirectPosition2D coordinates,
+    public Intersection(@NotNull Position coordinates,
                         @Nullable MunicipalityId municipality,
                         @Nullable String additionalDetails,
                         @NotNull LocationName roadName,

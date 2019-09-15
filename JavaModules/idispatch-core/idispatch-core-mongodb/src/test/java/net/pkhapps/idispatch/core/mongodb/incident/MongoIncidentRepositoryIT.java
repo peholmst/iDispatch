@@ -6,6 +6,11 @@ import com.mongodb.client.MongoClients;
 import net.pkhapps.idispatch.core.domain.common.DefaultDomainContext;
 import net.pkhapps.idispatch.core.domain.common.DomainContextHolder;
 import net.pkhapps.idispatch.core.domain.common.SingletonDomainContextProvider;
+import net.pkhapps.idispatch.core.domain.geo.LocationName;
+import net.pkhapps.idispatch.core.domain.geo.MunicipalityId;
+import net.pkhapps.idispatch.core.domain.geo.Position;
+import net.pkhapps.idispatch.core.domain.geo.RoadLocation;
+import net.pkhapps.idispatch.core.domain.i18n.Locales;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentFactory;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentPriority;
 import net.pkhapps.idispatch.core.domain.incident.model.IncidentState;
@@ -60,8 +65,15 @@ public class MongoIncidentRepositoryIT {
     }
 
     @Test
-    public void saveFullBlownIncident() {
+    public void saveIncidentAtRoadLocation() {
         var incident = factory.createIncident();
+        incident.pinpoint(new RoadLocation(
+                Position.createFromTm35Fin(239710, 6694462),
+                new MunicipalityId("445"),
+                "Mellan Ålövägen och Pajbackavägen",
+                new LocationName(Locales.SWEDISH, "Skärgårdsvägen")));
+        var saved = repository.save(incident);
 
+        assertThat(saved.location()).isEqualTo(incident.location());
     }
 }

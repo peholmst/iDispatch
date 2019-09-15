@@ -7,6 +7,11 @@ import org.bson.codecs.DecoderContext;
 import org.bson.codecs.EncoderContext;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * TODO Document me
+ *
+ * @param <T>
+ */
 public class EnumCodec<T extends Enum<T>> implements Codec<T> {
 
     private final Class<T> enumClass;
