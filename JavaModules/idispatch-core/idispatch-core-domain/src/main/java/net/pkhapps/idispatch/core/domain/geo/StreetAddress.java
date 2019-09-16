@@ -1,5 +1,6 @@
 package net.pkhapps.idispatch.core.domain.geo;
 
+import net.pkhapps.idispatch.core.domain.i18n.MultilingualString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ public class StreetAddress extends RoadLocation {
     public StreetAddress(@NotNull Position coordinates,
                          @Nullable MunicipalityId municipality,
                          @Nullable String additionalDetails,
-                         @NotNull LocationName roadName,
+                         @NotNull MultilingualString roadName,
                          @Nullable String number,
                          @Nullable String apartment) {
         super(coordinates, municipality, additionalDetails, roadName);

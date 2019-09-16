@@ -1,5 +1,6 @@
 package net.pkhapps.idispatch.core.domain.geo;
 
+import net.pkhapps.idispatch.core.domain.i18n.MultilingualString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,12 +14,12 @@ import static java.util.Objects.requireNonNull;
  */
 public class RoadLocation extends Location {
 
-    private final LocationName roadName;
+    private final MultilingualString roadName;
 
     public RoadLocation(@NotNull Position coordinates,
                         @Nullable MunicipalityId municipality,
                         @Nullable String additionalDetails,
-                        @NotNull LocationName roadName) {
+                        @NotNull MultilingualString roadName) {
         super(coordinates, municipality, additionalDetails);
         this.roadName = requireNonNull(roadName);
     }
@@ -26,7 +27,7 @@ public class RoadLocation extends Location {
     /**
      * The name of the road that the location is on.
      */
-    public final @NotNull LocationName roadName() {
+    public final @NotNull MultilingualString roadName() {
         return roadName;
     }
 

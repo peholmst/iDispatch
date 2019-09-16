@@ -28,6 +28,18 @@ public class MultilingualString implements ValueObject {
     }
 
     /**
+     * Creates a new multilingual string with the given locales and values.
+     *
+     * @param values a map containing at least one locale-value pair.
+     */
+    public MultilingualString(@NotNull Map<Locale, String> values) {
+        if (values.isEmpty()) {
+            throw new IllegalArgumentException("At least one locale-value pair must be provided");
+        }
+        this.values = Map.copyOf(values);
+    }
+
+    /**
      * Returns the multilingual string as an unmodifiable map keyed by locale.
      */
     public final @NotNull Map<Locale, String> toMap() {
