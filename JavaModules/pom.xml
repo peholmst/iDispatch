@@ -32,5 +32,7 @@
     <modules>
         <module>api-gateway</module>
         <module>idispatch-core</module>
+        <module>idispatch-runboard</module>
+        <module>idispatch-gis</module>
     </modules>
 </project>

@@ -1,5 +1,5 @@
 module idispatch.core.grpc {
-    requires grpc.api;
-    requires grpc.protobuf;
-    requires grpc.stub;
+//    requires grpc.api;
+//    requires grpc.protobuf;
+//    requires grpc.stub;
 }

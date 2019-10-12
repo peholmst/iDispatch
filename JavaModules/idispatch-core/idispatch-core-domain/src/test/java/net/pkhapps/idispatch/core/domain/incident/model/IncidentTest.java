@@ -564,7 +564,7 @@ public class IncidentTest extends AggregateRootTestBase {
     }
 
     private @NotNull Location createLocation() {
-        throw new UnsupportedOperationException("Not implemented");
+        throw new UnsupportedOperationException("Not implemented"); // TODO Fix me
         //return new Location(new DirectPosition2D(60.286027, 60.286027), null, null) {
         //};
     }
