@@ -16,6 +16,7 @@
         <module>idispatch-gis-api</module>
         <module>idispatch-gis-mongodb-importer</module>
         <module>idispatch-gis-postgis-importer</module>
+        <module>idispatch-gis-postgis</module>
     </modules>
     <packaging>pom</packaging>
 
@@ -29,6 +30,11 @@
         <mongodb.version>3.11.0</mongodb.version>
         <postgresql.version>42.2.8</postgresql.version>
         <commons-io.version>2.6</commons-io.version>
+        <slf4j.version>1.7.28</slf4j.version>
+        <testng.version>7.0.0</testng.version>
+        <assertj.version>3.13.2</assertj.version>
+        <logback.version>1.2.3</logback.version>
+        <c3p0.version>0.9.5.4</c3p0.version>
     </properties>
 
     <dependencies>
@@ -48,10 +54,26 @@
                 <version>${postgresql.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.mchange</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>${c3p0.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>${commons-io.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-app-schema</artifactId>
@@ -60,6 +82,11 @@
             <dependency>
                 <groupId>org.geotools</groupId>
                 <artifactId>gt-epsg-wkt</artifactId>
+                <version>${geotools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.geotools</groupId>
+                <artifactId>gt-main</artifactId>
                 <version>${geotools.version}</version>
             </dependency>
             <dependency>
@@ -97,6 +124,19 @@
                 <groupId>org.mongodb</groupId>
                 <artifactId>mongodb-driver-sync</artifactId>
                 <version>${mongodb.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

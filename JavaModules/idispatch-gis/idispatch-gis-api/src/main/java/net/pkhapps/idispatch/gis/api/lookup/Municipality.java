@@ -1,6 +1,7 @@
 package net.pkhapps.idispatch.gis.api.lookup;
 
 import org.jetbrains.annotations.NotNull;
+import org.locationtech.jts.geom.Point;
 
 import java.util.Locale;
 import java.util.Optional;
@@ -27,4 +28,12 @@ public interface Municipality {
      */
     @NotNull
     Optional<String> getName(@NotNull Locale locale);
+
+    /**
+     * Gets the center point of the municipality.
+     *
+     * @return the center point
+     */
+    @NotNull
+    Point getCenter();
 }

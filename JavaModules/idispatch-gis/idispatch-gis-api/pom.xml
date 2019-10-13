@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>org.geotools</groupId>
-            <artifactId>gt-opengis</artifactId>
+            <artifactId>gt-main</artifactId>
         </dependency>
     </dependencies>
 </project>

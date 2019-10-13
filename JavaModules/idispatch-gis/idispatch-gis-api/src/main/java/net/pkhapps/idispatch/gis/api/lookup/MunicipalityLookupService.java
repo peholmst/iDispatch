@@ -1,7 +1,7 @@
 package net.pkhapps.idispatch.gis.api.lookup;
 
 import org.jetbrains.annotations.NotNull;
-import org.opengis.geometry.DirectPosition;
+import org.locationtech.jts.geom.Point;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,14 +12,14 @@ import java.util.Optional;
 public interface MunicipalityLookupService {
 
     /**
-     * Looks up the municipality that the given position is located within.
+     * Looks up the municipality that the given point is located within.
      *
-     * @param position a geographical position with a non-null {@link DirectPosition#getCoordinateReferenceSystem() CRS}
-     * @return the municipality if the position happens to be inside one, otherwise an empty {@code Optional}
-     * @throws IllegalArgumentException if the position has an unsupported CRS or none at all
+     * @param point a geographical point
+     * @return the municipality if the point happens to be inside one, otherwise an empty {@code Optional}
+     * @throws IllegalArgumentException if the point has an unsupported SRID or none at all
      */
     @NotNull
-    Optional<Municipality> findMunicipalityOfPosition(@NotNull DirectPosition position);
+    Optional<Municipality> findMunicipalityOfPoint(@NotNull Point point);
 
     /**
      * Looks up the municipality with the given national code.
