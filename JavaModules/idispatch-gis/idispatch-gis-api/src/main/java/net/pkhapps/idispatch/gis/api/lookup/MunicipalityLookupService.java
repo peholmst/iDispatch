@@ -40,18 +40,4 @@ public interface MunicipalityLookupService {
     @NotNull
     List<Municipality> findByName(@NotNull String name, @NotNull NameMatchStrategy matchBy);
 
-    /**
-     * Enumeration of different strategies for matching a search term to a municipality name.
-     */
-    enum NameMatchStrategy {
-        /**
-         * Look for municipalities that have a name in any language that starts with the search term (case insensitive).
-         */
-        PREFIX,
-        /**
-         * Look for municipalities that have a name in any language that is exactly equal to the search term (case
-         * insensitive).
-         */
-        EXACT,
-    }
 }

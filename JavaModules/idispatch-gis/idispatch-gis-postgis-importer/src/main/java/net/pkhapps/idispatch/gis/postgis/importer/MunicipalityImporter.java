@@ -3,19 +3,15 @@ package net.pkhapps.idispatch.gis.postgis.importer;
 import net.pkhapps.idispatch.gis.postgis.importer.bindings.CustomFeatureTypeBinding;
 import net.pkhapps.idispatch.gis.postgis.importer.bindings.GeographicalNameBinding;
 import net.pkhapps.idispatch.gis.postgis.importer.types.LocalizedString;
-import org.apache.commons.io.IOUtils;
 import org.geotools.appschema.resolver.xml.AppSchemaConfiguration;
 import org.geotools.gml3.GML;
 import org.geotools.wfs.v2_0.WFSConfiguration;
-import org.geotools.xml.resolver.SchemaCache;
-import org.geotools.xml.resolver.SchemaResolver;
 import org.geotools.xsd.PullParser;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.WKTWriter;
 import org.opengis.feature.simple.SimpleFeature;
-import org.opengis.referencing.operation.TransformException;
 import org.picocontainer.MutablePicoContainer;
 import org.xml.sax.SAXException;
 
@@ -25,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -38,18 +33,10 @@ import java.util.stream.Collectors;
 /**
  * Command line tool for importing municipalities from NLS XML files into a PostGIS database.
  */
-public class MunicipalityImporter {
-
-    private final Connection connection;
+public class MunicipalityImporter extends AbstractImporter {
 
     private MunicipalityImporter(@NotNull Connection connection) throws SQLException, IOException {
-        System.out.println("Importing data into " + connection);
-        var ddl = IOUtils.toString(getClass().getResourceAsStream("/ddl.sql"), StandardCharsets.UTF_8);
-        try (var statement = connection.createStatement()) {
-            System.out.println("Setting up database");
-            statement.execute(ddl);
-        }
-        this.connection = connection;
+        super(connection);
     }
 
     public static void main(String[] args) throws Exception {
@@ -70,18 +57,12 @@ public class MunicipalityImporter {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private void importData(@NotNull InputStream inputStream, @NotNull String sourceName) throws IOException,
-            XMLStreamException, SAXException, TransformException, SQLException {
-        var cacheDirectory = new File("iDispatch-GIS-Importer-Cache");
-        if (!cacheDirectory.exists() && !cacheDirectory.mkdir()) {
-            throw new IOException("Could not create cache directory for resolved schemas");
-        }
-        var cache = new SchemaCache(cacheDirectory, true);
-        var resolver = new SchemaResolver(cache);
-
+    @Override
+    protected @NotNull AppSchemaConfiguration createAppSchemaConfiguration() {
         var configuration = new AppSchemaConfiguration("http://xml.nls.fi/inspire/au/4.0/10k",
-                "http://xml.nls.fi/inspire/au/4.0/10k/AdministrativeUnit10k.xsd", resolver) {
+                "http://xml.nls.fi/inspire/au/4.0/10k/AdministrativeUnit10k.xsd", getResolver()) {
+
+            @SuppressWarnings("unchecked")
             @Override
             protected void configureBindings(Map bindings) {
                 bindings.put(GeographicalNameBinding.TARGET, new GeographicalNameBinding());
@@ -94,8 +75,15 @@ public class MunicipalityImporter {
             }
         };
         configuration.addDependency(new WFSConfiguration());
+        return configuration;
+    }
 
-        var parser = new PullParser(configuration, inputStream,
+    // TODO Add support for importing updates
+
+    @Override
+    protected void importData(@NotNull InputStream inputStream, @NotNull String sourceName) throws IOException,
+            XMLStreamException, SAXException, SQLException {
+        var parser = new PullParser(getAppSchemaConfiguration(), inputStream,
                 new QName("http://xml.nls.fi/inspire/au/4.0/10k", "AdministrativeUnit_10k")
         );
 
@@ -118,7 +106,7 @@ public class MunicipalityImporter {
                 "ST_GeomFromText(?, 3067)," +
                 "ST_GeomFromText(?, 3067)" +
                 ")";
-        try (var preparedStatement = connection.prepareStatement(sql)) {
+        try (var preparedStatement = getConnection().prepareStatement(sql)) {
             while ((feature = parser.parse()) != null) {
                 if (feature instanceof SimpleFeature) {
                     var simpleFeature = (SimpleFeature) feature;

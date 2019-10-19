@@ -1,15 +1,13 @@
 package net.pkhapps.idispatch.gis.api.lookup;
 
+import net.pkhapps.idispatch.gis.api.lookup.code.MunicipalityCode;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Point;
-
-import java.util.Locale;
-import java.util.Optional;
 
 /**
  * Holds the national code and the names in all applicable languages of a single municipality.
  */
-public interface Municipality {
+public interface Municipality extends NamedFeature {
 
     /**
      * Gets the national code of the municipality.
@@ -17,17 +15,7 @@ public interface Municipality {
      * @return the national code
      */
     @NotNull
-    String getNationalCode();
-
-    /**
-     * Gets the name of the municipality in the given language.
-     *
-     * @param locale the language/locale to fetch the municipality name in
-     * @return the name of the municipality or an empty {@code Optional} if the municipality has no name in the given
-     * language
-     */
-    @NotNull
-    Optional<String> getName(@NotNull Locale locale);
+    MunicipalityCode getNationalCode();
 
     /**
      * Gets the center point of the municipality.

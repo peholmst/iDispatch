@@ -1,8 +1,10 @@
 package net.pkhapps.idispatch.gis.postgis.integrationtests;
 
 import net.pkhapps.idispatch.gis.api.CRS;
+import net.pkhapps.idispatch.gis.api.Locales;
 import net.pkhapps.idispatch.gis.api.lookup.Municipality;
-import net.pkhapps.idispatch.gis.api.lookup.MunicipalityLookupService;
+import net.pkhapps.idispatch.gis.api.lookup.NameMatchStrategy;
+import net.pkhapps.idispatch.gis.api.lookup.code.MunicipalityCode;
 import net.pkhapps.idispatch.gis.api.spi.GIS;
 import net.pkhapps.idispatch.gis.api.spi.GISFactory;
 import net.pkhapps.idispatch.gis.postgis.spi.PropertyConstants;
@@ -13,7 +15,6 @@ import org.locationtech.jts.geom.PrecisionModel;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-import java.util.Locale;
 import java.util.Properties;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -65,21 +66,21 @@ public class MunicipalityLookupServiceIT {
     @Test
     public void findByNamePrefix_emptyString_noResult() {
         var result = gis.getMunicipalityLookupService().findByName("p",
-                MunicipalityLookupService.NameMatchStrategy.PREFIX);
+                NameMatchStrategy.PREFIX);
         assertThat(result).isEmpty();
     }
 
     @Test
     public void findByNamePrefix_oneCharacter_noResult() {
         var result = gis.getMunicipalityLookupService().findByName("p",
-                MunicipalityLookupService.NameMatchStrategy.PREFIX);
+                NameMatchStrategy.PREFIX);
         assertThat(result).isEmpty();
     }
 
     @Test
     public void findByNamePrefix() {
         var result = gis.getMunicipalityLookupService().findByName("pa",
-                MunicipalityLookupService.NameMatchStrategy.PREFIX);
+                NameMatchStrategy.PREFIX);
         assertThat(result).hasSize(6);
         assertThat(result).anySatisfy(this::assertPargas);
     }
@@ -87,14 +88,14 @@ public class MunicipalityLookupServiceIT {
     @Test
     public void findByName() {
         var result = gis.getMunicipalityLookupService().findByName("pargas",
-                MunicipalityLookupService.NameMatchStrategy.EXACT);
+                NameMatchStrategy.EXACT);
         assertThat(result).hasOnlyOneElementSatisfying(this::assertPargas);
     }
 
     private void assertPargas(@NotNull Municipality municipality) {
-        assertThat(municipality.getNationalCode()).isEqualTo("445");
-        assertThat(municipality.getName(new Locale("fi"))).contains("Parainen");
-        assertThat(municipality.getName(new Locale("sv"))).contains("Pargas");
+        assertThat(municipality.getNationalCode()).isEqualTo(MunicipalityCode.of("445"));
+        assertThat(municipality.getName(Locales.FINNISH)).contains("Parainen");
+        assertThat(municipality.getName(Locales.SWEDISH)).contains("Pargas");
         assertThat(municipality.getCenter().getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID);
     }
 }

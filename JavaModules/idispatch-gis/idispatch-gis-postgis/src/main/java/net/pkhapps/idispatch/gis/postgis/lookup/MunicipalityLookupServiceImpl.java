@@ -3,6 +3,7 @@ package net.pkhapps.idispatch.gis.postgis.lookup;
 import net.pkhapps.idispatch.gis.api.CRS;
 import net.pkhapps.idispatch.gis.api.lookup.Municipality;
 import net.pkhapps.idispatch.gis.api.lookup.MunicipalityLookupService;
+import net.pkhapps.idispatch.gis.api.lookup.NameMatchStrategy;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
