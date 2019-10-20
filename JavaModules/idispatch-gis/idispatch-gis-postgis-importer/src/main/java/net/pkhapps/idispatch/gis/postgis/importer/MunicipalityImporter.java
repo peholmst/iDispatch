@@ -1,28 +1,23 @@
 package net.pkhapps.idispatch.gis.postgis.importer;
 
+import net.pkhapps.idispatch.gis.postgis.importer.base.AbstractImporter;
+import net.pkhapps.idispatch.gis.postgis.importer.base.FeatureImporterRunner;
 import net.pkhapps.idispatch.gis.postgis.importer.bindings.CustomFeatureTypeBinding;
 import net.pkhapps.idispatch.gis.postgis.importer.bindings.GeographicalNameBinding;
 import net.pkhapps.idispatch.gis.postgis.importer.types.LocalizedString;
 import org.geotools.appschema.resolver.xml.AppSchemaConfiguration;
 import org.geotools.gml3.GML;
 import org.geotools.wfs.v2_0.WFSConfiguration;
-import org.geotools.xsd.PullParser;
+import org.geotools.xml.resolver.SchemaResolver;
 import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.MultiPolygon;
 import org.locationtech.jts.geom.Point;
-import org.locationtech.jts.io.WKTWriter;
 import org.opengis.feature.simple.SimpleFeature;
 import org.picocontainer.MutablePicoContainer;
-import org.xml.sax.SAXException;
 
 import javax.xml.namespace.QName;
-import javax.xml.stream.XMLStreamException;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -35,32 +30,18 @@ import java.util.stream.Collectors;
  */
 public class MunicipalityImporter extends AbstractImporter {
 
-    private MunicipalityImporter(@NotNull Connection connection) throws SQLException, IOException {
-        super(connection);
+    public MunicipalityImporter(@NotNull Connection connection) throws SQLException, IOException {
+        super(connection, new QName("http://xml.nls.fi/inspire/au/4.0/10k", "AdministrativeUnit_10k"));
     }
 
     public static void main(String[] args) throws Exception {
-        if (args.length < 2) {
-            throw new IllegalArgumentException("Insufficient arguments");
-        }
-        var inputFile = new File(args[0]);
-        if (!inputFile.exists() || !inputFile.canRead()) {
-            throw new IllegalArgumentException(inputFile + " does not exist or is not readable");
-        }
-        var jdbcConnectionUrl = args[1];
-        var user = args.length <= 2 ? null : args[2];
-        var password = args.length <= 3 ? null : args[3];
-        try (var connection = DriverManager.getConnection(jdbcConnectionUrl, user, password);
-             var inputStream = new FileInputStream(inputFile)) {
-            System.out.println("Importing data from " + inputFile.getAbsolutePath());
-            new MunicipalityImporter(connection).importData(inputStream, inputFile.getName());
-        }
+        FeatureImporterRunner.run(MunicipalityImporter.class, args);
     }
 
     @Override
-    protected @NotNull AppSchemaConfiguration createAppSchemaConfiguration() {
+    protected @NotNull AppSchemaConfiguration createAppSchemaConfiguration(@NotNull SchemaResolver resolver) {
         var configuration = new AppSchemaConfiguration("http://xml.nls.fi/inspire/au/4.0/10k",
-                "http://xml.nls.fi/inspire/au/4.0/10k/AdministrativeUnit10k.xsd", getResolver()) {
+                "http://xml.nls.fi/inspire/au/4.0/10k/AdministrativeUnit10k.xsd", resolver) {
 
             @SuppressWarnings("unchecked")
             @Override
@@ -78,20 +59,9 @@ public class MunicipalityImporter extends AbstractImporter {
         return configuration;
     }
 
-    // TODO Add support for importing updates
-
     @Override
-    protected void importData(@NotNull InputStream inputStream, @NotNull String sourceName) throws IOException,
-            XMLStreamException, SAXException, SQLException {
-        var parser = new PullParser(getAppSchemaConfiguration(), inputStream,
-                new QName("http://xml.nls.fi/inspire/au/4.0/10k", "AdministrativeUnit_10k")
-        );
-
-        Object feature;
-        int count = 0;
-        System.out.println("Starting import");
-
-        var sql = "INSERT INTO municipalities (" +
+    protected @NotNull PreparedStatement prepareStatement(@NotNull Connection connection) throws SQLException {
+        return connection.prepareStatement("INSERT INTO municipalities (" +
                 "national_code," +
                 "name_fi," +
                 "name_sv," +
@@ -105,23 +75,13 @@ public class MunicipalityImporter extends AbstractImporter {
                 "?," +
                 "ST_GeomFromText(?, 3067)," +
                 "ST_GeomFromText(?, 3067)" +
-                ")";
-        try (var preparedStatement = getConnection().prepareStatement(sql)) {
-            while ((feature = parser.parse()) != null) {
-                if (feature instanceof SimpleFeature) {
-                    var simpleFeature = (SimpleFeature) feature;
-                    if (importFeature(simpleFeature, sourceName, preparedStatement)) {
-                        count++;
-                    }
-                }
-            }
-        }
-        System.out.println("Imported " + count + " municipalities");
+                ")");
     }
 
     @SuppressWarnings("unchecked")
-    private boolean importFeature(@NotNull SimpleFeature feature, @NotNull String sourceName,
-                                  @NotNull PreparedStatement preparedStatement) throws SQLException {
+    @Override
+    protected boolean importFeature(@NotNull SimpleFeature feature, @NotNull String sourceName,
+                                    @NotNull PreparedStatement ps) throws SQLException {
         var id = (String) feature.getID();
         if (!id.startsWith("FI_AU_ADMINISTRATIVEUNIT_MUNICIPALITY_")) {
             // This is not a municipality so we ignore it.
@@ -133,15 +93,13 @@ public class MunicipalityImporter extends AbstractImporter {
         var geometry = (MultiPolygon) feature.getAttribute("geometry");
         var nationalCode = (String) feature.getAttribute("nationalCode");
 
-        var writer = new WKTWriter();
-
-        preparedStatement.setString(1, nationalCode);
-        preparedStatement.setString(2, name.get(Locale.forLanguageTag("fi")));
-        preparedStatement.setString(3, name.get(Locale.forLanguageTag("sv")));
-        preparedStatement.setString(4, sourceName);
-        preparedStatement.setString(5, writer.write(location));
-        preparedStatement.setString(6, writer.write(geometry));
-        preparedStatement.executeUpdate();
+        ps.setString(1, nationalCode);
+        ps.setString(2, name.get(Locale.forLanguageTag("fi")));
+        ps.setString(3, name.get(Locale.forLanguageTag("sv")));
+        ps.setString(4, sourceName);
+        ps.setString(5, toWkt(location));
+        ps.setString(6, toWkt(geometry));
+        ps.executeUpdate();
         return true;
     }
 }

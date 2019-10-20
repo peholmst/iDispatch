@@ -81,7 +81,7 @@ CREATE INDEX IF NOT EXISTS address_point_location
     ON address_points
     USING GIST (location);
 
-CREATE INDEX IF NOT EXIST address_point_name
+CREATE INDEX IF NOT EXISTS address_point_name
     ON address_points (name_fi, name_sv, name_se, name_smn, name_sms);
 
 CREATE INDEX IF NOT EXISTS address_point_address
