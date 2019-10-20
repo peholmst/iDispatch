@@ -21,9 +21,9 @@ public interface RoadSegment extends LineStringFeature, NamedFeature {
 
     @NotNull RoadDirection getDirection();
 
-    @NotNull Optional<Integer> getRoadNumber();
+    @NotNull Optional<Long> getRoadNumber();
 
-    @NotNull Optional<Integer> getRoadPartNumber();
+    @NotNull Optional<Long> getRoadPartNumber();
 
     @NotNull Optional<AddressNumberRange> getAddressNumbersLeft();
 
