@@ -19,7 +19,7 @@ public class GISFactoryImpl implements GISFactory {
     public @NotNull GIS createLookupServices(@Nullable Properties properties) throws Exception {
         requireNonNull(properties, "this implementation requires a Properties instance");
         var cpds = new ComboPooledDataSource();
-        cpds.setDriverClass("org.postgresql.Driver");
+        cpds.setDriverClass("org.postgis.DriverWrapper");
         cpds.setJdbcUrl(properties.getProperty(PropertyConstants.JDBC_URL));
         cpds.setUser(properties.getProperty(PropertyConstants.JDBC_USER));
         cpds.setPassword(properties.getProperty(PropertyConstants.JDBC_PASSWORD));

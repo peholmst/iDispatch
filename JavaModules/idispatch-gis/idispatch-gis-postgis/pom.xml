@@ -11,6 +11,12 @@
 
     <artifactId>idispatch-gis-postgis</artifactId>
 
+    <properties>
+        <jdbc.url>jdbc:postgresql://localhost/idispatch_gis</jdbc.url>
+        <jdbc.user>idispatch_gis_importer</jdbc.user>
+        <jdbc.password>2smart4u</jdbc.password>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -20,6 +26,14 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.postgis</groupId>
+            <artifactId>postgis-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
         </dependency>
         <dependency>
             <groupId>com.mchange</groupId>
@@ -45,4 +59,49 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <configuration>
+                    <url>${jdbc.url}</url>
+                    <user>${jdbc.user}</user>
+                    <password>${jdbc.password}</password>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <configuration>
+                    <jdbc>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>${jdbc.url}</url>
+                        <user>${jdbc.user}</user>
+                        <password>${jdbc.password}</password>
+                    </jdbc>
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <includes>address_points|municipalities|road_segments|ST_Contains</includes>
+                            <excludes></excludes>
+                            <inputSchema>public</inputSchema>
+                            <forcedTypes>
+                                <forcedType>
+                                    <userType>org.postgis.Geometry</userType>
+                                    <binding>net.pkhapps.idispatch.gis.postgis.bindings.PostgisGeometryBinding</binding>
+                                    <includeTypes>(geometry|GEOMETRY)</includeTypes>
+                                </forcedType>
+                            </forcedTypes>
+                        </database>
+                        <target>
+                            <packageName>net.pkhapps.idispatch.gis.postgis.jooq</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

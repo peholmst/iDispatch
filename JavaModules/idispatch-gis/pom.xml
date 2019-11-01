@@ -27,12 +27,15 @@
 
         <geotools.version>22.0</geotools.version>
         <postgresql.version>42.2.8</postgresql.version>
+        <postgis.version>2.3.0</postgis.version>
+        <flyway.version>6.0.8</flyway.version>
         <commons-io.version>2.6</commons-io.version>
         <slf4j.version>1.7.28</slf4j.version>
         <testng.version>7.0.0</testng.version>
         <assertj.version>3.13.2</assertj.version>
         <logback.version>1.2.3</logback.version>
         <c3p0.version>0.9.5.4</c3p0.version>
+        <jooq.version>3.12.2</jooq.version>
     </properties>
 
     <dependencies>
@@ -50,6 +53,16 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.postgis</groupId>
+                <artifactId>postgis-jdbc</artifactId>
+                <version>${postgis.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq</artifactId>
+                <version>${jooq.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.mchange</groupId>
@@ -146,6 +159,46 @@
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.flywaydb</groupId>
+                    <artifactId>flyway-maven-plugin</artifactId>
+                    <version>${flyway.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>${postgresql.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+                <plugin>
+                    <groupId>org.jooq</groupId>
+                    <artifactId>jooq-codegen-maven</artifactId>
+                    <version>${jooq.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>generate</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.postgresql</groupId>
+                            <artifactId>postgresql</artifactId>
+                            <version>${postgresql.version}</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>net.postgis</groupId>
+                            <artifactId>postgis-jdbc</artifactId>
+                            <version>${postgis.version}</version>
+                        </dependency>
+                    </dependencies>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <repositories>

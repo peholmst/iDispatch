@@ -72,7 +72,9 @@ public final class CRS {
             return null;
         }
         try {
-            return (G) JTS.transform(geometry, WGS84_TO_TM35FIN);
+            var transformed = (G) JTS.transform(geometry, WGS84_TO_TM35FIN);
+            transformed.setSRID(ETRS89_TM35FIN_SRID);
+            return transformed;
         } catch (TransformException ex) {
             throw new RuntimeException("Could not convert geometry", ex);
         }
