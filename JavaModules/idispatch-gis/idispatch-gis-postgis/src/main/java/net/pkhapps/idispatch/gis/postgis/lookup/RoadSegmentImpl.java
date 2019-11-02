@@ -23,10 +23,8 @@ class RoadSegmentImpl extends LocationFeatureImpl<LineString> implements RoadSeg
     private final RoadDirection direction;
     private final Long roadNumber;
     private final Long roadPartNumber;
-    private final Integer addressNumberLeftMax;
-    private final Integer addressNumberLeftMin;
-    private final Integer addressNumberRightMax;
-    private final Integer addressNumberRightMin;
+    private final AddressNumberRange addressNumbersLeft;
+    private final AddressNumberRange addressNumbersRight;
 
     RoadSegmentImpl(@NotNull LocationAccuracy locationAccuracy,
                     @Nullable LocalDate validFrom,
@@ -55,10 +53,16 @@ class RoadSegmentImpl extends LocationFeatureImpl<LineString> implements RoadSeg
         this.direction = requireNonNull(direction);
         this.roadNumber = roadNumber;
         this.roadPartNumber = roadPartNumber;
-        this.addressNumberLeftMax = addressNumberLeftMax;
-        this.addressNumberLeftMin = addressNumberLeftMin;
-        this.addressNumberRightMax = addressNumberRightMax;
-        this.addressNumberRightMin = addressNumberRightMin;
+        if (addressNumberLeftMax != null && addressNumberLeftMin != null) {
+            addressNumbersLeft = new AddressNumberRangeImpl(addressNumberLeftMin, addressNumberLeftMax);
+        } else {
+            addressNumbersLeft = null;
+        }
+        if (addressNumberRightMax != null && addressNumberRightMin != null) {
+            addressNumbersRight = new AddressNumberRangeImpl(addressNumberRightMin, addressNumberRightMax);
+        } else {
+            addressNumbersRight = null;
+        }
     }
 
     @Override
@@ -93,19 +97,25 @@ class RoadSegmentImpl extends LocationFeatureImpl<LineString> implements RoadSeg
 
     @Override
     public @NotNull Optional<AddressNumberRange> getAddressNumbersLeft() {
-        if (addressNumberLeftMax == null && addressNumberLeftMin == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(new AddressNumberRangeImpl(addressNumberLeftMin, addressNumberLeftMax));
-        }
+        return Optional.ofNullable(addressNumbersLeft);
     }
 
     @Override
     public @NotNull Optional<AddressNumberRange> getAddressNumbersRight() {
-        if (addressNumberRightMax == null && addressNumberRightMin == null) {
-            return Optional.empty();
-        } else {
-            return Optional.of(new AddressNumberRangeImpl(addressNumberRightMin, addressNumberRightMax));
-        }
+        return Optional.ofNullable(addressNumbersRight);
+    }
+
+    @Override
+    void buildToString(@NotNull StringBuilder sb) {
+        super.buildToString(sb);
+        sb.append(", ");
+        sb.append("roadClass=").append(roadClass).append(", ");
+        sb.append("elevation=").append(elevation).append(", ");
+        sb.append("surface=").append(surface).append(", ");
+        sb.append("direction=").append(direction).append(", ");
+        sb.append("roadNumber=").append(roadNumber).append(", ");
+        sb.append("roadPartNumber=").append(roadPartNumber).append(", ");
+        sb.append("addressNumbersLeft=").append(addressNumbersLeft).append(", ");
+        sb.append("addressNumbersRight=").append(addressNumbersRight);
     }
 }

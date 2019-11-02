@@ -1,5 +1,9 @@
 package net.pkhapps.idispatch.gis.api.lookup.code;
 
+import org.jetbrains.annotations.Contract;
+
+import java.util.stream.Stream;
+
 /**
  * TODO Document me
  */
@@ -20,6 +24,12 @@ public enum Elevation {
 
     Elevation(int code) {
         this.code = code;
+    }
+
+    @Contract("null -> null")
+    public static Elevation valueOf(Integer code) {
+        return code == null ? null : Stream.of(values()).filter(e -> e.code == code).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
     }
 
     /**

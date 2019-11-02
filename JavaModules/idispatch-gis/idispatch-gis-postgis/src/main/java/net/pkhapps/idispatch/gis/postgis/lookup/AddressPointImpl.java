@@ -47,4 +47,12 @@ class AddressPointImpl extends LocationFeatureImpl<Point> implements AddressPoin
     public @NotNull Optional<String> getNumber() {
         return Optional.ofNullable(number);
     }
+
+    @Override
+    void buildToString(@NotNull StringBuilder sb) {
+        super.buildToString(sb);
+        sb.append(", ");
+        sb.append("addressPointClass=").append(addressPointClass).append(", ");
+        sb.append("number=").append(number);
+    }
 }

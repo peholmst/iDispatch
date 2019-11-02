@@ -10,7 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -28,11 +30,7 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
     private final LocalDate validTo;
     private final Location location;
     private final MunicipalityCode municipality;
-    private final String nameSv;
-    private final String nameFi;
-    private final String nameSe;
-    private final String nameSmn;
-    private final String nameSms;
+    private final Map<String, String> name;
 
     LocationFeatureImpl(@NotNull LocationAccuracy locationAccuracy,
                         @Nullable LocalDate validFrom,
@@ -49,11 +47,12 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
         this.validTo = validTo;
         this.location = location;
         this.municipality = municipality;
-        this.nameSv = nameSv;
-        this.nameFi = nameFi;
-        this.nameSe = nameSe;
-        this.nameSmn = nameSmn;
-        this.nameSms = nameSms;
+        this.name = new HashMap<>();
+        Optional.ofNullable(nameSv).ifPresent(n -> name.put(Locales.SWEDISH.getLanguage(), n));
+        Optional.ofNullable(nameFi).ifPresent(n -> name.put(Locales.FINNISH.getLanguage(), n));
+        Optional.ofNullable(nameSe).ifPresent(n -> name.put(Locales.NORTHERN_SAMI.getLanguage(), n));
+        Optional.ofNullable(nameSmn).ifPresent(n -> name.put(Locales.INARI_SAMI.getLanguage(), n));
+        Optional.ofNullable(nameSms).ifPresent(n -> name.put(Locales.SKOLT_SAMI.getLanguage(), n));
     }
 
     @Override
@@ -83,17 +82,22 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
 
     @Override
     public @NotNull Optional<String> getName(@NotNull Locale locale) {
-        if (Locales.FINNISH.getLanguage().equals(locale.getLanguage())) {
-            return Optional.ofNullable(nameFi);
-        } else if (Locales.SWEDISH.getLanguage().equals(locale.getLanguage())) {
-            return Optional.ofNullable(nameSv);
-        } else if (Locales.NORTHERN_SAMI.getLanguage().equals(locale.getLanguage())) {
-            return Optional.ofNullable(nameSe);
-        } else if (Locales.INARI_SAMI.getLanguage().equals(locale.getLanguage())) {
-            return Optional.ofNullable(nameSmn);
-        } else if (Locales.SKOLT_SAMI.getLanguage().equals(locale.getLanguage())) {
-            return Optional.ofNullable(nameSms);
-        }
-        return Optional.empty();
+        return Optional.ofNullable(name.get(locale.getLanguage()));
+    }
+
+    void buildToString(@NotNull StringBuilder sb) {
+        sb.append("locationAccuracy=").append(locationAccuracy).append(", ");
+        sb.append("validFrom=").append(validFrom).append(", ");
+        sb.append("validTo=").append(validTo).append(", ");
+        sb.append("location=").append(location).append(", ");
+        sb.append("municipality=").append(municipality).append(", ");
+        sb.append("name=").append(name);
+    }
+
+    @Override
+    public String toString() {
+        var sb = new StringBuilder();
+        buildToString(sb);
+        return String.format("%s{%s}", getClass().getSimpleName(), sb);
     }
 }

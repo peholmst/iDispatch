@@ -1,15 +1,15 @@
 package net.pkhapps.idispatch.gis.api.lookup;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Optional;
-
 /**
  * TODO Document me
  */
 public interface AddressNumberRange {
 
-    @NotNull Optional<Integer> getMinimum();
+    int getMinimum();
 
-    @NotNull Optional<Integer> getMaximum();
+    int getMaximum();
+
+    default boolean contains(int addressNumber) {
+        return addressNumber >= getMinimum() && addressNumber <= getMaximum();
+    }
 }

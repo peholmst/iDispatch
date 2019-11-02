@@ -23,6 +23,15 @@ public class MunicipalityCode {
         return code == null ? null : new MunicipalityCode(code);
     }
 
+    @NotNull
+    public static MunicipalityCode of(int code) {
+        return of(String.valueOf(code));
+    }
+
+    public @NotNull String getCode() {
+        return code;
+    }
+
     @Override
     public String toString() {
         return String.format("%s{%s}", getClass().getSimpleName(), code);

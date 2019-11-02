@@ -1,31 +1,32 @@
 package net.pkhapps.idispatch.gis.postgis.lookup;
 
 import net.pkhapps.idispatch.gis.api.lookup.AddressNumberRange;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.Optional;
 
 /**
  * TODO Document me
  */
 class AddressNumberRangeImpl implements AddressNumberRange {
 
-    private final Integer min;
-    private final Integer max;
+    private final int min;
+    private final int max;
 
-    AddressNumberRangeImpl(@Nullable Integer min, @Nullable Integer max) {
+    AddressNumberRangeImpl(int min, int max) {
         this.min = min;
         this.max = max;
     }
 
     @Override
-    public @NotNull Optional<Integer> getMinimum() {
-        return Optional.ofNullable(min);
+    public int getMinimum() {
+        return min;
     }
 
     @Override
-    public @NotNull Optional<Integer> getMaximum() {
-        return Optional.ofNullable(max);
+    public int getMaximum() {
+        return max;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[%d, %d]", min, max);
     }
 }

@@ -1,5 +1,9 @@
 package net.pkhapps.idispatch.gis.api.lookup.code;
 
+import org.jetbrains.annotations.Contract;
+
+import java.util.stream.Stream;
+
 /**
  * TODO Document me
  */
@@ -28,6 +32,16 @@ public enum LocationAccuracy {
 
     LocationAccuracy(int code) {
         this.code = code;
+    }
+
+    /**
+     * @param code
+     * @return
+     */
+    @Contract("null -> null")
+    public static LocationAccuracy valueOf(Integer code) {
+        return code == null ? null : Stream.of(values()).filter(la -> la.code == code).findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
     }
 
     /**
