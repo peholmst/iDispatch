@@ -12,6 +12,7 @@ import java.util.Optional;
  * Road segments are parts of a road. They can have name, numbers, address numbers or be more or less completely
  * anonymous.
  */
+@SuppressWarnings("unused")
 public interface RoadSegment extends LineStringFeature, NamedFeature {
 
     /**

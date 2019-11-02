@@ -5,8 +5,9 @@ import org.jetbrains.annotations.Contract;
 import java.util.stream.Stream;
 
 /**
- * TODO Document me
+ * Enumeration of location accuracies (straight from the NLS source material).
  */
+@SuppressWarnings("unused")
 public enum LocationAccuracy {
     UNDEFINED(0),
     MM500(500),
@@ -35,19 +36,15 @@ public enum LocationAccuracy {
     }
 
     /**
-     * @param code
-     * @return
+     * Returns the location accuracy enum constant that corresponds to the given numerical code.
+     *
+     * @param code the numerical code as used in the NLS source material
+     * @return the location accuracy enum constant or {@code null} if the numerical code was {@code null}
+     * @throws IllegalArgumentException if the numerical code is invalid
      */
     @Contract("null -> null")
     public static LocationAccuracy valueOf(Integer code) {
         return code == null ? null : Stream.of(values()).filter(la -> la.code == code).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
-    }
-
-    /**
-     * @return
-     */
-    public int getCode() {
-        return code;
     }
 }

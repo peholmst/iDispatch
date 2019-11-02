@@ -10,6 +10,7 @@ import org.opengis.referencing.operation.TransformException;
 /**
  * Utility class for converting between WGS84 and ETRS89 / TM35FIN.
  */
+@SuppressWarnings({"WeakerAccess", "SpellCheckingInspection"})
 public final class CRS {
 
     /**

@@ -5,5 +5,6 @@ import org.locationtech.jts.geom.LineString;
 /**
  * A {@linkplain LocationFeature location feature} whose location information is in the form of a {@link LineString}.
  */
+@SuppressWarnings("WeakerAccess")
 public interface LineStringFeature extends LocationFeature<LineString> {
 }

@@ -9,6 +9,7 @@ import java.util.Optional;
  * Address points are named locations used in places where there typically are no roads, such as on smaller islands.
  * They are used to make navigation easier.
  */
+@SuppressWarnings("unused")
 public interface AddressPoint extends PointFeature, NamedFeature {
 
     /**

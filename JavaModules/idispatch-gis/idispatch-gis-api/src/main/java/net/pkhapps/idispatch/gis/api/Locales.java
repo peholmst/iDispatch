@@ -5,6 +5,7 @@ import java.util.Locale;
 /**
  * Collection of locales supported by the GIS.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public final class Locales {
 
     public static final Locale FINNISH = new Locale("fi", "FI");

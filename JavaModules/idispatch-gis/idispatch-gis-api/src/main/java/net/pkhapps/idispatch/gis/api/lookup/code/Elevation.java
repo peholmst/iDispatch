@@ -5,8 +5,9 @@ import org.jetbrains.annotations.Contract;
 import java.util.stream.Stream;
 
 /**
- * TODO Document me
+ * Enumeration of elevation levels (straight from the NLS source material).
  */
+@SuppressWarnings("unused")
 public enum Elevation {
     TUNNEL(-11),
     BELOW_SURFACE_LEVEL_3(-3),
@@ -26,6 +27,13 @@ public enum Elevation {
         this.code = code;
     }
 
+    /**
+     * Returns the elevation enum constant that corresponds to the given numerical code.
+     *
+     * @param code the numerical code as used in the NLS source material
+     * @return the elevation enum constant or {@code null} if the numerical code was {@code null}
+     * @throws IllegalArgumentException if the numerical code is invalid
+     */
     @Contract("null -> null")
     public static Elevation valueOf(Integer code) {
         return code == null ? null : Stream.of(values()).filter(e -> e.code == code).findFirst()
@@ -33,16 +41,11 @@ public enum Elevation {
     }
 
     /**
-     * @return
+     * Returns whether this elevation level is below ground or above ground.
+     *
+     * @return true if the elevation level is below ground, false if it is on the ground level or above
      */
     public boolean isBelowGround() {
         return code < 0;
-    }
-
-    /**
-     * @return
-     */
-    public int getCode() {
-        return code;
     }
 }

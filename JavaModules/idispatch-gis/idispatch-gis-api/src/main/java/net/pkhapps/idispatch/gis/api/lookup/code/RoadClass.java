@@ -5,8 +5,9 @@ import org.jetbrains.annotations.Contract;
 import java.util.stream.Stream;
 
 /**
- * TODO Document me
+ * Enumeration of road classes (straight from the NLS source material).
  */
+@SuppressWarnings("unused")
 public enum RoadClass {
     ROADWAY_I_A(12111),
     ROADWAY_I_B(12112),
@@ -34,19 +35,15 @@ public enum RoadClass {
     }
 
     /**
-     * @param code
-     * @return
+     * Returns the road class enum constant that corresponds to the given numerical code.
+     *
+     * @param code the numerical code as used in the NLS source material
+     * @return the road class enum constant or {@code null} if the numerical code was {@code null}
+     * @throws IllegalArgumentException if the numerical code is invalid
      */
     @Contract("null -> null")
     public static RoadClass valueOf(Integer code) {
         return code == null ? null : Stream.of(values()).filter(rc -> rc.code == code).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
-    }
-
-    /**
-     * @return
-     */
-    public int getCode() {
-        return code;
     }
 }

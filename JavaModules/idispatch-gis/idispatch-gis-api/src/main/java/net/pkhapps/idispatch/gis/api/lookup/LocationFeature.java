@@ -14,6 +14,7 @@ import java.util.Optional;
  *
  * @param <Location> the type of the location data
  */
+@SuppressWarnings("unused")
 public interface LocationFeature<Location extends Geometry> {
 
     /**
@@ -41,10 +42,7 @@ public interface LocationFeature<Location extends Geometry> {
         if (validFrom().isPresent() && date.isBefore(validFrom().get())) {
             return false;
         }
-        if (validTo().isPresent() && date.isAfter(validTo().get())) {
-            return false;
-        }
-        return true;
+        return validTo().isEmpty() || !date.isAfter(validTo().get());
     }
 
     /**

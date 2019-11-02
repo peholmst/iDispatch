@@ -12,6 +12,7 @@ import java.util.ServiceLoader;
  * {@code META-INF/net.pkhapps.idispatch.gis.api.spi.GISFactory} and putting the name of the implementation class into
  * the file.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public interface GISFactory {
 
     /**

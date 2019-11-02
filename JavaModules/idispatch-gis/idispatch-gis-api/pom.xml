@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>idispatch-gis-api</artifactId>
+    <name>iDispatch GIS API</name>
+    <description>
+        The API for the GIS subsystem of iDispatch.
+    </description>
 
     <dependencies>
         <dependency>
