@@ -10,8 +10,9 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Types;
 
 /**
- * TODO Document me
+ * JOOQ binding for PostGIS {@link Geometry} types.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class PostgisGeometryBinding implements Binding<Object, Geometry> {
 
     @Override
@@ -20,7 +21,7 @@ public class PostgisGeometryBinding implements Binding<Object, Geometry> {
     }
 
     @Override
-    public void sql(BindingSQLContext<Geometry> ctx) throws SQLException {
+    public void sql(BindingSQLContext<Geometry> ctx) {
         if (ctx.render().paramType() == ParamType.INLINED) {
             ctx.render().visit(DSL.inline(ctx.convert(converter()).value())).sql("::geometry");
         } else {

@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Integration test for {@link net.pkhapps.idispatch.gis.api.lookup.MunicipalityLookupService}. This assumes that real
  * data has been imported into the database.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class MunicipalityLookupServiceIT {
 
     private GIS gis;

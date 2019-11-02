@@ -14,7 +14,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TODO Document me
+ * Implementation of {@link AddressPoint}.
  */
 class AddressPointImpl extends LocationFeatureImpl<Point> implements AddressPoint {
 
@@ -24,7 +24,7 @@ class AddressPointImpl extends LocationFeatureImpl<Point> implements AddressPoin
     AddressPointImpl(@NotNull LocationAccuracy locationAccuracy,
                      @Nullable LocalDate validFrom,
                      @Nullable LocalDate validTo,
-                     @Nullable Point point,
+                     @NotNull Point point,
                      @Nullable MunicipalityCode municipality,
                      @Nullable String nameSv,
                      @Nullable String nameFi,

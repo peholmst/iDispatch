@@ -13,7 +13,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TOOD Document me
+ * Implementation of {@link RoadSegment}.
  */
 class RoadSegmentImpl extends LocationFeatureImpl<LineString> implements RoadSegment {
 
@@ -29,7 +29,7 @@ class RoadSegmentImpl extends LocationFeatureImpl<LineString> implements RoadSeg
     RoadSegmentImpl(@NotNull LocationAccuracy locationAccuracy,
                     @Nullable LocalDate validFrom,
                     @Nullable LocalDate validTo,
-                    @Nullable LineString lineString,
+                    @NotNull LineString lineString,
                     @Nullable MunicipalityCode municipality,
                     @Nullable String nameSv,
                     @Nullable String nameFi,

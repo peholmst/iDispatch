@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.sql.DataSource;
 
 /**
- * TODO Document me!
+ * Implementation of {@link GIS} created by {@link GISFactoryImpl}.
  */
 class GISImpl implements GIS {
 

@@ -9,9 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.sql.SQLException;
 
 /**
- * TODO Document me
+ * JOOQ converter for PostGIS {@link Geometry} types.
  */
-public class PostgisGeometryConverter implements Converter<Object, Geometry> {
+@SuppressWarnings("SpellCheckingInspection")
+class PostgisGeometryConverter implements Converter<Object, Geometry> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgisGeometryConverter.class);
 

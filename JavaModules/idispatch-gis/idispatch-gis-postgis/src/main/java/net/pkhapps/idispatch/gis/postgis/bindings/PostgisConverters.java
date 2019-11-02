@@ -10,8 +10,9 @@ import org.locationtech.jts.geom.Point;
 import java.util.stream.Stream;
 
 /**
- * TODO Document me!
+ * Utility class for converting between PostGIS coordinates and JTS coordinates.
  */
+@SuppressWarnings("SpellCheckingInspection")
 public final class PostgisConverters {
 
     private static final GeometryFactory GEOMETRY_FACTORY = new GeometryFactory();

@@ -18,9 +18,9 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TODO Document me
+ * Base class for {@link LocationFeature} implementations.
  *
- * @param <Location>
+ * @param <Location> the type of the location data
  */
 abstract class LocationFeatureImpl<Location extends Geometry> implements LocationFeature<Location>,
         NamedFeature {

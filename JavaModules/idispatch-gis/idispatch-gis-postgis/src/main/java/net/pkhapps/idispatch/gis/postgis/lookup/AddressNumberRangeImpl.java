@@ -3,7 +3,7 @@ package net.pkhapps.idispatch.gis.postgis.lookup;
 import net.pkhapps.idispatch.gis.api.lookup.AddressNumberRange;
 
 /**
- * TODO Document me
+ * Implementation of {@link AddressNumberRange}.
  */
 class AddressNumberRangeImpl implements AddressNumberRange {
 

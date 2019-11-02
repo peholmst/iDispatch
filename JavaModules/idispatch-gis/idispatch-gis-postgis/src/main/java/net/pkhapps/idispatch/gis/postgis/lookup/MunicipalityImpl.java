@@ -12,7 +12,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TODO Document me
+ * Implementation of {@link Municipality}.
  */
 class MunicipalityImpl implements Municipality {
 

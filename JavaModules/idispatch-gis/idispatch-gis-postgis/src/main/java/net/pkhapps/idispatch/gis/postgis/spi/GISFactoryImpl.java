@@ -11,8 +11,12 @@ import java.util.Properties;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TODO Document me
+ * Implementation of {@link GISFactory} that connects to a PostgreSQL/PostGIS database that contains the geographical
+ * data. Connection properties are provided in the {@link Properties} instance.
+ *
+ * @see PropertyConstants
  */
+@SuppressWarnings("SpellCheckingInspection")
 public class GISFactoryImpl implements GISFactory {
 
     @Override
