@@ -8,6 +8,8 @@ import java.util.Optional;
 
 /**
  * A service for looking up municipalities in different ways.
+ *
+ * @see Municipality
  */
 public interface MunicipalityLookupService {
 

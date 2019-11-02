@@ -6,7 +6,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 /**
- * TODO Document me
+ * A feature that has a name.
  */
 public interface NamedFeature {
 

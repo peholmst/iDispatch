@@ -33,7 +33,7 @@ public class LocationFeatureLookupServiceIT {
         properties.setProperty(PropertyConstants.JDBC_URL, "jdbc:postgresql://localhost/idispatch_gis");
         properties.setProperty(PropertyConstants.JDBC_USER, "idispatch_gis_importer");
         properties.setProperty(PropertyConstants.JDBC_PASSWORD, "2smart4u");
-        gis = GISFactory.getInstance().createLookupServices(properties);
+        gis = GISFactory.getInstance().createGIS(properties);
     }
 
     @Test

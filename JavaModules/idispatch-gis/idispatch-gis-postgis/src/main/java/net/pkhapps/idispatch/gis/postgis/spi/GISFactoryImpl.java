@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 public class GISFactoryImpl implements GISFactory {
 
     @Override
-    public @NotNull GIS createLookupServices(@Nullable Properties properties) throws Exception {
+    public @NotNull GIS createGIS(@Nullable Properties properties) throws Exception {
         requireNonNull(properties, "this implementation requires a Properties instance");
         var cpds = new ComboPooledDataSource();
         cpds.setDriverClass("org.postgis.DriverWrapper");
