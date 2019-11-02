@@ -47,8 +47,7 @@ public class LocationFeatureLookupServiceIT {
             assertThat(ap.getMunicipality()).contains(MunicipalityCode.of(445));
             assertThat(ap.getName(Locales.SWEDISH)).contains("Storpensar");
             assertThat(ap.getNumber()).contains("557");
-            assertThat(ap.getLocation()).isPresent();
-            assertThat(ap.getLocation()).hasValueSatisfying(location -> assertThat(location.getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID));
+            assertThat(ap.getLocation().getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID);
         });
         System.out.println(result);
     }
@@ -73,8 +72,7 @@ public class LocationFeatureLookupServiceIT {
             assertThat(rs.getName(Locales.SWEDISH)).contains("Strandvägen");
             assertThat(rs.getName(Locales.FINNISH)).contains("Rantatie");
             assertThat(rs.getAddressNumbersLeft()).hasValueSatisfying(range -> range.contains(32));
-            assertThat(rs.getLocation()).isPresent();
-            assertThat(rs.getLocation()).hasValueSatisfying(location -> assertThat(location.getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID));
+            assertThat(rs.getLocation().getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID);
         });
         System.out.println(result);
     }
@@ -100,8 +98,7 @@ public class LocationFeatureLookupServiceIT {
             assertThat(ap.getMunicipality()).contains(MunicipalityCode.of(445));
             assertThat(ap.getName(Locales.SWEDISH)).contains("Elvsö");
             assertThat(ap.getNumber()).contains("34");
-            assertThat(ap.getLocation()).isPresent();
-            assertThat(ap.getLocation()).hasValueSatisfying(location -> assertThat(location.getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID));
+            assertThat(ap.getLocation().getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID);
         });
         System.out.println(result);
     }

@@ -30,9 +30,6 @@ public interface RoadSegment extends LineStringFeature, NamedFeature {
     @NotNull Optional<AddressNumberRange> getAddressNumbersRight();
 
     default boolean intersects(@NotNull RoadSegment otherRoad) {
-        if (getLocation().isPresent() && otherRoad.getLocation().isPresent()) {
-            return getLocation().get().intersects(otherRoad.getLocation().get());
-        }
-        return false;
+        return getLocation().intersects(otherRoad.getLocation());
     }
 }

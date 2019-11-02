@@ -10,17 +10,13 @@ import org.locationtech.jts.geom.Point;
 public interface Municipality extends NamedFeature {
 
     /**
-     * Gets the national code of the municipality.
-     *
-     * @return the national code
+     * The national code of the municipality
      */
     @NotNull
     MunicipalityCode getNationalCode();
 
     /**
-     * Gets the center point of the municipality.
-     *
-     * @return the center point
+     * The center point of the municipality
      */
     @NotNull
     Point getCenter();

@@ -14,7 +14,7 @@ public interface MunicipalityLookupService {
     /**
      * Looks up the municipality that the given point is located within.
      *
-     * @param point a geographical point
+     * @param point a geographical point in either ETRS89 / TM35FIN or WGS84
      * @return the municipality if the point happens to be inside one, otherwise an empty {@code Optional}
      * @throws IllegalArgumentException if the point has an unsupported SRID or none at all
      */
@@ -33,7 +33,7 @@ public interface MunicipalityLookupService {
     /**
      * Looks up the municipality whose name (in any language) matches the given search term.
      *
-     * @param name    a name or part of the name to search for
+     * @param name    the name or part thereof to search for
      * @param matchBy the strategy for how the name should be matched
      * @return a list of municipalities that match the search criteria
      */

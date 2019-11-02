@@ -35,7 +35,7 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
     LocationFeatureImpl(@NotNull LocationAccuracy locationAccuracy,
                         @Nullable LocalDate validFrom,
                         @Nullable LocalDate validTo,
-                        @Nullable Location location,
+                        @NotNull Location location,
                         @Nullable MunicipalityCode municipality,
                         @Nullable String nameSv,
                         @Nullable String nameFi,
@@ -45,7 +45,7 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
         this.locationAccuracy = requireNonNull(locationAccuracy);
         this.validFrom = validFrom;
         this.validTo = validTo;
-        this.location = location;
+        this.location = requireNonNull(location);
         this.municipality = municipality;
         this.name = new HashMap<>();
         Optional.ofNullable(nameSv).ifPresent(n -> name.put(Locales.SWEDISH.getLanguage(), n));
@@ -71,8 +71,8 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
     }
 
     @Override
-    public @NotNull Optional<Location> getLocation() {
-        return Optional.ofNullable(location);
+    public @NotNull Location getLocation() {
+        return location;
     }
 
     @Override

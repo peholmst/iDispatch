@@ -3,7 +3,7 @@ package net.pkhapps.idispatch.gis.api;
 import java.util.Locale;
 
 /**
- * TODO Document me
+ * Collection of locales supported by the GIS.
  */
 public final class Locales {
 

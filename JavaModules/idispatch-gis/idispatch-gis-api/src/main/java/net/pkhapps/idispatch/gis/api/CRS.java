@@ -8,14 +8,25 @@ import org.opengis.referencing.operation.MathTransform;
 import org.opengis.referencing.operation.TransformException;
 
 /**
- * TODO Document me
+ * Utility class for converting between WGS84 and ETRS89 / TM35FIN.
  */
 public final class CRS {
 
+    /**
+     * The CRS for ETRS89 / TM35FIN
+     */
     public static final CoordinateReferenceSystem ETRS89_TM35FIN;
+    /**
+     * The CRS for WGS84
+     */
     public static final CoordinateReferenceSystem WGS84;
-
+    /**
+     * The SRID for ETRS89 / TM35FIN
+     */
     public static final int ETRS89_TM35FIN_SRID = 3067;
+    /**
+     * The SRID for WGS84
+     */
     public static final int WGS84_SRID = 4326;
     private static final MathTransform WGS84_TO_TM35FIN;
 
@@ -65,6 +76,13 @@ public final class CRS {
     private CRS() {
     }
 
+    /**
+     * Converts the given WGS84 geometry to ETRS89 / TM35FIN.
+     *
+     * @param geometry the geometry to convert or {@code null}
+     * @param <G>      the type of the geometry
+     * @return the converted geometry or {@code null} if the input argument was {@code null}
+     */
     @SuppressWarnings("unchecked")
     @Contract("null -> null")
     public static <G extends Geometry> G wgs84ToEtrs89Tm35Fin(G geometry) {

@@ -6,11 +6,18 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 /**
- * TODO Document me
+ * Address points are named locations used in places where there typically are no roads, such as on smaller islands.
+ * They are used to make navigation easier.
  */
 public interface AddressPoint extends PointFeature, NamedFeature {
 
+    /**
+     * The class of this address point
+     */
     @NotNull AddressPointClass getAddressPointClass();
 
+    /**
+     * The number of this address point if applicable
+     */
     @NotNull Optional<String> getNumber();
 }
