@@ -84,7 +84,7 @@
                     <generator>
                         <database>
                             <name>org.jooq.meta.postgres.PostgresDatabase</name>
-                            <includes>address_points|municipalities|road_segments|ST_Contains</includes>
+                            <includes>address_points|municipalities|road_segments|ST_Contains|ST_Distance</includes>
                             <excludes></excludes>
                             <inputSchema>public</inputSchema>
                             <forcedTypes>

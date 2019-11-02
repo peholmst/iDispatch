@@ -39,5 +39,4 @@ public interface MunicipalityLookupService {
      */
     @NotNull
     List<Municipality> findByName(@NotNull String name, @NotNull NameMatchStrategy matchBy);
-
 }

@@ -1,8 +1,10 @@
 package net.pkhapps.idispatch.gis.postgis.lookup;
 
+import net.pkhapps.idispatch.gis.api.CRS;
 import net.pkhapps.idispatch.gis.api.lookup.*;
 import net.pkhapps.idispatch.gis.api.lookup.code.*;
 import net.pkhapps.idispatch.gis.postgis.bindings.PostgisConverters;
+import net.pkhapps.idispatch.gis.postgis.jooq.Routines;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jooq.DSLContext;
@@ -16,6 +18,7 @@ import javax.sql.DataSource;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,7 @@ public class LocationFeatureLookupServiceImpl implements LocationFeatureLookupSe
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LocationFeatureLookupServiceImpl.class);
     private static final int QUERY_LIMIT = 20;
+    private static final double MAX_DELTA_DISTANCE_METERS = 20;
     private final DataSource dataSource;
 
     public LocationFeatureLookupServiceImpl(@NotNull DataSource dataSource) {
@@ -37,15 +41,28 @@ public class LocationFeatureLookupServiceImpl implements LocationFeatureLookupSe
     }
 
     @Override
-    public @NotNull Collection<LocationFeature<?>> findFeaturesCloseToPoint(@NotNull Point point) {
-        return null; // TODO Implement me!
+    public @NotNull List<LocationFeature<?>> findFeaturesCloseToPoint(@NotNull Point point) {
+        if (point.getSRID() == CRS.WGS84_SRID) {
+            point = CRS.wgs84ToEtrs89Tm35Fin(point);
+        } else if (point.getSRID() != CRS.ETRS89_TM35FIN_SRID) {
+            throw new IllegalArgumentException("Unsupported SRID: " + point.getSRID());
+        }
+        var result = new ArrayList<LocationFeature<?>>();
+        try (var connection = dataSource.getConnection();
+             var create = DSL.using(connection)) {
+            result.addAll(findAddressPointsCloseToPoint(create, point));
+            result.addAll(findRoadSegmentsCloseToPoint(create, point));
+        } catch (Exception ex) {
+            LOGGER.error("Error looking up features close to point", ex);
+        }
+        return result;
     }
 
     @Override
-    public @NotNull Collection<LocationFeature<?>> findFeaturesByName(@Nullable MunicipalityCode municipality,
-                                                                      @NotNull String name,
-                                                                      @NotNull NameMatchStrategy matchBy,
-                                                                      @Nullable String number) {
+    public @NotNull List<LocationFeature<?>> findFeaturesByName(@Nullable MunicipalityCode municipality,
+                                                                @NotNull String name,
+                                                                @NotNull NameMatchStrategy matchBy,
+                                                                @Nullable String number) {
         var result = new ArrayList<LocationFeature<?>>();
         try (var connection = dataSource.getConnection();
              var create = DSL.using(connection)) {
@@ -57,11 +74,11 @@ public class LocationFeatureLookupServiceImpl implements LocationFeatureLookupSe
         return result;
     }
 
-    private @NotNull Collection<AddressPoint> findAddressPointsByName(@NotNull DSLContext create,
-                                                                      @Nullable MunicipalityCode municipality,
-                                                                      @NotNull String name,
-                                                                      @NotNull NameMatchStrategy matchBy,
-                                                                      @Nullable String number) {
+    private @NotNull List<AddressPoint> findAddressPointsByName(@NotNull DSLContext create,
+                                                                @Nullable MunicipalityCode municipality,
+                                                                @NotNull String name,
+                                                                @NotNull NameMatchStrategy matchBy,
+                                                                @Nullable String number) {
         var query = create.select(ADDRESS_POINTS.fields()).from(ADDRESS_POINTS);
 
         if (municipality != null) {
@@ -89,6 +106,24 @@ public class LocationFeatureLookupServiceImpl implements LocationFeatureLookupSe
                 ADDRESS_POINTS.NAME_SMS, DSL.lpad(ADDRESS_POINTS.NUMBER, 6));
         query.limit(QUERY_LIMIT);
         return query.fetch().stream().map(this::toAddressPoint).collect(Collectors.toList());
+    }
+
+    private @NotNull List<AddressPoint> findAddressPointsCloseToPoint(@NotNull DSLContext create,
+                                                                      @NotNull Point point) {
+        var distance = Routines.stDistance1(ADDRESS_POINTS.LOCATION, DSL.val(PostgisConverters.toPostgis(point), ADDRESS_POINTS.LOCATION));
+        var fields = new ArrayList<>(List.of(ADDRESS_POINTS.fields()));
+        fields.add(distance);
+        // Distance is in meters because of ETRS-TM35FIN
+        return create
+                .select(fields)
+                .from(ADDRESS_POINTS)
+                .where(distance.lessOrEqual(MAX_DELTA_DISTANCE_METERS))
+                .orderBy(distance)
+                .limit(QUERY_LIMIT)
+                .fetch()
+                .stream()
+                .map(this::toAddressPoint)
+                .collect(Collectors.toList());
     }
 
     private @NotNull AddressPoint toAddressPoint(@NotNull Record record) {
@@ -142,6 +177,24 @@ public class LocationFeatureLookupServiceImpl implements LocationFeatureLookupSe
                 ROAD_SEGMENTS.ADDRESS_NUMBER_RIGHT_MIN);
         query.limit(QUERY_LIMIT);
         return query.fetch().stream().map(this::toRoadSegment).collect(Collectors.toList());
+    }
+
+    private @NotNull Collection<RoadSegment> findRoadSegmentsCloseToPoint(@NotNull DSLContext create,
+                                                                          @NotNull Point point) {
+        var distance = Routines.stDistance1(ROAD_SEGMENTS.LOCATION, DSL.val(PostgisConverters.toPostgis(point), ROAD_SEGMENTS.LOCATION));
+        var fields = new ArrayList<>(List.of(ROAD_SEGMENTS.fields()));
+        fields.add(distance);
+        // Distance is in meters because of ETRS-TM35FIN
+        return create
+                .select(fields)
+                .from(ROAD_SEGMENTS)
+                .where(distance.lessOrEqual(MAX_DELTA_DISTANCE_METERS))
+                .orderBy(distance)
+                .limit(QUERY_LIMIT)
+                .fetch()
+                .stream()
+                .map(this::toRoadSegment)
+                .collect(Collectors.toList());
     }
 
     private @NotNull RoadSegment toRoadSegment(@NotNull Record record) {

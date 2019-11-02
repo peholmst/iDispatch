@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.locationtech.jts.geom.Point;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * TODO Document me
@@ -13,9 +13,9 @@ import java.util.Collection;
 public interface LocationFeatureLookupService {
 
     @NotNull
-    Collection<LocationFeature<?>> findFeaturesCloseToPoint(@NotNull Point point);
+    List<LocationFeature<?>> findFeaturesCloseToPoint(@NotNull Point point);
 
     @NotNull
-    Collection<LocationFeature<?>> findFeaturesByName(@Nullable MunicipalityCode municipality, @NotNull String name,
-                                                      @NotNull NameMatchStrategy matchBy, @Nullable String number);
+    List<LocationFeature<?>> findFeaturesByName(@Nullable MunicipalityCode municipality, @NotNull String name,
+                                                @NotNull NameMatchStrategy matchBy, @Nullable String number);
 }

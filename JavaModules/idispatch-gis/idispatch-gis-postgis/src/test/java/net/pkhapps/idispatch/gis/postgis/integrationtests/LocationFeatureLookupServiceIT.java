@@ -9,6 +9,9 @@ import net.pkhapps.idispatch.gis.api.lookup.code.MunicipalityCode;
 import net.pkhapps.idispatch.gis.api.spi.GIS;
 import net.pkhapps.idispatch.gis.api.spi.GISFactory;
 import net.pkhapps.idispatch.gis.postgis.spi.PropertyConstants;
+import org.locationtech.jts.geom.Coordinate;
+import org.locationtech.jts.geom.GeometryFactory;
+import org.locationtech.jts.geom.PrecisionModel;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
@@ -51,7 +54,7 @@ public class LocationFeatureLookupServiceIT {
     }
 
     @Test
-    public void findFeaturesByName_addressPoinat_exactMatchWithoutNumber() {
+    public void findFeaturesByName_addressPoint_exactMatchWithoutNumber() {
         var result = gis.getLocationFeatureLookupService().findFeaturesByName(MunicipalityCode.of(445), "elvsö",
                 NameMatchStrategy.EXACT, null);
         assertThat(result).hasSize(20);
@@ -81,6 +84,54 @@ public class LocationFeatureLookupServiceIT {
         var result = gis.getLocationFeatureLookupService().findFeaturesByName(MunicipalityCode.of(445), "saturnusgatan",
                 NameMatchStrategy.EXACT, null);
         assertThat(result).hasSize(2);
+        System.out.println(result);
+    }
+
+    @Test
+    public void findFeaturesCloseToPoint_addressPoint() {
+        var factory = new GeometryFactory(new PrecisionModel(), CRS.ETRS89_TM35FIN_SRID);
+        var coordinate = new Coordinate(193409, 6680486); // Nära Elvsö 34
+        var point = factory.createPoint(coordinate);
+        var result = gis.getLocationFeatureLookupService().findFeaturesCloseToPoint(point);
+        assertThat(result).hasSize(1);
+        assertThat(result).hasOnlyOneElementSatisfying(feature -> {
+            assertThat(feature).isInstanceOf(AddressPoint.class);
+            var ap = (AddressPoint) feature;
+            assertThat(ap.getMunicipality()).contains(MunicipalityCode.of(445));
+            assertThat(ap.getName(Locales.SWEDISH)).contains("Elvsö");
+            assertThat(ap.getNumber()).contains("34");
+            assertThat(ap.getLocation()).isPresent();
+            assertThat(ap.getLocation()).hasValueSatisfying(location -> assertThat(location.getSRID()).isEqualTo(CRS.ETRS89_TM35FIN_SRID));
+        });
+        System.out.println(result);
+    }
+
+    @Test
+    public void findFeaturesCloseToPoint_roadSegments() {
+        var factory = new GeometryFactory(new PrecisionModel(), CRS.ETRS89_TM35FIN_SRID);
+        var coordinate = new Coordinate(238334, 6695186); // Korsningen Finbyvägen | Sydmovägen
+        var point = factory.createPoint(coordinate);
+        var result = gis.getLocationFeatureLookupService().findFeaturesCloseToPoint(point);
+        assertThat(result).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(result).anySatisfy(feature -> {
+            assertThat(feature).isInstanceOf(RoadSegment.class);
+            var rs = (RoadSegment) feature;
+            assertThat(rs.getMunicipality()).contains(MunicipalityCode.of(445));
+            assertThat(rs.getName(Locales.SWEDISH)).contains("Sydmovägen");
+            assertThat(rs.getName(Locales.FINNISH)).contains("Sydmontie");
+        });
+        assertThat(result).anySatisfy(feature -> {
+            assertThat(feature).isInstanceOf(RoadSegment.class);
+            var rs = (RoadSegment) feature;
+            assertThat(rs.getMunicipality()).contains(MunicipalityCode.of(445));
+            assertThat(rs.getName(Locales.SWEDISH)).contains("Finbyvägen");
+            assertThat(rs.getName(Locales.FINNISH)).contains("Finbyntie");
+        });
+
+        var r1 = (RoadSegment) result.get(0);
+        var r2 = (RoadSegment) result.get(1);
+        assertThat(r1.intersects(r2)).isTrue();
+
         System.out.println(result);
     }
 }
