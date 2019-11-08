@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>idispatch-gis-postgis</artifactId>
+    <name>iDispatch GIS PostGIS</name>
+    <description>
+        Implementation of iDispatch GIS that read data from a PostGIS database.
+    </description>
 
     <properties>
         <jdbc.url>jdbc:postgresql://localhost/idispatch_gis</jdbc.url>

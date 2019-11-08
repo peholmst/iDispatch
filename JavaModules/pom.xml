@@ -34,5 +34,6 @@
         <module>idispatch-core</module>
         <module>idispatch-runboard</module>
         <module>idispatch-gis</module>
+        <module>idispatch-dws</module>
     </modules>
 </project>

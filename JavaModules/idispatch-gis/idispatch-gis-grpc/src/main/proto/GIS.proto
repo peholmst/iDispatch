@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.gis.grpc.proto;
+
+message MultilingualString {
+    string fin = 1;
+    string swe = 2;
+    string sme = 3;
+    string smn = 4;
+    string sms = 5;
+}
+
+message Coordinate {
+    double x = 1;
+    double y = 2;
+}
+
+message Point {
+    int32 srid = 1;
+    Coordinate coordinate = 2;
+}
+
+message Municipality {
+    MultilingualString name = 1;
+    string nationalCode = 2;
+    Point center = 3;
+}
+
+enum MatchStrategy {
+    PREFIX = 0;
+    EXACT = 1;
+}
+
+message SearchRequest {
+    MatchStrategy matchStrategy = 1;
+    string searchTerm = 2;
+}
+
+service MunicipalityLookupService {
+    rpc findMunicipalityOfPoint (Point) returns (Municipality);
+    rpc findByNationalCode (SearchRequest) returns (Municipality);
+    rpc findByName (SearchRequest) returns (stream Municipality);
+}
