@@ -35,6 +35,10 @@ public enum LocationAccuracy {
         this.code = code;
     }
 
+    public int code() {
+        return code;
+    }
+
     /**
      * Returns the location accuracy enum constant that corresponds to the given numerical code.
      *

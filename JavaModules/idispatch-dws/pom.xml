@@ -30,6 +30,7 @@
         <vaadin.version>14.0.12</vaadin.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <node.version>v10.16.3</node.version>
+        <appmodel4flow.version>1.1.0-SNAPSHOT</appmodel4flow.version>
     </properties>
 
     <dependencyManagement>
@@ -86,6 +87,11 @@
                     <artifactId>*</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.pkhapps.appmodel4flow</groupId>
+            <artifactId>appmodel4flow</artifactId>
+            <version>${appmodel4flow.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>

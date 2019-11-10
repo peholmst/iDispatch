@@ -40,4 +40,8 @@ public enum RoadDirection {
         return code == null ? null : Stream.of(values()).filter(rd -> rd.code == code).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
     }
+
+    public int code() {
+        return code;
+    }
 }

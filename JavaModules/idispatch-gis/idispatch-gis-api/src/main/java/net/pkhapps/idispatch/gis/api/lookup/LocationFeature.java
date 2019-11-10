@@ -25,12 +25,12 @@ public interface LocationFeature<Location extends Geometry> {
     /**
      * The date from which the feature data is valid
      */
-    @NotNull Optional<LocalDate> validFrom();
+    @NotNull Optional<LocalDate> getValidFrom();
 
     /**
      * The date to which the feature data is valid
      */
-    @NotNull Optional<LocalDate> validTo();
+    @NotNull Optional<LocalDate> getValidTo();
 
     /**
      * Returns whether the feature data is valid on the given date
@@ -39,10 +39,10 @@ public interface LocationFeature<Location extends Geometry> {
      * @return true if the data is valid on the given date, false otherwise
      */
     default boolean isDataValidOnDate(@NotNull LocalDate date) {
-        if (validFrom().isPresent() && date.isBefore(validFrom().get())) {
+        if (getValidFrom().isPresent() && date.isBefore(getValidFrom().get())) {
             return false;
         }
-        return validTo().isEmpty() || !date.isAfter(validTo().get());
+        return getValidTo().isEmpty() || !date.isAfter(getValidTo().get());
     }
 
     /**

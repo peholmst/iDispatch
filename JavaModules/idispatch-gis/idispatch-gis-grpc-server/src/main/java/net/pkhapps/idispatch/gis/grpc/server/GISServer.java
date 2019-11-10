@@ -34,6 +34,7 @@ public class GISServer {
         var gis = GISFactory.getInstance().createGIS(properties);
         var server = ServerBuilder.forPort(port)
                 .addService(new MunicipalityLookupServiceImpl(gis.getMunicipalityLookupService()))
+                .addService(new LocationFeatureLookupServiceImpl(gis.getLocationFeatureLookupService()))
                 .build();
         server.start();
         server.awaitTermination();

@@ -40,4 +40,8 @@ public enum RoadSurface {
         return code == null ? null : Stream.of(values()).filter(rs -> rs.code == code).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
     }
+
+    public int code() {
+        return code;
+    }
 }

@@ -40,6 +40,10 @@ public enum Elevation {
                 .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
     }
 
+    public int code() {
+        return code;
+    }
+
     /**
      * Returns whether this elevation level is below ground or above ground.
      *

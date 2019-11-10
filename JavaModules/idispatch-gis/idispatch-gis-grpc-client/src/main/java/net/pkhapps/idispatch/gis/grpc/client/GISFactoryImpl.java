@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.gis.grpc.client.spi;
+package net.pkhapps.idispatch.gis.grpc.client;
 
 import io.grpc.ManagedChannelBuilder;
 import net.pkhapps.idispatch.gis.api.spi.GIS;

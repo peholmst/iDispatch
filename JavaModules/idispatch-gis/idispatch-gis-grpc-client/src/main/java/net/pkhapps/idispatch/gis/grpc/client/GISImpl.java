@@ -1,10 +1,9 @@
-package net.pkhapps.idispatch.gis.grpc.client.spi;
+package net.pkhapps.idispatch.gis.grpc.client;
 
 import io.grpc.Channel;
 import net.pkhapps.idispatch.gis.api.lookup.LocationFeatureLookupService;
 import net.pkhapps.idispatch.gis.api.lookup.MunicipalityLookupService;
 import net.pkhapps.idispatch.gis.api.spi.GIS;
-import net.pkhapps.idispatch.gis.grpc.client.MunicipalityLookupServiceImpl;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -12,10 +11,12 @@ import org.jetbrains.annotations.NotNull;
  */
 class GISImpl implements GIS {
 
-    private final MunicipalityLookupServiceImpl municipalityLookupService;
+    private final MunicipalityLookupServiceClient municipalityLookupService;
+    private final LocationFeatureLookupService locationFeatureLookupService;
 
     GISImpl(@NotNull Channel channel) {
-        this.municipalityLookupService = new MunicipalityLookupServiceImpl(channel);
+        municipalityLookupService = new MunicipalityLookupServiceClient(channel);
+        locationFeatureLookupService = new LocationFeatureLookupServiceClient(channel);
     }
 
     @Override
@@ -25,6 +26,6 @@ class GISImpl implements GIS {
 
     @Override
     public @NotNull LocationFeatureLookupService getLocationFeatureLookupService() {
-        throw new UnsupportedOperationException("Not implemented yet");
+        return locationFeatureLookupService;
     }
 }

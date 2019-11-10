@@ -30,4 +30,8 @@ public enum AddressPointClass {
         return code == null ? null : Stream.of(values()).filter(apc -> apc.code == code).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Unknown code: " + code));
     }
+
+    public int code() {
+        return code;
+    }
 }

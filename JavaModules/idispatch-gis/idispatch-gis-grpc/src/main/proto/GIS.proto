@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/wrappers.proto";
+
 package net.pkhapps.idispatch.gis.grpc.proto;
 
 message MultilingualString {
@@ -20,9 +22,24 @@ message Point {
     Coordinate coordinate = 2;
 }
 
+message LineString {
+    int32 srid = 1;
+    repeated Coordinate coordinates = 2;
+}
+
+message Date {
+    int32 year = 1;
+    int32 month = 2;
+    int32 day = 3;
+}
+
+message MunicipalityCode {
+    string code = 1;
+}
+
 message Municipality {
     MultilingualString name = 1;
-    string nationalCode = 2;
+    MunicipalityCode nationalCode = 2;
     Point center = 3;
 }
 
@@ -36,8 +53,55 @@ message SearchRequest {
     string searchTerm = 2;
 }
 
+message AddressPoint {
+    MultilingualString name = 1;
+    google.protobuf.StringValue number = 2;
+    int32 addressPointClass = 3;
+    Point location = 4;
+}
+
+message AddressNumberRange {
+    int32 min = 1;
+    int32 max = 2;
+}
+
+message RoadSegment {
+    MultilingualString name = 1;
+    AddressNumberRange addressNumbersLeft = 2;
+    AddressNumberRange addressNumbersRight = 3;
+    google.protobuf.Int64Value roadNumber = 4;
+    google.protobuf.Int64Value roadPartNumber = 5;
+    int32 direction = 6;
+    int32 surface = 7;
+    int32 elevation = 8;
+    int32 roadClass = 9;
+    LineString location = 10;
+}
+
+message LocationFeature {
+    int32 locationAccuracy = 1;
+    MunicipalityCode municipality = 2;
+    Date validFrom = 3;
+    Date validTo = 4;
+    oneof feature {
+        AddressPoint addressPoint = 5;
+        RoadSegment roadSegment = 6;
+    }
+}
+
+message LocationFeatureSearchRequest {
+    SearchRequest nameSearch = 1;
+    MunicipalityCode municipality = 2;
+    google.protobuf.StringValue number = 3;
+}
+
 service MunicipalityLookupService {
     rpc findMunicipalityOfPoint (Point) returns (Municipality);
     rpc findByNationalCode (SearchRequest) returns (Municipality);
     rpc findByName (SearchRequest) returns (stream Municipality);
+}
+
+service LocationFeatureLookupService {
+    rpc findFeaturesCloseToPoint (Point) returns (stream LocationFeature);
+    rpc findFeaturesByName (LocationFeatureSearchRequest) returns (stream LocationFeature);
 }

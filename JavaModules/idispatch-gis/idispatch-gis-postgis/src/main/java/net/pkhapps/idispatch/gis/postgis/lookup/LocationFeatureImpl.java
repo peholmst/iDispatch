@@ -61,12 +61,12 @@ abstract class LocationFeatureImpl<Location extends Geometry> implements Locatio
     }
 
     @Override
-    public @NotNull Optional<LocalDate> validFrom() {
+    public @NotNull Optional<LocalDate> getValidFrom() {
         return Optional.ofNullable(validFrom);
     }
 
     @Override
-    public @NotNull Optional<LocalDate> validTo() {
+    public @NotNull Optional<LocalDate> getValidTo() {
         return Optional.ofNullable(validTo);
     }
 
