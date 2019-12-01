@@ -1,4 +1,6 @@
 package net.pkhapps.idispatch.dws.ui.components;
 
-public class IncidentForm {
+import com.vaadin.flow.component.html.Div;
+
+public class IncidentForm extends Div {
 }

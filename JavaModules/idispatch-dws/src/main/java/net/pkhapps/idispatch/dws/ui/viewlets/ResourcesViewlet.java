@@ -1,4 +1,6 @@
 package net.pkhapps.idispatch.dws.ui.viewlets;
 
-public class ResourcesViewlet {
+import com.vaadin.flow.component.html.Div;
+
+public class ResourcesViewlet extends Div {
 }

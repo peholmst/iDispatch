@@ -2,6 +2,8 @@ package net.pkhapps.idispatch.gis.api;
 
 import org.geotools.geometry.jts.JTS;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.locationtech.jts.geom.Geometry;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 import org.opengis.referencing.operation.MathTransform;
@@ -29,7 +31,9 @@ public final class CRS {
      * The SRID for WGS84
      */
     public static final int WGS84_SRID = 4326;
+
     private static final MathTransform WGS84_TO_TM35FIN;
+    private static final MathTransform TM35FIN_TO_WGS84;
 
     static {
         try {
@@ -69,6 +73,7 @@ public final class CRS {
                     "    AUTHORITY[\"EPSG\",\"4326\"]]");
 
             WGS84_TO_TM35FIN = org.geotools.referencing.CRS.findMathTransform(WGS84, ETRS89_TM35FIN);
+            TM35FIN_TO_WGS84 = org.geotools.referencing.CRS.findMathTransform(ETRS89_TM35FIN, WGS84);
         } catch (Exception ex) {
             throw new IllegalStateException("Could not set up coordinate reference systems", ex);
         }
@@ -84,15 +89,33 @@ public final class CRS {
      * @param <G>      the type of the geometry
      * @return the converted geometry or {@code null} if the input argument was {@code null}
      */
-    @SuppressWarnings("unchecked")
     @Contract("null -> null")
-    public static <G extends Geometry> G wgs84ToEtrs89Tm35Fin(G geometry) {
+    public static <G extends Geometry> G wgs84ToEtrs89Tm35Fin(@Nullable G geometry) {
+        return convert(geometry, WGS84_TO_TM35FIN, ETRS89_TM35FIN_SRID);
+    }
+
+    /**
+     * TODO Document me
+     *
+     * @param geometry
+     * @param <G>
+     * @return
+     */
+    @Contract("null -> null")
+    public static <G extends Geometry> G etrs89Tm35FinToWgs84(@Nullable G geometry) {
+        return convert(geometry, TM35FIN_TO_WGS84, WGS84_SRID);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Contract("null,_,_ -> null")
+    private static <G extends Geometry> G convert(@Nullable G geometry, @NotNull MathTransform transform,
+                                                  @NotNull int destinationSrid) {
         if (geometry == null) {
             return null;
         }
         try {
-            var transformed = (G) JTS.transform(geometry, WGS84_TO_TM35FIN);
-            transformed.setSRID(ETRS89_TM35FIN_SRID);
+            var transformed = (G) JTS.transform(geometry, transform);
+            transformed.setSRID(destinationSrid);
             return transformed;
         } catch (TransformException ex) {
             throw new RuntimeException("Could not convert geometry", ex);

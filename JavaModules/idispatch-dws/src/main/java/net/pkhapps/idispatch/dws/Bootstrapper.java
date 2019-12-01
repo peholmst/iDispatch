@@ -51,6 +51,8 @@ public class Bootstrapper implements ServletContextListener, Services {
         }
 
         SERVICES = this;
+
+        System.setProperty("vaadin.i18n.provider", ResourceBundleI18NProvider.class.getName());
     }
 
     @Override

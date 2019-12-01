@@ -32,15 +32,11 @@ const mkdirp = require('mkdirp');
 mkdirp(buildFolder);
 mkdirp(confFolder);
 
-const devMode = process.argv.find(v = > v.indexOf('webpack-dev-server') >= 0
-)
-;
+const devMode = process.argv.find(v => v.indexOf('webpack-dev-server') >= 0);
 let stats;
 
 const watchDogPrefix = '--watchDogPort=';
-let watchDogPort = process.argv.find(v = > v.indexOf(watchDogPrefix) >= 0
-)
-;
+let watchDogPort = process.argv.find(v => v.indexOf(watchDogPrefix) >= 0);
 if (watchDogPort) {
     watchDogPort = watchDogPort.substr(watchDogPrefix.length);
 }
@@ -163,24 +159,18 @@ module.exports = {
 
         // Generates the stats file for flow `@Id` binding.
         function (compiler) {
-            compiler.hooks.afterEmit.tapAsync("FlowIdPlugin", (compilation, done) = > {
-                if(
-            !devMode
-        )
-            {
-                // eslint-disable-next-line no-console
-                console.log("         Emitted " + statsFile)
-                fs.writeFile(statsFile, JSON.stringify(compilation.getStats().toJson(), null, 1), done);
-            }
-        else
-            {
-                // eslint-disable-next-line no-console
-                console.log("         Serving the 'stats.json' file dynamically.");
-                stats = compilation.getStats();
-                done();
-            }
-        })
-            ;
+            compiler.hooks.afterEmit.tapAsync("FlowIdPlugin", (compilation, done) => {
+                if (!devMode) {
+                    // eslint-disable-next-line no-console
+                    console.log("         Emitted " + statsFile)
+                    fs.writeFile(statsFile, JSON.stringify(compilation.getStats().toJson(), null, 1), done);
+                } else {
+                    // eslint-disable-next-line no-console
+                    console.log("         Serving the 'stats.json' file dynamically.");
+                    stats = compilation.getStats();
+                    done();
+                }
+            });
         },
 
         // Copy webcomponents polyfills. They are not bundled because they

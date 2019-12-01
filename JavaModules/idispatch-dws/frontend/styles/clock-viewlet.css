@@ -1,0 +1,16 @@
+.clock-viewlet {
+    margin: 4px;
+    padding: 5px;
+    border: 1px solid var(--lumo-contrast-10pct);
+    background-color: var(--lumo-shade-50pct);
+    color: var(--lumo-tint-100pct);
+}
+
+.clock-viewlet .time {
+    font-size: var(--lumo-font-size-xxxl);
+}
+
+.clock-viewlet .date {
+    font-size: var(--lumo-font-size-m);
+    font-weight: 100;
+}
