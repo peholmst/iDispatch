@@ -17,7 +17,7 @@ import java.util.Properties;
 /**
  * TODO Document me
  */
-@WebListener
+//@WebListener
 public class Bootstrapper implements ServletContextListener, Services {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Bootstrapper.class);

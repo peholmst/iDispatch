@@ -1,5 +1,12 @@
+html {
+    --lumo-font-family: 'Ubuntu', sans-serif;
+}
 .primary-monitor-layout {
     display: flex;
     flex-direction: column;
-    font-family: 'Roboto', sans-serif;
+}
+
+.primary-monitor-layout .left-side-panel {
+    display: flex;
+    flex-direction: column;
 }

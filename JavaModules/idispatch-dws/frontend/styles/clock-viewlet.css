@@ -4,10 +4,15 @@
     border: 1px solid var(--lumo-contrast-10pct);
     background-color: var(--lumo-shade-50pct);
     color: var(--lumo-tint-100pct);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
 }
 
 .clock-viewlet .time {
     font-size: var(--lumo-font-size-xxxl);
+    font-weight: 500;
 }
 
 .clock-viewlet .date {

@@ -9,10 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>idispatch-core-app</artifactId>
-    <name>iDispatch Core App</name>
+    <artifactId>idispatch-core-grpc-client</artifactId>
+    <name>iDispatch Core gRPC Client</name>
     <description>
-        Main executable for the iDispatch Core server application.
+        Client API and implementation that connects to an iDispatch Core Server over gRPC.
     </description>
 
     <dependencies>
@@ -21,13 +21,6 @@
             <artifactId>idispatch-core-grpc</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
     </dependencies>
+
 </project>

@@ -10,6 +10,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>idispatch-core-grpc</artifactId>
+    <name>iDispatch Core gRPC Protocol Buffer Definition</name>
+    <description>
+        gRPC protocol buffer definition and stubs used by both the gRPC client and the gRPC server.
+    </description>
 
     <dependencies>
         <dependency>
@@ -23,6 +27,10 @@
         <dependency>
             <groupId>io.grpc</groupId>
             <artifactId>grpc-stub</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
         </dependency>
     </dependencies>
 

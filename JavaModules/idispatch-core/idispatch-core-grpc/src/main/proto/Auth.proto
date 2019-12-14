@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.auth;
+
+message AuthenticationRequest {
+    int64 seqNo = 1;
+    string username = 2;
+}
+
+message AuthenticationChallenge {
+    int64 seqNo = 1;
+    bytes challenge = 2;
+}
+
+message AuthenticationResponse {
+    int64 seqNo = 1;
+    bytes response = 2;
+}
+
+message UserPrincipal {
+    string username = 1;
+    string fullName = 2;
+    string dispatchCenterName = 3;
+    bytes token = 4;
+}
+
+message AuthenticationOutcome {
+    int64 seqNo = 1;
+    bool authenticated = 2;
+    UserPrincipal principal = 3;
+}
+
+service AuthenticationService {
+    rpc initAuthentication (AuthenticationRequest) returns (AuthenticationChallenge);
+    rpc completeAuthentication (AuthenticationResponse) returns (AuthenticationOutcome);
+}
