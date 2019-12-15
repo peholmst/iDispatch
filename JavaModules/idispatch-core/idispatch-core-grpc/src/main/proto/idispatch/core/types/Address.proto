@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.address;
+option java_multiple_files = true;
+option java_outer_classname = "AddressTypes";
+
+import "google/protobuf/wrappers.proto";
+
+import "GIS.proto";
+
+message NamedAddress {
+    net.pkhapps.idispatch.gis.grpc.proto.MunicipalityCode municipality = 1;
+    net.pkhapps.idispatch.gis.grpc.proto.Point location = 2;
+    net.pkhapps.idispatch.gis.grpc.proto.MultilingualString name = 3;
+    google.protobuf.StringValue number = 4;
+}
+
+message Intersection {
+    net.pkhapps.idispatch.gis.grpc.proto.MunicipalityCode municipality = 1;
+    net.pkhapps.idispatch.gis.grpc.proto.Point location = 2;
+    net.pkhapps.idispatch.gis.grpc.proto.MultilingualString firstRoadName = 3;
+    net.pkhapps.idispatch.gis.grpc.proto.MultilingualString secondRoadName = 4;
+}

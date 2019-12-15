@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.organization;
+option java_multiple_files = true;
+option java_outer_classname = "OrganizationTypes";
+
+message OrganizationId {
+    string uuid = 1;
+}
+
+// TODO Define organization types

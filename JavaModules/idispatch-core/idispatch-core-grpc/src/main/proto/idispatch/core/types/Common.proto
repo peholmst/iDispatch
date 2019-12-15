@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.common;
+option java_multiple_files = true;
+option java_outer_classname = "CommonTypes";
+
+import "google/protobuf/wrappers.proto";
+
+message MultilingualName {
+    google.protobuf.StringValue fin = 1;
+    google.protobuf.StringValue swe = 2;
+}

@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.resourcestatus;
+option java_multiple_files = true;
+option java_outer_classname = "ResourceStatusTypes";
+
+import "google/protobuf/timestamp.proto";
+import "google/type/color.proto";
+
+import "idispatch/core/types/Common.proto";
+import "idispatch/core/types/Incident.proto";
+import "idispatch/core/types/Resource.proto";
+
+import "GIS.proto";
+
+message ResourceStateId {
+    string uuid = 1;
+}
+
+message ResourceState {
+    ResourceStateId resourceStateId = 1;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualName name = 2;
+    google.type.Color color = 3;
+    bool dispatcherAssignable = 4;
+    bool resourceAssignable = 5;
+    int32 order = 6;
+}
+
+message ResourceStateChangedEvent {
+    ResourceState oldResourceState = 1;
+    ResourceState newResourceState = 2;
+}
+
+message ResourceStatus {
+    net.pkhapps.idispatch.core.grpc.proto.resource.ResourceId resourceId = 1;
+    ResourceState state = 2;
+    google.protobuf.Timestamp lastStateChange = 3;
+    net.pkhapps.idispatch.gis.grpc.proto.Point location = 4;
+    google.protobuf.Timestamp lastLocationChange = 5;
+    net.pkhapps.idispatch.core.grpc.proto.incident.IncidentId incidentId = 6;
+}
+
+message ResourceStatusChangedEvent {
+    ResourceStatus oldResourceStatus = 1;
+    ResourceStatus newResourceStatus = 2;
+}

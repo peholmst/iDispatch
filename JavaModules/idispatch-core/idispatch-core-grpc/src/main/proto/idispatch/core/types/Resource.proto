@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.resource;
+option java_multiple_files = true;
+option java_outer_classname = "ResourceTypes";
+
+import "google/protobuf/wrappers.proto";
+
+import "idispatch/core/types/Address.proto";
+import "idispatch/core/types/Common.proto";
+import "idispatch/core/types/Organization.proto";
+
+message ResourceTypeId {
+    string uuid = 1;
+}
+
+message StationId {
+    string uuid = 1;
+}
+
+message ResourceId {
+    string uuid = 1;
+}
+
+message ResourceType {
+    ResourceTypeId resourceTypeId = 1;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualName name = 2;
+    bool active = 3;
+    google.protobuf.StringValue comments = 7;
+}
+
+message ResourceTypeChangedEvent {
+    ResourceType oldResourceType = 1;
+    ResourceType newResourceType = 2;
+}
+
+message Station {
+    net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId organization = 1;
+    StationId stationId = 2;
+    net.pkhapps.idispatch.core.grpc.proto.address.NamedAddress address = 3;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualName name = 4;
+    bool active = 5;
+    google.protobuf.StringValue comments = 6;
+}
+
+message StationChangedEvent {
+    Station oldStation = 1;
+    Station newStation = 2;
+}
+
+message Resource {
+    net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId organization = 1;
+    ResourceId resourceId = 2;
+    ResourceTypeId resourceType = 3;
+    string callSign = 4;
+    StationId station = 5;
+    bool active = 6;
+    google.protobuf.StringValue comments = 7;
+}
+
+message ResourceChangedEvent {
+    Resource oldResource = 1;
+    Resource newResource = 2;
+}

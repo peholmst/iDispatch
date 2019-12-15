@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.alert;
+option java_multiple_files = true;
+option java_outer_classname = "AlertTypes";
+
+// TODO Define alert types
