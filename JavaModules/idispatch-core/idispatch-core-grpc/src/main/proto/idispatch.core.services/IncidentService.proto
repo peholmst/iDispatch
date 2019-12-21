@@ -1,0 +1,103 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.incident;
+option java_multiple_files = true;
+option java_outer_classname = "IncidentServiceProto";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+import "GIS.proto";
+
+import "idispatch/core/types/Common.proto";
+import "idispatch/core/types/Incident.proto";
+import "idispatch/core/types/IncidentPriority.proto";
+import "idispatch/core/types/IncidentState.proto";
+import "idispatch/core/types/IncidentType.proto";
+import "idispatch/core/types/Organization.proto";
+
+message IncidentFilter {
+    repeated net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId organizations = 1;
+    repeated IncidentTypeId types = 2;
+    repeated IncidentStateId states = 3;
+    repeated IncidentPriorityId priorities = 4;
+    net.pkhapps.idispatch.gis.grpc.proto.Envelope bounds = 5;
+}
+
+message IncidentPageRequest {
+    int64 offset = 1;
+    int32 size = 2;
+    IncidentFilter filter = 3;
+}
+
+message UpdateIncidentTypeCommand {
+    IncidentTypeId newType = 1;
+}
+
+message UpdateIncidentPriorityCommand {
+    IncidentPriorityId newPriority = 1;
+}
+
+message UpdateIncidentAddressCommand {
+    IncidentAddress newAddress = 1;
+}
+
+message UpdateIncidentDetailsCommand {
+    google.protobuf.StringValue newDetails = 1;
+}
+
+message UpdateIncidentCommand {
+    IncidentId incidentId = 1;
+    UpdateIncidentTypeCommand updateType = 2;
+    UpdateIncidentPriorityCommand updatePriority = 3;
+    UpdateIncidentAddressCommand updateAddress = 4;
+    UpdateIncidentDetailsCommand updateDetails = 5;
+}
+
+message IncidentStateChangedEvent {
+    IncidentStateId oldState = 1;
+    IncidentStateId newState = 2;
+}
+
+message IncidentTypeChangedEvent {
+    IncidentTypeId oldType = 1;
+    IncidentTypeId newType = 2;
+}
+
+message IncidentPriorityChangedEvent {
+    IncidentPriorityId oldPriority = 1;
+    IncidentPriorityId newPriority = 2;
+}
+
+message IncidentAddressChangedEvent {
+    IncidentAddress oldAddress = 1;
+    IncidentAddress newAddress = 2;
+}
+
+message IncidentDetailsChangedEvent {
+    google.protobuf.StringValue oldDetails = 1;
+    google.protobuf.StringValue newDetails = 2;
+}
+
+message IncidentEvent {
+    IncidentId incidentId = 1;
+    oneof event {
+        IncidentStateChangedEvent stateChanged = 2;
+        IncidentTypeChangedEvent typeChanged = 3;
+        IncidentPriorityChangedEvent priorityChanged = 4;
+        IncidentAddressChangedEvent addressChanged = 5;
+        IncidentDetailsChangedEvent detailsChanged = 6;
+    }
+}
+
+service IncidentService {
+    rpc findIncidents (IncidentPageRequest) returns (stream Incident);
+    rpc countIncidents (IncidentFilter) returns (google.protobuf.Int64Value);
+    rpc findIncidentById (IncidentId) returns (Incident);
+    rpc findIncidentAuditLog (IncidentId) returns (stream  net.pkhapps.idispatch.core.grpc.proto.common.AuditLogEntry);
+    rpc subscribeToIncidents (IncidentFilter) returns (stream IncidentEvent);
+    rpc subscribeToIncident (IncidentId) returns (stream IncidentEvent);
+    rpc openIncident (net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId) returns (Incident);
+    rpc closeIncident (IncidentId) returns (Incident);
+    rpc updateIncident (UpdateIncidentCommand) returns (Incident);
+}

@@ -2,7 +2,7 @@ package net.pkhapps.idispatch.core.client.auth;
 
 import io.grpc.CallCredentials;
 import io.grpc.Metadata;
-import net.pkhapps.idispatch.core.grpc.proto.auth.Auth;
+import net.pkhapps.idispatch.core.grpc.proto.auth.UserPrincipal;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.Executor;
@@ -14,9 +14,9 @@ import static java.util.Objects.requireNonNull;
  */
 class AuthenticatedPrincipalImpl extends CallCredentials implements AuthenticatedPrincipal {
 
-    private final Auth.UserPrincipal userPrincipal;
+    private final UserPrincipal userPrincipal;
 
-    AuthenticatedPrincipalImpl(@NotNull Auth.UserPrincipal userPrincipal) {
+    AuthenticatedPrincipalImpl(@NotNull UserPrincipal userPrincipal) {
         this.userPrincipal = requireNonNull(userPrincipal);
     }
 

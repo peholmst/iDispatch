@@ -24,9 +24,9 @@ message ResourceId {
 
 message ResourceType {
     ResourceTypeId resourceTypeId = 1;
-    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualName name = 2;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualString name = 2;
     bool active = 3;
-    google.protobuf.StringValue comments = 7;
+    google.protobuf.StringValue comments = 4;
 }
 
 message ResourceTypeChangedEvent {
@@ -38,7 +38,7 @@ message Station {
     net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId organization = 1;
     StationId stationId = 2;
     net.pkhapps.idispatch.core.grpc.proto.address.NamedAddress address = 3;
-    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualName name = 4;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualString name = 4;
     bool active = 5;
     google.protobuf.StringValue comments = 6;
 }

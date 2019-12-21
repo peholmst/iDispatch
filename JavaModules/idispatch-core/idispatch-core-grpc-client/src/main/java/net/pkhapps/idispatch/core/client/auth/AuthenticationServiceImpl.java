@@ -2,7 +2,9 @@ package net.pkhapps.idispatch.core.client.auth;
 
 import com.google.protobuf.ByteString;
 import io.grpc.Channel;
-import net.pkhapps.idispatch.core.grpc.proto.auth.Auth;
+import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationChallenge;
+import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationRequest;
+import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationResponse;
 import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationServiceGrpc;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,12 +38,12 @@ class AuthenticationServiceImpl implements AuthenticationService {
     private class AuthenticationProcessImpl implements AuthenticationProcess {
 
         private final AtomicLong nextSeqNo;
-        private final Auth.AuthenticationChallenge challenge;
+        private final AuthenticationChallenge challenge;
         private String password;
 
         AuthenticationProcessImpl(@NotNull String username) {
             nextSeqNo = new AtomicLong(secureRandom.nextLong());
-            challenge = server.initAuthentication(Auth.AuthenticationRequest.newBuilder()
+            challenge = server.initAuthentication(AuthenticationRequest.newBuilder()
                     .setSeqNo(nextSeqNo.getAndIncrement())
                     .setUsername(username)
                     .build());
@@ -72,7 +74,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
 
         @Override
         public @NotNull AuthenticatedPrincipal authenticate() throws AuthenticationException {
-            var response = server.completeAuthentication(Auth.AuthenticationResponse.newBuilder()
+            var response = server.completeAuthentication(AuthenticationResponse.newBuilder()
                     .setSeqNo(nextSeqNo.getAndIncrement())
                     .setResponse(ByteString.copyFrom(computeResponseHash()))
                     .build());

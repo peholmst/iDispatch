@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.incident;
+option java_multiple_files = true;
+option java_outer_classname = "IncidentPriorityServiceProto";
+
+import "google/protobuf/empty.proto";
+
+import "idispatch/core/types/IncidentPriority.proto";
+
+service IncidentPriorityService {
+    rpc findIncidentPriorities (google.protobuf.Empty) returns (stream IncidentPriority);
+    rpc findIncidentPriorityById (IncidentPriorityId) returns (IncidentPriority);
+}

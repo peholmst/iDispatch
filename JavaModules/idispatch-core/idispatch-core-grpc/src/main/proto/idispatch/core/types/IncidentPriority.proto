@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.incident;
+option java_multiple_files = true;
+option java_outer_classname = "IncidentPriorityProto";
+
+message IncidentPriorityId {
+    string uuid = 1;
+}
+
+message IncidentPriority {
+    IncidentPriorityId incidentPriorityId = 1;
+    string code = 2;
+    int32 order = 3;
+}

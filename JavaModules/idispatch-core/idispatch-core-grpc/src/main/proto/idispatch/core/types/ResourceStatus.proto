@@ -19,7 +19,7 @@ message ResourceStateId {
 
 message ResourceState {
     ResourceStateId resourceStateId = 1;
-    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualName name = 2;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualString name = 2;
     google.type.Color color = 3;
     bool dispatcherAssignable = 4;
     bool resourceAssignable = 5;

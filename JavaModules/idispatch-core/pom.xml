@@ -27,7 +27,9 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        
+
+        <idispatch-gis.version>${project.version}</idispatch-gis.version>
+
         <testng.version>7.0.0</testng.version>
         <assertj.version>3.13.2</assertj.version>
         <mockito.version>3.0.0</mockito.version>
@@ -53,6 +55,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>net.pkhapps.idispatch.gis</groupId>
+                <artifactId>idispatch-gis-grpc</artifactId>
+                <version>${idispatch-gis.version}</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>

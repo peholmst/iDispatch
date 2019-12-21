@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.incident;
+option java_multiple_files = true;
+option java_outer_classname = "IncidentTypeServiceProto";
+
+import "google/protobuf/wrappers.proto";
+
+import "idispatch/core/types/IncidentType.proto";
+
+message IncidentTypeFilter {
+    bool activeOnly = 1;
+    google.protobuf.StringValue codeMatching = 2;
+    google.protobuf.StringValue nameMatching = 3;
+}
+
+message IncidentTypePageRequest {
+    int64 offset = 1;
+    int32 size = 2;
+    IncidentTypeFilter filter = 3;
+}
+
+service IncidentTypeService {
+    rpc findIncidentTypes (IncidentTypePageRequest) returns (stream IncidentType);
+    rpc countIncidentTypes (IncidentTypeFilter) returns (google.protobuf.Int64Value);
+    rpc findIncidentTypeById (IncidentTypeId) returns (IncidentType);
+    rpc findIncidentTypeByCode (google.protobuf.StringValue) returns (IncidentType);
+    rpc saveIncidentType (IncidentType) returns (IncidentType);
+}

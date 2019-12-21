@@ -2,10 +2,37 @@ syntax = "proto3";
 
 package net.pkhapps.idispatch.core.grpc.proto.incident;
 option java_multiple_files = true;
-option java_outer_classname = "IncidentTypes";
+option java_outer_classname = "IncidentProto";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+import "idispatch/core/types/Address.proto";
+import "idispatch/core/types/IncidentPriority.proto";
+import "idispatch/core/types/IncidentState.proto";
+import "idispatch/core/types/IncidentType.proto";
+import "idispatch/core/types/Organization.proto";
 
 message IncidentId {
     string uuid = 1;
 }
 
-// TODO Define incident types
+message IncidentAddress {
+    oneof address {
+        net.pkhapps.idispatch.core.grpc.proto.address.UnnamedAddress unnamed = 1;
+        net.pkhapps.idispatch.core.grpc.proto.address.NamedAddress named = 2;
+        net.pkhapps.idispatch.core.grpc.proto.address.Intersection intersection = 3;
+    }
+}
+
+message Incident {
+    net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId organization = 1;
+    IncidentId incidentId = 2;
+    google.protobuf.Timestamp openedOn = 3;
+    google.protobuf.Timestamp closedOn = 4;
+    IncidentStateId state = 5;
+    IncidentTypeId type = 6;
+    IncidentPriorityId priority = 7;
+    IncidentAddress address = 8;
+    google.protobuf.StringValue details = 9;
+}

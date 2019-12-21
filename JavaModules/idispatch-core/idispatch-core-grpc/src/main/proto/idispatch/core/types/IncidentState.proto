@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.incident;
+option java_multiple_files = true;
+option java_outer_classname = "IncidentStateProto";
+
+import "google/type/color.proto";
+
+import "idispatch/core/types/Common.proto";
+
+message IncidentStateId {
+    string uuid = 1;
+}
+
+message IncidentState {
+    IncidentStateId incidentStateId = 1;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualString name = 2;
+    google.type.Color color = 3;
+    bool incidentEditable = 4;
+    bool incidentAlertable = 5;
+    int32 order = 6;
+}

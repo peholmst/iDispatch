@@ -1,12 +1,30 @@
 syntax = "proto3";
 
 package net.pkhapps.idispatch.core.grpc.proto.common;
-option java_multiple_files = true;
 option java_outer_classname = "CommonTypes";
 
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/wrappers.proto";
 
-message MultilingualName {
+message MultilingualString {
     google.protobuf.StringValue fin = 1;
     google.protobuf.StringValue swe = 2;
+}
+
+message UserReference {
+    string uuid = 1;
+}
+
+message IpAddress {
+    oneof address {
+        string ipv4 = 1;
+        string ipv6 = 2;
+    }
+}
+
+message AuditLogEntry {
+    google.protobuf.Timestamp timestamp = 1;
+    UserReference user = 2;
+    IpAddress ipAddress = 3;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualString description = 4;
 }

@@ -8,16 +8,22 @@ import "google/protobuf/wrappers.proto";
 
 import "GIS.proto";
 
+message UnnamedAddress {
+    net.pkhapps.idispatch.gis.grpc.proto.MunicipalityCode municipality = 1;
+    net.pkhapps.idispatch.gis.grpc.proto.Point location = 2;
+    google.protobuf.StringValue additionalInfo = 3;
+}
+
 message NamedAddress {
     net.pkhapps.idispatch.gis.grpc.proto.MunicipalityCode municipality = 1;
     net.pkhapps.idispatch.gis.grpc.proto.Point location = 2;
-    net.pkhapps.idispatch.gis.grpc.proto.MultilingualString name = 3;
+    net.pkhapps.idispatch.gis.grpc.proto.Name name = 3;
     google.protobuf.StringValue number = 4;
 }
 
 message Intersection {
     net.pkhapps.idispatch.gis.grpc.proto.MunicipalityCode municipality = 1;
     net.pkhapps.idispatch.gis.grpc.proto.Point location = 2;
-    net.pkhapps.idispatch.gis.grpc.proto.MultilingualString firstRoadName = 3;
-    net.pkhapps.idispatch.gis.grpc.proto.MultilingualString secondRoadName = 4;
+    net.pkhapps.idispatch.gis.grpc.proto.Name firstRoadName = 3;
+    net.pkhapps.idispatch.gis.grpc.proto.Name secondRoadName = 4;
 }

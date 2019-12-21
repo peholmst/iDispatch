@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.incident;
+option java_multiple_files = true;
+option java_outer_classname = "IncidentTypeProto";
+
+import "google/protobuf/wrappers.proto";
+
+import "idispatch/core/types/Common.proto";
+
+message IncidentTypeId {
+    string uuid = 1;
+}
+
+message IncidentType {
+    IncidentTypeId incidentTypeId = 1;
+    string code = 2;
+    net.pkhapps.idispatch.core.grpc.proto.common.MultilingualString name = 3;
+    bool active = 4;
+    google.protobuf.StringValue comments = 5;
+}

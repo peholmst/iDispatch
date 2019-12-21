@@ -3,6 +3,7 @@ package net.pkhapps.idispatch.gis.grpc.util;
 import com.google.protobuf.Int32Value;
 import com.google.protobuf.Int64Value;
 import com.google.protobuf.StringValue;
+import com.google.type.Date;
 import net.pkhapps.idispatch.gis.api.Locales;
 import net.pkhapps.idispatch.gis.api.lookup.AddressNumberRange;
 import net.pkhapps.idispatch.gis.api.lookup.NamedFeature;
@@ -67,8 +68,8 @@ public final class ConversionUtil {
         throw new UnsupportedOperationException("Not implemented");// TODO Implement me
     }
 
-    public static @NotNull GIS.MultilingualString toMessage(@NotNull NamedFeature namedFeature) {
-        var builder = GIS.MultilingualString.newBuilder();
+    public static @NotNull GIS.Name toMessage(@NotNull NamedFeature namedFeature) {
+        var builder = GIS.Name.newBuilder();
         namedFeature.getName(Locales.FINNISH).ifPresent(builder::setFin);
         namedFeature.getName(Locales.SWEDISH).ifPresent(builder::setSwe);
         namedFeature.getName(Locales.NORTHERN_SAMI).ifPresent(builder::setSme);
@@ -77,7 +78,7 @@ public final class ConversionUtil {
         return builder.build();
     }
 
-    public static @NotNull NamedFeature fromMessage(@NotNull GIS.MultilingualString multilingualString) {
+    public static @NotNull NamedFeature fromMessage(@NotNull GIS.Name name) {
         return new NamedFeature() {
 
             private boolean hasSameLanguage(@NotNull Locale l1, @NotNull Locale l2) {
@@ -87,15 +88,15 @@ public final class ConversionUtil {
             @Override
             public @NotNull Optional<String> getName(@NotNull Locale locale) {
                 if (hasSameLanguage(locale, Locales.FINNISH)) {
-                    return Optional.ofNullable(multilingualString.getFin());
+                    return Optional.ofNullable(name.getFin());
                 } else if (hasSameLanguage(locale, Locales.SWEDISH)) {
-                    return Optional.ofNullable(multilingualString.getSwe());
+                    return Optional.ofNullable(name.getSwe());
                 } else if (hasSameLanguage(locale, Locales.NORTHERN_SAMI)) {
-                    return Optional.ofNullable(multilingualString.getSme());
+                    return Optional.ofNullable(name.getSme());
                 } else if (hasSameLanguage(locale, Locales.INARI_SAMI)) {
-                    return Optional.ofNullable(multilingualString.getSmn());
+                    return Optional.ofNullable(name.getSmn());
                 } else if (hasSameLanguage(locale, Locales.SKOLT_SAMI)) {
-                    return Optional.ofNullable(multilingualString.getSms());
+                    return Optional.ofNullable(name.getSms());
                 } else {
                     return Optional.empty();
                 }
@@ -103,15 +104,15 @@ public final class ConversionUtil {
         };
     }
 
-    public static @NotNull GIS.Date toMessage(@NotNull LocalDate localDate) {
-        return GIS.Date.newBuilder()
+    public static @NotNull Date toMessage(@NotNull LocalDate localDate) {
+        return Date.newBuilder()
                 .setYear(localDate.getYear())
                 .setMonth(localDate.getMonthValue())
                 .setDay(localDate.getDayOfMonth())
                 .build();
     }
 
-    public static @NotNull LocalDate fromMessage(@NotNull GIS.Date date) {
+    public static @NotNull LocalDate fromMessage(@NotNull Date date) {
         return LocalDate.of(date.getYear(), date.getMonth(), date.getDay());
     }
 

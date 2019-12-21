@@ -27,6 +27,8 @@
         <failOnMissingWebXml>false</failOnMissingWebXml>
 
         <idispatch-gis.version>${project.version}</idispatch-gis.version>
+        <idispatch-core.version>${project.version}</idispatch-core.version>
+
         <vaadin.version>14.1.2</vaadin.version>
         <node.version>v10.17.0</node.version>
         <appmodel4flow.version>1.1.0-SNAPSHOT</appmodel4flow.version>
@@ -54,11 +56,18 @@
             <version>17.0.0</version>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>net.pkhapps.idispatch.gis</groupId>
             <artifactId>idispatch-gis-grpc-client</artifactId>
             <version>${idispatch-gis.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.pkhapps.idispatch.core</groupId>
+            <artifactId>idispatch-core-grpc-client</artifactId>
+            <version>${idispatch-core.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-core</artifactId>
@@ -146,28 +155,28 @@
                 </configuration>
             </plugin>
             <!-- TODO Fix assembly -->
-<!--            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>net.pkhapps.idispatch.dws.DwsServerApp</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
+            <!--            <plugin>
+                            <artifactId>maven-assembly-plugin</artifactId>
+                            <configuration>
+                                <archive>
+                                    <manifest>
+                                        <mainClass>net.pkhapps.idispatch.dws.DwsServerApp</mainClass>
+                                    </manifest>
+                                </archive>
+                                <descriptorRefs>
+                                    <descriptorRef>jar-with-dependencies</descriptorRef>
+                                </descriptorRefs>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>make-assembly</id>
+                                    <phase>package</phase>
+                                    <goals>
+                                        <goal>single</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>-->
             <plugin>
                 <groupId>com.github.eirslett</groupId>
                 <artifactId>frontend-maven-plugin</artifactId>

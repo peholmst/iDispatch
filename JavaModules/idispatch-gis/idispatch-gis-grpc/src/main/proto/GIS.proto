@@ -1,10 +1,11 @@
 syntax = "proto3";
 
 import "google/protobuf/wrappers.proto";
+import "google/type/date.proto";
 
 package net.pkhapps.idispatch.gis.grpc.proto;
 
-message MultilingualString {
+message Name {
     string fin = 1;
     string swe = 2;
     string sme = 3;
@@ -22,15 +23,15 @@ message Point {
     Coordinate coordinate = 2;
 }
 
+message Envelope {
+    int32 srid = 1;
+    Coordinate firstCorner = 2;
+    Coordinate secondCorner = 3;
+}
+
 message LineString {
     int32 srid = 1;
     repeated Coordinate coordinates = 2;
-}
-
-message Date {
-    int32 year = 1;
-    int32 month = 2;
-    int32 day = 3;
 }
 
 message MunicipalityCode {
@@ -38,7 +39,7 @@ message MunicipalityCode {
 }
 
 message Municipality {
-    MultilingualString name = 1;
+    Name name = 1;
     MunicipalityCode nationalCode = 2;
     Point center = 3;
 }
@@ -54,7 +55,7 @@ message SearchRequest {
 }
 
 message AddressPoint {
-    MultilingualString name = 1;
+    Name name = 1;
     google.protobuf.StringValue number = 2;
     int32 addressPointClass = 3;
     Point location = 4;
@@ -66,7 +67,7 @@ message AddressNumberRange {
 }
 
 message RoadSegment {
-    MultilingualString name = 1;
+    Name name = 1;
     AddressNumberRange addressNumbersLeft = 2;
     AddressNumberRange addressNumbersRight = 3;
     google.protobuf.Int64Value roadNumber = 4;
@@ -81,8 +82,8 @@ message RoadSegment {
 message LocationFeature {
     int32 locationAccuracy = 1;
     MunicipalityCode municipality = 2;
-    Date validFrom = 3;
-    Date validTo = 4;
+    google.type.Date validFrom = 3;
+    google.type.Date validTo = 4;
     oneof feature {
         AddressPoint addressPoint = 5;
         RoadSegment roadSegment = 6;
