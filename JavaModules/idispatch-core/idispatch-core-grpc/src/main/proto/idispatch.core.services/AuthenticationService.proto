@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package net.pkhapps.idispatch.core.grpc.proto.auth;
+option java_multiple_files = true;
+option java_outer_classname = "AuthenticationServiceProto";
+
+import "google/protobuf/timestamp.proto";
+
+import "idispatch/core/types/Organization.proto";
+
+message AuthenticationRequest {
+    int64 seqNo = 1;
+    string username = 2;
+}
+
+message AuthenticationChallenge {
+    int64 seqNo = 1;
+    int64 conversationNo = 2;
+    bytes challenge = 3;
+}
+
+message AuthenticationResponse {
+    int64 seqNo = 1;
+    int64 conversationNo = 2;
+    bytes response = 3;
+}
+
+message OrganizationAuthorities {
+    net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId organization = 1;
+    repeated string authority = 2;
+}
+
+message UserPrincipal {
+    string username = 1;
+    string fullName = 2;
+    repeated OrganizationAuthorities organizationAuthorities = 3;
+    bytes token = 4;
+    google.protobuf.Timestamp tokenValidFrom = 5;
+    google.protobuf.Timestamp tokenValidTo = 6;
+}
+
+message AuthenticationOutcome {
+    int64 seqNo = 1;
+    int64 conversationNo = 2;
+    bool authenticated = 3;
+    UserPrincipal principal = 4;
+}
+
+service AuthenticationService {
+    rpc initAuthentication (AuthenticationRequest) returns (AuthenticationChallenge);
+    rpc completeAuthentication (AuthenticationResponse) returns (AuthenticationOutcome);
+}

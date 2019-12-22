@@ -1,4 +1,4 @@
-package net.pkhapps.idispatch.core.client.incidents;
+package net.pkhapps.idispatch.core.client.incident;
 
 import net.pkhapps.idispatch.core.client.DataListingService;
 

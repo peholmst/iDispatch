@@ -25,7 +25,7 @@ class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationServiceGrpc.AuthenticationServiceBlockingStub server;
     private final SecureRandom secureRandom;
 
-    public AuthenticationServiceImpl(@NotNull Channel channel) throws NoSuchAlgorithmException {
+    AuthenticationServiceImpl(@NotNull Channel channel) throws NoSuchAlgorithmException {
         server = AuthenticationServiceGrpc.newBlockingStub(channel);
         secureRandom = SecureRandom.getInstanceStrong();
     }

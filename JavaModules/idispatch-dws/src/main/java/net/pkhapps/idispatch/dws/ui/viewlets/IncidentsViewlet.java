@@ -2,9 +2,9 @@ package net.pkhapps.idispatch.dws.ui.viewlets;
 
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
-import net.pkhapps.idispatch.core.client.incidents.Incident;
-import net.pkhapps.idispatch.core.client.incidents.IncidentListingFilter;
-import net.pkhapps.idispatch.core.client.incidents.IncidentListingService;
+import net.pkhapps.idispatch.core.client.incident.Incident;
+import net.pkhapps.idispatch.core.client.incident.IncidentListingFilter;
+import net.pkhapps.idispatch.core.client.incident.IncidentListingService;
 import org.jetbrains.annotations.NotNull;
 
 /**
