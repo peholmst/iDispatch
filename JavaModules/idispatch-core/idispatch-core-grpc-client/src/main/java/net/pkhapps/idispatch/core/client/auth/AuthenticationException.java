@@ -1,7 +1,7 @@
 package net.pkhapps.idispatch.core.client.auth;
 
 /**
- * TODO Document me
+ * Exception thrown by {@link AuthenticationProcess} if authentication fails.
  */
 public class AuthenticationException extends RuntimeException {
 

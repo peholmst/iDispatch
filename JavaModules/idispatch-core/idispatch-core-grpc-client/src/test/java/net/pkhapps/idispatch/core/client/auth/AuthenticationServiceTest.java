@@ -1,21 +1,20 @@
 package net.pkhapps.idispatch.core.client.auth;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
 import com.google.protobuf.Timestamp;
-import io.grpc.inprocess.InProcessChannelBuilder;
-import io.grpc.inprocess.InProcessServerBuilder;
+import io.grpc.BindableService;
+import io.grpc.Channel;
 import io.grpc.stub.StreamObserver;
-import io.grpc.testing.GrpcCleanupRule;
+import net.pkhapps.idispatch.core.client.AbstractGrpcTest;
 import net.pkhapps.idispatch.core.grpc.proto.auth.*;
 import net.pkhapps.idispatch.core.grpc.proto.organization.OrganizationId;
-import org.junit.Before;
-import org.junit.Rule;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.PrivilegedAction;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Map;
@@ -23,21 +22,20 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * gRPC unit test for {@link AuthenticationService}.
  */
-@RunWith(JUnit4.class)
-public class AuthenticationServiceTest {
+public class AuthenticationServiceTest extends AbstractGrpcTest {
 
     private static final UUID ORGANIZATION_UUID = UUID.randomUUID();
     private static final Instant VALID_FROM = Instant.now();
     private static final Instant VALID_TO = VALID_FROM.plusSeconds(60 * 60 * 24);
 
-    @Rule
-    public final GrpcCleanupRule grpcCleanupRule = new GrpcCleanupRule();
+    private byte[] lastInvalidatedToken = null;
 
     private final AuthenticationServiceGrpc.AuthenticationServiceImplBase serviceImpl =
             new AuthenticationServiceGrpc.AuthenticationServiceImplBase() {
@@ -63,6 +61,13 @@ public class AuthenticationServiceTest {
                     } catch (Exception ex) {
                         responseObserver.onError(ex);
                     }
+                }
+
+                @Override
+                public void invalidateToken(Empty request, StreamObserver<Empty> responseObserver) {
+                    lastInvalidatedToken = getHeaders().get(AuthenticationTokenImpl.AUTH_TOKEN_KEY);
+                    responseObserver.onNext(Empty.getDefaultInstance());
+                    responseObserver.onCompleted();
                 }
 
                 class Conversation {
@@ -109,7 +114,7 @@ public class AuthenticationServiceTest {
                                 .setSeqNo(this.seqNo.incrementAndGet())
                                 .setAuthenticated(authenticated);
                         if (authenticated) {
-                            builder.setPrincipal(UserPrincipal.newBuilder()
+                            builder.setSubject(Subject.newBuilder()
                                     .setUsername("joecool")
                                     .setFullName("Joe Cool")
                                     .addOrganizationAuthorities(OrganizationAuthorities.newBuilder()
@@ -137,21 +142,13 @@ public class AuthenticationServiceTest {
 
     private AuthenticationService client;
 
-    @Before
-    public void setUp() throws Exception {
-        var serverName = InProcessServerBuilder.generateName();
-        grpcCleanupRule.register(
-                InProcessServerBuilder.forName(serverName)
-                        .directExecutor()
-                        .addService(serviceImpl)
-                        .build()
-                        .start()
-        );
-        var channel = grpcCleanupRule.register(
-                InProcessChannelBuilder.forName(serverName)
-                        .directExecutor()
-                        .build()
-        );
+    @Override
+    protected @NotNull Stream<BindableService> setUpServerSide() {
+        return Stream.of(serviceImpl);
+    }
+
+    @Override
+    protected void setUpClientSide(@NotNull Channel channel) throws Exception {
         client = new AuthenticationServiceImpl(channel);
     }
 
@@ -159,15 +156,24 @@ public class AuthenticationServiceTest {
     public void authenticate_successful() {
         var process = client.startAuthentication("joecool");
         process.setPassword("password");
-        var principal = process.authenticate();
+        var subject = process.authenticate();
+        var principal = subject.getPrincipals(AuthenticatedPrincipal.class).stream().findFirst().orElseThrow();
         assertThat(principal.getName()).isEqualTo("joecool");
         assertThat(principal.getFullName()).isEqualTo("Joe Cool");
-        assertThat(principal.getTokenValidFrom()).isEqualTo(VALID_FROM);
-        assertThat(principal.getTokenValidTo()).isEqualTo(VALID_TO);
         assertThat(principal.hasAuthorityInOrganization("FOO",
                 new net.pkhapps.idispatch.core.client.organization.OrganizationId(ORGANIZATION_UUID.toString()))).isTrue();
         assertThat(principal.hasAuthorityInOrganization("BAR",
                 new net.pkhapps.idispatch.core.client.organization.OrganizationId(ORGANIZATION_UUID.toString()))).isTrue();
+
+        var token = subject.getPrivateCredentials(AuthenticationTokenImpl.class).stream().findFirst().orElseThrow();
+        assertThat(token.getTokenValidFrom()).isEqualTo(VALID_FROM);
+        assertThat(token.getTokenValidTo()).isEqualTo(VALID_TO);
+
+        javax.security.auth.Subject.doAs(subject, (PrivilegedAction<Void>) () -> {
+            client.logout();
+            return null;
+        });
+        assertThat(lastInvalidatedToken).containsExactly(token.getToken());
     }
 
     @Test(expected = AuthenticationException.class)

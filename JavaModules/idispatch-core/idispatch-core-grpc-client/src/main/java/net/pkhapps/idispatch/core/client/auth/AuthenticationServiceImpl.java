@@ -1,6 +1,7 @@
 package net.pkhapps.idispatch.core.client.auth;
 
 import com.google.protobuf.ByteString;
+import com.google.protobuf.Empty;
 import io.grpc.Channel;
 import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationChallenge;
 import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationRequest;
@@ -8,6 +9,7 @@ import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationResponse;
 import net.pkhapps.idispatch.core.grpc.proto.auth.AuthenticationServiceGrpc;
 import org.jetbrains.annotations.NotNull;
 
+import javax.security.auth.Subject;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import static java.util.Objects.requireNonNull;
 
 /**
- * TODO Document me
+ * Default implementation of {@link AuthenticationService}. For internal use only, clients should never access this
+ * class directly.
  */
 class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -26,13 +29,20 @@ class AuthenticationServiceImpl implements AuthenticationService {
     private final SecureRandom secureRandom;
 
     AuthenticationServiceImpl(@NotNull Channel channel) throws NoSuchAlgorithmException {
-        server = AuthenticationServiceGrpc.newBlockingStub(channel);
+        server = AuthenticationServiceGrpc.newBlockingStub(channel)
+                .withCallCredentials(SubjectAwareCallCredentials.getInstance());
         secureRandom = SecureRandom.getInstanceStrong();
     }
 
     @Override
     public @NotNull AuthenticationProcess startAuthentication(@NotNull String username) {
         return new AuthenticationProcessImpl(username);
+    }
+
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Override
+    public void logout() {
+        server.invalidateToken(Empty.getDefaultInstance());
     }
 
     private class AuthenticationProcessImpl implements AuthenticationProcess {
@@ -73,14 +83,19 @@ class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         @Override
-        public @NotNull AuthenticatedPrincipal authenticate() throws AuthenticationException {
+        public @NotNull Subject authenticate() throws AuthenticationException {
             var response = server.completeAuthentication(AuthenticationResponse.newBuilder()
                     .setSeqNo(nextSeqNo.getAndIncrement())
                     .setResponse(ByteString.copyFrom(computeResponseHash()))
                     .build());
             verifySequenceNumber(response.getSeqNo());
             if (response.getAuthenticated()) {
-                return new AuthenticatedPrincipalImpl(response.getPrincipal());
+                var principal = new AuthenticatedPrincipalImpl(response.getSubject());
+                var token = new AuthenticationTokenImpl(response.getSubject());
+                var subject = new Subject();
+                subject.getPrincipals().add(principal);
+                subject.getPrivateCredentials().add(token);
+                return subject;
             } else {
                 throw new AuthenticationException("Authentication failed");
             }
