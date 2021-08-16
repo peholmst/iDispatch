@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"files.autoSave": "afterDelay",
+		"java.home": "C:\\Program Files\\OpenJDK\\jdk-16.0.2",
+		"terminal.integrated.env.windows": {
+			"JAVA_HOME": "C:\\Program Files\\OpenJDK\\jdk-16.0.2"
+		}
+	}
+}
