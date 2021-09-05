@@ -14,10 +14,7 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-package net.pkhapps.idispatch.alert.server.data;
+package net.pkhapps.idispatch.alert.server.adapters.email;
 
-/**
- * Repository interface for {@link AlertTextMessageTemplate}.
- */
-public interface AlertTextMessageTemplateRepository extends Repository<AlertTextMessageTemplate, AlertTextMessageTemplateId> {
+public class SendMessageException extends RuntimeException {
 }

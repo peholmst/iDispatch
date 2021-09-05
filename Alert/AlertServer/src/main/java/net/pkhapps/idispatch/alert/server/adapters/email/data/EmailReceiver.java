@@ -31,6 +31,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class EmailReceiver extends Receiver {
 
+    private final String subject;
     private final EmailAddressListId emailAddressList;
 
     /**
@@ -39,15 +40,25 @@ public class EmailReceiver extends Receiver {
      * @param id               the ID of the receiver, must not be {@code null}.
      * @param enabled          whether the receiver is enabled or not.
      * @param resources        the resources that can be alerted through this receiver, must not be {@code null}.
+     * @param subject          the subject that will be used for all alert e-mails.
      * @param emailAddressList the ID of the {@link EmailAddressList} that alerts should be sent to, must not be {@code
      *                         null}.
      */
     public EmailReceiver(ReceiverId id,
                          boolean enabled,
                          Collection<ResourceIdentifier> resources,
+                         String subject,
                          EmailAddressListId emailAddressList) {
         super(id, enabled, resources);
+        this.subject = requireNonNull(subject, "subject must not be null");
         this.emailAddressList = requireNonNull(emailAddressList, "emailAddressList must not be null");
+    }
+
+    /**
+     * The subject that will be used for all alert e-mails.
+     */
+    public String subject() {
+        return subject;
     }
 
     /**
