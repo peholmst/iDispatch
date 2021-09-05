@@ -13,12 +13,14 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.pkhapps.idispatch.alert.server.adapters.email;
+package net.pkhapps.idispatch.alert.server.adapters.email.receiver;
 
-import net.pkhapps.idispatch.alert.server.adapters.email.data.EmailAddressList;
-import net.pkhapps.idispatch.alert.server.adapters.email.data.EmailAddressListEntry;
-import net.pkhapps.idispatch.alert.server.adapters.email.data.EmailAddressListRepository;
-import net.pkhapps.idispatch.alert.server.adapters.email.data.EmailReceiver;
+import net.pkhapps.idispatch.alert.server.adapters.email.SendMessageException;
+import net.pkhapps.idispatch.alert.server.adapters.email.SmtpGateway;
+import net.pkhapps.idispatch.alert.server.adapters.email.receiver.data.EmailAddressList;
+import net.pkhapps.idispatch.alert.server.adapters.email.receiver.data.EmailAddressListEntry;
+import net.pkhapps.idispatch.alert.server.adapters.email.receiver.data.EmailAddressListRepository;
+import net.pkhapps.idispatch.alert.server.adapters.email.receiver.data.EmailReceiver;
 import net.pkhapps.idispatch.alert.server.application.ports.receiver.Courier;
 import net.pkhapps.idispatch.alert.server.application.ports.receiver.ReceiverPort;
 import net.pkhapps.idispatch.alert.server.application.text.AlertTextMessageFormatException;

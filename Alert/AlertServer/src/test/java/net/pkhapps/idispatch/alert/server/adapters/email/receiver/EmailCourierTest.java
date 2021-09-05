@@ -13,9 +13,11 @@
 //
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
-package net.pkhapps.idispatch.alert.server.adapters.email;
+package net.pkhapps.idispatch.alert.server.adapters.email.receiver;
 
-import net.pkhapps.idispatch.alert.server.adapters.email.data.*;
+import net.pkhapps.idispatch.alert.server.adapters.email.SmtpGateway;
+import net.pkhapps.idispatch.alert.server.adapters.email.data.EmailAddress;
+import net.pkhapps.idispatch.alert.server.adapters.email.receiver.data.*;
 import net.pkhapps.idispatch.alert.server.application.ports.receiver.ReceiverPort;
 import net.pkhapps.idispatch.alert.server.application.text.AlertTextMessageFormatter;
 import net.pkhapps.idispatch.alert.server.data.*;
