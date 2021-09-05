@@ -24,7 +24,7 @@ public interface Permission {
     /**
      * Gets the name of the permission. This, in combination with the class, must be
      * enough to uniquely identify a specific permission.
-     * 
+     *
      * @return the name of the permission.
      */
     String name();

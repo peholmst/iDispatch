@@ -15,21 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.dispatcher;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import net.pkhapps.idispatch.alert.server.data.*;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Test;
-
-import net.pkhapps.idispatch.alert.server.domain.model.Address;
-import net.pkhapps.idispatch.alert.server.domain.model.GeoPoint;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentIdentifier;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentTypeCode;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentUrgencyCode;
-import net.pkhapps.idispatch.alert.server.domain.model.Municipality;
-import net.pkhapps.idispatch.alert.server.domain.model.ResourceIdentifier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AlertCommandTest {
 

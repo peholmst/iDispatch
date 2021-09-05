@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<!-- iDispatch Alert Server -->
+<!-- Copyright (C) 2021 Petter Holmström -->
+<!-- -->
+<!-- This program is free software: you can redistribute it and/or modify -->
+<!-- it under the terms of the GNU Affero General Public License as -->
+<!-- published by the Free Software Foundation, either version 3 of the -->
+<!-- License, or (at your option) any later version. -->
+<!-- -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the -->
+<!-- GNU Affero General Public License for more details. -->
+<!-- -->
+<!-- You should have received a copy of the GNU Affero General Public License -->
+<!-- along with this program.  If not, see <https://www.gnu.org/licenses/>. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>net.pkhapps.idispatch.alert.server</groupId>
@@ -15,9 +32,21 @@
         <assertj.version>3.20.2</assertj.version>
         <mockito.version>3.11.2</mockito.version>
         <slf4j.version>1.7.32</slf4j.version>
+        <freemarker.version>2.3.31</freemarker.version>
+        <jakarta.mail.version>2.0.1</jakarta.mail.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+            <version>${jakarta.mail.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.eclipse.paho</groupId>
             <artifactId>org.eclipse.paho.mqttv5.client</artifactId>

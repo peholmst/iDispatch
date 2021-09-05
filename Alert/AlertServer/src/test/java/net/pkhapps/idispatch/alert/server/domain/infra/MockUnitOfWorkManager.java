@@ -34,7 +34,7 @@ public class MockUnitOfWorkManager implements UnitOfWorkManager {
 
     /**
      * Gets the result of the last performed unit of work.
-     * 
+     *
      * @return the result, may be {@code null}.
      */
     @SuppressWarnings("unchecked")

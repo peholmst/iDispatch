@@ -15,7 +15,13 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application;
 
-import static java.util.Objects.requireNonNull;
+import net.pkhapps.idispatch.alert.server.application.ports.receiver.Courier;
+import net.pkhapps.idispatch.alert.server.data.Alert;
+import net.pkhapps.idispatch.alert.server.data.AlertReceiptRepository;
+import net.pkhapps.idispatch.alert.server.data.Receiver;
+import net.pkhapps.idispatch.alert.server.data.ReceiverRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.util.Collection;
@@ -27,14 +33,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.pkhapps.idispatch.alert.server.application.ports.receiver.Courier;
-import net.pkhapps.idispatch.alert.server.domain.model.Alert;
-import net.pkhapps.idispatch.alert.server.domain.model.AlertReceiptRepository;
-import net.pkhapps.idispatch.alert.server.domain.model.Receiver;
-import net.pkhapps.idispatch.alert.server.domain.model.ReceiverRepository;
+import static java.util.Objects.requireNonNull;
 
 /**
  * This component is responsible for distributing {@link Alert}s to
@@ -66,7 +65,7 @@ class AlertDistributor {
 
     /**
      * Creates a new {@code AlertDistributor}.
-     * 
+     *
      * @param receiverRepository     the repository to use for looking up
      *                               {@link Receiver}s to distribute alerts to.
      * @param alertReceiptRepository the repository to use for storing the result of
@@ -77,21 +76,21 @@ class AlertDistributor {
      *                               alerts through {@link Courier}s.
      */
     AlertDistributor(ReceiverRepository receiverRepository, AlertReceiptRepository alertReceiptRepository, Clock clock,
-            Executor alertDeliveryExecutor) {
-        this.receiverRepository = requireNonNull(receiverRepository, "receiverRepository cannot be null");
-        this.alertReceiptRepository = requireNonNull(alertReceiptRepository, "alertReceiptRepository cannot be null");
+                     Executor alertDeliveryExecutor) {
+        this.receiverRepository = requireNonNull(receiverRepository, "receiverRepository must not be null");
+        this.alertReceiptRepository = requireNonNull(alertReceiptRepository, "alertReceiptRepository must not be null");
         this.clock = requireNonNull(clock, "clock must not be null");
-        this.alertDeliveryExecutor = requireNonNull(alertDeliveryExecutor, "alertDeliveryExecutor cannot be null");
+        this.alertDeliveryExecutor = requireNonNull(alertDeliveryExecutor, "alertDeliveryExecutor must not be null");
     }
 
     /**
      * Registers the given courier with this distributor. If the same courier has
      * already been registered, nothing happens.
-     * 
+     *
      * @param courier the courier to register.
      */
     void registerCourier(Courier courier) {
-        requireNonNull(courier, "courier cannot be null");
+        requireNonNull(courier, "courier must not be null");
         log.info("Registering courier {}", courier);
         couriersLock.writeLock().lock();
         try {
@@ -105,11 +104,11 @@ class AlertDistributor {
      * Unregisters the given courier from this distributor. No alerts will be
      * distributed through it after this. If the courier had not been registered in
      * the first place (or was already unregistered), nothing happens.
-     * 
+     *
      * @param courier the courier to unregister.
      */
     void unregisterCourier(Courier courier) {
-        requireNonNull(courier, "courier cannot be null");
+        requireNonNull(courier, "courier must not be null");
         log.info("Unregistering courier {}", courier);
         couriersLock.writeLock().lock();
         try {
@@ -121,13 +120,13 @@ class AlertDistributor {
 
     /**
      * Distributes the given alert to its {@link Receiver}s.
-     * 
+     *
      * @param alert the alert to distribute.
      */
     void distribute(Alert alert) {
-        requireNonNull(alert, "alert cannot be null");
+        requireNonNull(alert, "alert must not be null");
         log.info("Starting delivery of alert [{}]", alert);
-        receiverRepository.findByResources(alert.resourcesToAlert())
+        receiverRepository.findEnabledByResources(alert.resourcesToAlert())
                 .collect(Collectors.groupingBy(this::findCourierOfReceiver, HashMap::new, Collectors.toList()))
                 .forEach((courier, receivers) -> alertDeliveryExecutor
                         .execute(() -> deliver(courier, alert, receivers)));
@@ -145,18 +144,19 @@ class AlertDistributor {
     }
 
     private void deliver(Courier courier, Alert alert, Collection<Receiver> receivers) {
+        var receiverIds = receivers.stream().map(Receiver::id).collect(Collectors.toSet());
         if (courier == NON_EXISTENT_COURIER) {
             log.warn("No courier was found to deliver alert [{}] to {} receivers", alert, receivers.size());
-            alertReceiptRepository.couldNotSendAlertToReceivers(alert.id(), clock.instant(), receivers,
+            alertReceiptRepository.couldNotSendAlertToReceivers(alert.id(), clock.instant(), receiverIds,
                     NON_EXISTENT_COURIER_MSG);
         } else {
             log.info("Delivering alert [{}] through courier [{}] to {} receivers", alert, courier, receivers.size());
-            alertReceiptRepository.sendingAlertsToReceivers(alert.id(), clock.instant(), receivers);
+            alertReceiptRepository.sendingAlertsToReceivers(alert.id(), clock.instant(), receiverIds);
             try {
                 courier.deliver(alert, receivers);
             } catch (Exception ex) {
                 log.error("Error delivering alert [" + alert + "] through courier [" + courier + "]", ex);
-                alertReceiptRepository.couldNotSendAlertToReceivers(alert.id(), clock.instant(), receivers,
+                alertReceiptRepository.couldNotSendAlertToReceivers(alert.id(), clock.instant(), receiverIds,
                         ex.getMessage());
             }
         }

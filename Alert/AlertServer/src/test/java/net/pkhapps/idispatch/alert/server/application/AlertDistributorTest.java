@@ -15,31 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executor;
-
+import net.pkhapps.idispatch.alert.server.application.ports.receiver.Courier;
+import net.pkhapps.idispatch.alert.server.data.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import net.pkhapps.idispatch.alert.server.application.ports.receiver.Courier;
-import net.pkhapps.idispatch.alert.server.domain.model.Alert;
-import net.pkhapps.idispatch.alert.server.domain.model.AlertReceiptRepository;
-import net.pkhapps.idispatch.alert.server.domain.model.AlertTestData;
-import net.pkhapps.idispatch.alert.server.domain.model.Receiver;
-import net.pkhapps.idispatch.alert.server.domain.model.ReceiverRepository;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 class AlertDistributorTest {
 
@@ -68,10 +58,11 @@ class AlertDistributorTest {
         var courier = new TestCourier();
         var alert = AlertTestData.createTestAlert();
         var receivers = createTestReceivers();
-        when(receiverRepository.findByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
+        var receiverIds = receivers.stream().map(Receiver::id).collect(Collectors.toSet());
+        when(receiverRepository.findEnabledByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
         alertDistributor.registerCourier(courier);
         alertDistributor.distribute(alert);
-        verify(alertReceiptRepository).sendingAlertsToReceivers(alert.id(), clock.instant(), receivers);
+        verify(alertReceiptRepository).sendingAlertsToReceivers(alert.id(), clock.instant(), receiverIds);
         assertThat(courier.deliveredAlerts).containsEntry(alert, receivers);
     }
 
@@ -79,9 +70,10 @@ class AlertDistributorTest {
     void distribute_noCourierFound() {
         var alert = AlertTestData.createTestAlert();
         var receivers = createTestReceivers();
-        when(receiverRepository.findByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
+        var receiverIds = receivers.stream().map(Receiver::id).collect(Collectors.toSet());
+        when(receiverRepository.findEnabledByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
         alertDistributor.distribute(alert);
-        verify(alertReceiptRepository).couldNotSendAlertToReceivers(alert.id(), clock.instant(), receivers,
+        verify(alertReceiptRepository).couldNotSendAlertToReceivers(alert.id(), clock.instant(), receiverIds,
                 AlertDistributor.NON_EXISTENT_COURIER_MSG);
     }
 
@@ -90,11 +82,12 @@ class AlertDistributorTest {
         var courier = new FailingTestCourier();
         var alert = AlertTestData.createTestAlert();
         var receivers = createTestReceivers();
-        when(receiverRepository.findByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
+        var receiverIds = receivers.stream().map(Receiver::id).collect(Collectors.toSet());
+        when(receiverRepository.findEnabledByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
         alertDistributor.registerCourier(courier);
         alertDistributor.distribute(alert);
-        verify(alertReceiptRepository).sendingAlertsToReceivers(alert.id(), clock.instant(), receivers);
-        verify(alertReceiptRepository).couldNotSendAlertToReceivers(alert.id(), clock.instant(), receivers,
+        verify(alertReceiptRepository).sendingAlertsToReceivers(alert.id(), clock.instant(), receiverIds);
+        verify(alertReceiptRepository).couldNotSendAlertToReceivers(alert.id(), clock.instant(), receiverIds,
                 FailingTestCourier.ERROR_MSG);
     }
 
@@ -103,11 +96,12 @@ class AlertDistributorTest {
         var courier = new TestCourier();
         var alert = AlertTestData.createTestAlert();
         var receivers = createTestReceivers();
-        when(receiverRepository.findByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
+        var receiverIds = receivers.stream().map(Receiver::id).collect(Collectors.toSet());
+        when(receiverRepository.findEnabledByResources(alert.resourcesToAlert())).thenReturn(receivers.stream());
         alertDistributor.registerCourier(courier);
         alertDistributor.unregisterCourier(courier);
         alertDistributor.distribute(alert);
-        verify(alertReceiptRepository).couldNotSendAlertToReceivers(alert.id(), clock.instant(), receivers,
+        verify(alertReceiptRepository).couldNotSendAlertToReceivers(alert.id(), clock.instant(), receiverIds,
                 AlertDistributor.NON_EXISTENT_COURIER_MSG);
         assertThat(courier.deliveredAlerts).isEmpty();
     }
@@ -117,6 +111,10 @@ class AlertDistributorTest {
     }
 
     static class TestReceiver extends Receiver {
+
+        TestReceiver() {
+            super(ReceiverId.randomReceiverId(), true, Collections.emptySet());
+        }
     }
 
     static class TestCourier implements Courier {

@@ -15,16 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.dispatcher;
 
-import static java.util.Objects.requireNonNull;
+import net.pkhapps.idispatch.alert.server.data.AlertId;
+import net.pkhapps.idispatch.alert.server.data.IncidentIdentifier;
+import net.pkhapps.idispatch.alert.server.data.ResourceIdentifier;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import net.pkhapps.idispatch.alert.server.domain.model.AlertId;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentIdentifier;
-import net.pkhapps.idispatch.alert.server.domain.model.ResourceIdentifier;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A data object describing the status of a specific alert.
@@ -39,14 +39,14 @@ public class AlertStatus {
         if (builder.resources.isEmpty()) {
             throw new IllegalArgumentException("resources should contain at least one entry");
         }
-        this.alertId = requireNonNull(builder.alertId, "alertId cannot be null");
+        this.alertId = requireNonNull(builder.alertId, "alertId must not be null");
         this.incidentIdentifier = builder.incidentIdentifier;
         this.resources = Map.copyOf(builder.resources);
     }
 
     /**
      * The ID of the alert.
-     * 
+     *
      * @return an {@link AlertId}, never {@code null}.
      */
     public AlertId getAlertId() {
@@ -56,7 +56,7 @@ public class AlertStatus {
     /**
      * An optional identifier that can be used by dispatchers and receivers to
      * identify which incident this alert is concerning.
-     * 
+     *
      * @return an {@code Optional} containing the identifier if there is one.
      */
     public Optional<IncidentIdentifier> getIncidentIdentifier() {
@@ -65,9 +65,9 @@ public class AlertStatus {
 
     /**
      * The status of all the alerted resources.
-     * 
+     *
      * @return an unmodifiable map of each alerted resource and its corresponding
-     *         status object.
+     * status object.
      */
     public Map<ResourceIdentifier, AlertedResourceStatus> getResources() {
         return resources;
@@ -75,7 +75,7 @@ public class AlertStatus {
 
     /**
      * Creates a builder for building a new {@link AlertStatus} object.
-     * 
+     *
      * @return a new {@link Builder} instance.
      */
     public static Builder builder() {
@@ -84,7 +84,7 @@ public class AlertStatus {
 
     /**
      * Builder class for building new {@link AlertStatus} objects.
-     * 
+     *
      * @see AlertStatus#builder()
      */
     public static class Builder {
@@ -98,19 +98,19 @@ public class AlertStatus {
 
         /**
          * Sets the {@linkplain AlertStatus#getAlertId() alert ID} of the status object.
-         * 
+         *
          * @param alertId the alert ID, must not be {@code null}.
          * @return the builder itself.
          */
         public Builder withAlertId(AlertId alertId) {
-            this.alertId = requireNonNull(alertId, "alertId cannot be null");
+            this.alertId = requireNonNull(alertId, "alertId must not be null");
             return this;
         }
 
         /**
          * Sets the {@linkplain AlertStatus#getIncidentIdentifier() incident identifier}
          * of the status object.
-         * 
+         *
          * @param incidentIdentifier the incident identifier, may be {@code null}.
          * @return the builder itself.
          */
@@ -122,7 +122,7 @@ public class AlertStatus {
         /**
          * Adds an alerted resource, that has not yet received the alert, to the status
          * object.
-         * 
+         *
          * @param resourceIdentifier the identifier of the alerted resource, must not be
          *                           {@code null}.
          * @param alertSent          the instant at which the alert was sent to the
@@ -130,8 +130,8 @@ public class AlertStatus {
          * @return the builder itself.
          */
         public Builder withAlertedResource(ResourceIdentifier resourceIdentifier, Instant alertSent) {
-            requireNonNull(resourceIdentifier, "resourceIdentifier cannot be null");
-            requireNonNull(alertSent, "alertSent cannot be null");
+            requireNonNull(resourceIdentifier, "resourceIdentifier must not be null");
+            requireNonNull(alertSent, "alertSent must not be null");
             resources.put(resourceIdentifier, new AlertedResourceStatus(resourceIdentifier, alertSent, null, false));
             return this;
         }
@@ -139,7 +139,7 @@ public class AlertStatus {
         /**
          * Adds an alerted resource, that has successfully received the alert, to the
          * status object.
-         * 
+         *
          * @param resourceIdentifier the identifier of the alerted resource, must not be
          *                           {@code null}.
          * @param alertSent          the instant at which the alert was sent to the
@@ -150,10 +150,10 @@ public class AlertStatus {
          * @return the builder itself.
          */
         public Builder withSuccessfullyAlertedResource(ResourceIdentifier resourceIdentifier, Instant alertSent,
-                Instant alertDelivered) {
-            requireNonNull(resourceIdentifier, "resourceIdentifier cannot be null");
-            requireNonNull(alertSent, "alertSent cannot be null");
-            requireNonNull(alertDelivered, "alertDelivered cannot be null");
+                                                       Instant alertDelivered) {
+            requireNonNull(resourceIdentifier, "resourceIdentifier must not be null");
+            requireNonNull(alertSent, "alertSent must not be null");
+            requireNonNull(alertDelivered, "alertDelivered must not be null");
             resources.put(resourceIdentifier,
                     new AlertedResourceStatus(resourceIdentifier, alertSent, alertDelivered, false));
             return this;
@@ -162,7 +162,7 @@ public class AlertStatus {
         /**
          * Adds an alerted resource, that has not received the alert in time, to the
          * status object.
-         * 
+         *
          * @param resourceIdentifier the identifier of the alerted resource, must not be
          *                           {@code null}.
          * @param alertSent          the instant at which the alert was sent to the
@@ -170,8 +170,8 @@ public class AlertStatus {
          * @return the builder itself.
          */
         public Builder withTimedOutResource(ResourceIdentifier resourceIdentifier, Instant alertSent) {
-            requireNonNull(resourceIdentifier, "resourceIdentifier cannot be null");
-            requireNonNull(alertSent, "alertSent cannot be null");
+            requireNonNull(resourceIdentifier, "resourceIdentifier must not be null");
+            requireNonNull(alertSent, "alertSent must not be null");
             resources.put(resourceIdentifier, new AlertedResourceStatus(resourceIdentifier, alertSent, null, true));
             return this;
         }
@@ -179,13 +179,13 @@ public class AlertStatus {
         /**
          * Adds an alerted resource, that the system was unable to recognize and thus
          * could not alert at all, to the status object.
-         * 
+         *
          * @param resourceIdentifier the identifier of the alerted resource, must not be
          *                           {@code null}.
          * @return the builder itself.
          */
         public Builder withUnknownResource(ResourceIdentifier resourceIdentifier) {
-            requireNonNull(resourceIdentifier, "resourceIdentifier cannot be null");
+            requireNonNull(resourceIdentifier, "resourceIdentifier must not be null");
             resources.put(resourceIdentifier, new AlertedResourceStatus(resourceIdentifier, null, null, false));
             return this;
         }
@@ -193,7 +193,7 @@ public class AlertStatus {
         /**
          * Builds a new {@link AlertStatus} object. This method can be invoked multiple
          * times and will yield a new instance every time.
-         * 
+         *
          * @return a new {@link AlertStatus} object.
          */
         public AlertStatus build() {
@@ -212,7 +212,7 @@ public class AlertStatus {
         private final boolean timedOut;
 
         private AlertedResourceStatus(ResourceIdentifier resourceIdentifier, Instant alertSent, Instant alertDelivered,
-                boolean timedOut) {
+                                      boolean timedOut) {
             this.resourceIdentifier = requireNonNull(resourceIdentifier);
             this.alertSent = alertSent;
             this.alertDelivered = alertDelivered;
@@ -221,7 +221,7 @@ public class AlertStatus {
 
         /**
          * The identifier of the alerted resource.
-         * 
+         *
          * @return the {@link ResourceIdentifier}, never {@code null}.
          */
         public ResourceIdentifier getResourceIdentifier() {
@@ -231,9 +231,9 @@ public class AlertStatus {
         /**
          * The instant at which the alert was sent to the resource, provided that the
          * resource was known to the system.
-         * 
+         *
          * @return an {@link Optional} containing the instant if the resource could be
-         *         alerted.
+         * alerted.
          */
         public Optional<Instant> getAlertSent() {
             return Optional.ofNullable(alertSent);
@@ -241,9 +241,9 @@ public class AlertStatus {
 
         /**
          * The instant at which the alert was successfully delivered to the resource.
-         * 
+         *
          * @return an {@link Optional} containing the instant if the alert was
-         *         successfully delivered.
+         * successfully delivered.
          */
         public Optional<Instant> getAlertDelivered() {
             return Optional.ofNullable(alertDelivered);
@@ -253,9 +253,9 @@ public class AlertStatus {
          * When the system alerts a resource, it needs to have at least one receiver to
          * send the alert to. When this method returns {@code true}, it means that the
          * alert has been sent to at least one receiver.
-         * 
+         *
          * @return {@code true} if the system has managed to send the alert to the
-         *         resource, {@code false} otherwise.
+         * resource, {@code false} otherwise.
          */
         public boolean isAlertSent() {
             return alertSent != null;
@@ -266,9 +266,9 @@ public class AlertStatus {
          * acknowledge that the alert has been delivered. When this method returns
          * {@code true}, it means that at least one receiver has acknowledged that the
          * alert has been delivered.
-         * 
+         *
          * @return {@code true} if the system has managed to successfully deliver the
-         *         alert to the resource, {@code false} otherwise.
+         * alert to the resource, {@code false} otherwise.
          */
         public boolean isAlertDelivered() {
             return alertDelivered != null;
@@ -279,9 +279,9 @@ public class AlertStatus {
          * resource to be unknown. When this method returns {@code true}, it means that
          * the system has not been able to find any receivers for the resource and thus
          * is not able to alert it at all.
-         * 
+         *
          * @return {@code true} if the system did not recognize the resource,
-         *         {@code false} otherwise.
+         * {@code false} otherwise.
          */
         public boolean isResourceUnknown() {
             return alertSent == null;
@@ -292,9 +292,9 @@ public class AlertStatus {
          * within a specific time, it is considered timed out. When this method returns
          * {@code} true, the system has not received acknowledgment from any of the
          * receivers in time.
-         * 
+         *
          * @return {@code true} if the system was not able to deliver the alert to the
-         *         resource in time, {@code false} otherwise.
+         * resource in time, {@code false} otherwise.
          */
         public boolean isTimedOut() {
             return timedOut;

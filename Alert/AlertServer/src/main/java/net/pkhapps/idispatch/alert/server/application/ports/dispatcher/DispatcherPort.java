@@ -15,9 +15,9 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.dispatcher;
 
-import java.util.Optional;
+import net.pkhapps.idispatch.alert.server.data.AlertId;
 
-import net.pkhapps.idispatch.alert.server.domain.model.AlertId;
+import java.util.Optional;
 
 /**
  * Port interface for dispatchers that dispatch (alert) resources to different
@@ -28,16 +28,16 @@ public interface DispatcherPort {
     /**
      * Alerts resources to a specific incident in accordance with the given
      * {@linkplain AlertCommand command}.
-     * 
+     *
      * @param command the command directing what to alert and where.
      * @return an {@linkplain AlertId identifier} that can be used to
-     *         {@linkplain #getStatus(AlertId) check the status} of the alert.
+     * {@linkplain #getStatus(AlertId) check the status} of the alert.
      */
     AlertId alert(AlertCommand command);
 
     /**
      * Gets the status of the given alert.
-     * 
+     *
      * @param alertId the ID of the alert whose status should be checked.
      * @return an {@code Optional} containing the status of the alert if found.
      */

@@ -15,24 +15,22 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.receiver;
 
+import net.pkhapps.idispatch.alert.server.data.Alert;
+import net.pkhapps.idispatch.alert.server.data.Receiver;
+
 import java.util.Collection;
 
-import net.pkhapps.idispatch.alert.server.domain.model.Alert;
-import net.pkhapps.idispatch.alert.server.domain.model.Receiver;
-
 /**
- * SPI interface for a courier that knows how to deliver {@link Alert}s to
- * specific types (classes) of {@link Receiver}s. For example, one courier could
- * deliver an alert message to the resources through SMS, another through
- * e-mail, a thid might deliver alerts to mobile phone apps or station alert
- * systems.
+ * SPI interface for a courier that knows how to deliver {@link Alert}s to specific types (classes) of {@link
+ * Receiver}s. For example, one courier could deliver an alert message to the resources through SMS, another through
+ * e-mail, a third might deliver alerts to mobile phone apps or station alert systems.
  */
 public interface Courier {
 
     /**
      * Checks whether this courier supports delivering alerts to receivers of the
      * given class.
-     * 
+     *
      * @param receiverClass the class of the potential receivers to deliver alerts
      *                      to.
      * @return true if the receiver class is supported, false otherwise.
@@ -41,7 +39,7 @@ public interface Courier {
 
     /**
      * Delivers the given alert to the given receivers.
-     * 
+     *
      * @param alert     the alert to deliver.
      * @param receivers the receivers to deliver to. All receivers in this list can
      *                  be assumed to be {@linkplain #supports(Class) supported} by

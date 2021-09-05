@@ -15,17 +15,16 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.dispatcher;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import net.pkhapps.idispatch.alert.server.data.AlertId;
+import net.pkhapps.idispatch.alert.server.data.IncidentIdentifier;
+import net.pkhapps.idispatch.alert.server.data.ResourceIdentifier;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.UUID;
 
-import org.junit.jupiter.api.Test;
-
-import net.pkhapps.idispatch.alert.server.domain.model.AlertId;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentIdentifier;
-import net.pkhapps.idispatch.alert.server.domain.model.ResourceIdentifier;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AlertStatusTest {
 

@@ -27,7 +27,7 @@ public interface UnitOfWorkManager {
 
     /**
      * Performs the given unit-of-work and returns its result.
-     * 
+     *
      * @param <T>        the type of the result.
      * @param unitOfWork the unit-of-work to perform, must not be {@code null}.
      * @return the result returned by the unit-of-work, may be {@code null}.
@@ -36,7 +36,7 @@ public interface UnitOfWorkManager {
 
     /**
      * Performs the given unit-of-work, discarding its result.
-     * 
+     *
      * @param unitOfWork the unit-of-work to perform, must not be {@code null}.
      */
     default void performUnitOfWorkWithoutResult(Runnable unitOfWork) {

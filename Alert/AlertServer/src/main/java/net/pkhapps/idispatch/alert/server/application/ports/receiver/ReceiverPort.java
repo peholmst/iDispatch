@@ -15,22 +15,21 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.receiver;
 
-import net.pkhapps.idispatch.alert.server.domain.model.AlertId;
-import net.pkhapps.idispatch.alert.server.domain.model.ReceiverId;
+import net.pkhapps.idispatch.alert.server.data.AlertId;
+import net.pkhapps.idispatch.alert.server.data.ReceiverId;
 
 /**
- * Port interface for alert receivers that (like the name suggests) receives
- * alerts from the dispatchers and notify the alerted resources in different
- * ways.
- * 
- * @see #registerHandler(Courier)
+ * Port interface for alert receivers that (like the name suggests) receives alerts from the dispatchers and notify the
+ * alerted resources in different ways.
+ *
+ * @see #registerCourier(Courier)
  */
 public interface ReceiverPort {
 
     /**
      * Informs the system that the specified alert has been successfully delivered
      * to the specified receiver.
-     * 
+     *
      * @param receiverId the ID of the receiver to which the alert has been
      *                   delivered.
      * @param alertId    the ID of the alert that has been delivered.
@@ -40,7 +39,7 @@ public interface ReceiverPort {
     /**
      * Informs the system that the specified receiver is up and ready to receive
      * alerts.
-     * 
+     *
      * @param receiverId the ID of the receiver.
      */
     void receiverUp(ReceiverId receiverId);
@@ -48,7 +47,7 @@ public interface ReceiverPort {
     /**
      * Informs the system that the specified receiver is down and unable to receive
      * alerts.
-     * 
+     *
      * @param receiverId the ID of the receiver.
      */
     void receiverDown(ReceiverId receiverId);
@@ -57,10 +56,10 @@ public interface ReceiverPort {
      * Registers a new {@link Courier} with the system. A courier is used to deliver
      * alerts to a specific type of receivers (such as mobile phone apps, station
      * alert systems, e-mail, SMS).
-     * 
+     *
      * @param courier the courier to register.
      * @return a registration handle that can be used to unregister the courier
-     *         during runtime.
+     * during runtime.
      */
     CourierRegistration registerCourier(Courier courier);
 }

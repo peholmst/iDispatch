@@ -15,20 +15,14 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package net.pkhapps.idispatch.alert.server.application.ports.dispatcher;
 
-import static java.util.Objects.requireNonNull;
+import net.pkhapps.idispatch.alert.server.data.*;
 
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-import net.pkhapps.idispatch.alert.server.domain.model.Address;
-import net.pkhapps.idispatch.alert.server.domain.model.GeoPoint;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentIdentifier;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentTypeCode;
-import net.pkhapps.idispatch.alert.server.domain.model.IncidentUrgencyCode;
-import net.pkhapps.idispatch.alert.server.domain.model.Municipality;
-import net.pkhapps.idispatch.alert.server.domain.model.ResourceIdentifier;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A data object describing an alert command.
@@ -57,20 +51,29 @@ public class AlertCommand {
         }
         this.incidentIdentifier = builder.incidentIdentifier;
         this.incidentInstant = builder.incidentInstant;
-        this.incidentType = requireNonNull(builder.incidentType, "incidentType cannot be null");
-        this.incidentUrgency = requireNonNull(builder.incidentUrgency, "incidentUrgency cannot be null");
-        this.municipality = requireNonNull(builder.municipality, "municipality cannot be null");
-        this.coordinates = requireNonNull(builder.coordinates, "coordinates cannot be null");
+        this.incidentType = requireNonNull(builder.incidentType, "incidentType must not be null");
+        this.incidentUrgency = requireNonNull(builder.incidentUrgency, "incidentUrgency must not be null");
+        this.municipality = requireNonNull(builder.municipality, "municipality must not be null");
+        this.coordinates = requireNonNull(builder.coordinates, "coordinates must not be null");
         this.address = builder.address;
-        this.details = requireNonNull(builder.details, "details cannot be null");
+        this.details = requireNonNull(builder.details, "details must not be null");
         this.assignedResources = Set.copyOf(builder.assignedResources);
         this.resourcesToAlert = Set.copyOf(builder.resourcesToAlert);
     }
 
     /**
-     * An optional identifier that can be used by dispatchers and receivers to
-     * identify which indicent this alert is concerning.
-     * 
+     * Creates a builder for building a new {@link AlertCommand} object.
+     *
+     * @return a new {@link Builder} instance.
+     */
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    /**
+     * An optional identifier that can be used by dispatchers and receivers to identify which indicent this alert is
+     * concerning.
+     *
      * @return an {@code Optional} containing the identifier if there is one.
      */
     public Optional<IncidentIdentifier> getIncidentIdentifier() {
@@ -82,7 +85,7 @@ public class AlertCommand {
      * time when an incident was first reported, but could be something else as
      * well. Its purpose is to give receivers some kind of an idea of how "fresh" an
      * alert is in relation to the incident it concerns.
-     * 
+     *
      * @return an {@code Optional} containing the instant if there is one.
      */
     public Optional<Instant> getIncidentInstant() {
@@ -93,7 +96,7 @@ public class AlertCommand {
      * A code that describes the type of incident that the resources are being
      * alerted to. The code is picked by the dispatcher and receivers should know
      * what this code means.
-     * 
+     *
      * @return an {@link IncidentTypeCode}, never {@code null}.
      */
     public IncidentTypeCode getIncidentType() {
@@ -104,7 +107,7 @@ public class AlertCommand {
      * A code that describes the urgency of the incident that the resources are
      * being alerted to. The code is picked by the dispatcher and receievers should
      * know what this code means.
-     * 
+     *
      * @return an {@link IncidentUrgencyCode}, never {@code null}.
      */
     public IncidentUrgencyCode getIncidentUrgency() {
@@ -113,7 +116,7 @@ public class AlertCommand {
 
     /**
      * The municipality that the incident occurred in.
-     * 
+     *
      * @return a {@link Municipality}, never {@code null}.
      */
     public Municipality getMunicipality() {
@@ -123,7 +126,7 @@ public class AlertCommand {
     /**
      * The coordinates of the incident. These should always be known before any
      * resources are alerted.
-     * 
+     *
      * @return a {@link GeoPoint}, never {@code null}.
      */
     public GeoPoint getCoordinates() {
@@ -135,9 +138,9 @@ public class AlertCommand {
      * if the incident is in the middle of the wilderness, it might not have an
      * address at all (however it should always have {@linkplain #getCoordinates()
      * coordinates}).
-     * 
+     *
      * @return an {@code Optional} containing the {@linkplain Address address} if it
-     *         has one.
+     * has one.
      */
     public Optional<Address> getAddress() {
         return Optional.ofNullable(address);
@@ -146,7 +149,7 @@ public class AlertCommand {
     /**
      * The details of the alert as provided by the dispatcher (either entered by a
      * human user or generated by the system).
-     * 
+     *
      * @return a possibly empty string, never {@code null}.
      */
     public String getDetails() {
@@ -157,9 +160,9 @@ public class AlertCommand {
      * All the resources that were assigned to the incident at the time of the
      * alert. This information is included so that newly alerted resources know who
      * else is responding (or who is alredy on scene).
-     * 
+     *
      * @return a set of {@link ResourceIdentifier}s, always contains at least the
-     *         {@linkplain #getResourcesToAlert() resources to alert}.
+     * {@linkplain #getResourcesToAlert() resources to alert}.
      */
     public Set<ResourceIdentifier> getAssignedResources() {
         return assignedResources;
@@ -168,7 +171,7 @@ public class AlertCommand {
     /**
      * The resources that will be alerted in response to this particular alert
      * command.
-     * 
+     *
      * @return a set of at least one {@link ResourceIdentifier}.
      */
     public Set<ResourceIdentifier> getResourcesToAlert() {
@@ -176,21 +179,14 @@ public class AlertCommand {
     }
 
     /**
-     * Creates a builder for building a new {@link AlertCommand} object.
-     * 
-     * @return a new {@link Builder} instance.
-     */
-    public static Builder builder() {
-        return new Builder();
-    }
-
-    /**
      * Builder class for building new {@link AlertCommand} objects.
-     * 
+     *
      * @see AlertCommand#builder()
      */
     public static class Builder {
 
+        private final Set<ResourceIdentifier> assignedResources = new HashSet<>();
+        private final Set<ResourceIdentifier> resourcesToAlert = new HashSet<>();
         private IncidentIdentifier incidentIdentifier;
         private Instant incidentInstant;
         private IncidentTypeCode incidentType;
@@ -199,8 +195,6 @@ public class AlertCommand {
         private GeoPoint coordinates;
         private Address address;
         private String details = "";
-        private final Set<ResourceIdentifier> assignedResources = new HashSet<>();
-        private final Set<ResourceIdentifier> resourcesToAlert = new HashSet<>();
 
         private Builder() {
         }
@@ -208,48 +202,48 @@ public class AlertCommand {
         /**
          * Sets the {@linkplain AlertCommand#getIncidentType() incident type} of the
          * command object.
-         * 
+         *
          * @param incidentType the incident type, must not be {@code null}.
          * @return the builder itself.
          */
         public Builder withIncidentType(IncidentTypeCode incidentType) {
-            this.incidentType = requireNonNull(incidentType, "incidentType cannot be null");
+            this.incidentType = requireNonNull(incidentType, "incidentType must not be null");
             return this;
         }
 
         /**
          * Sets the {@linkplain AlertCommand#getIncidentUrgency() incident urgency} of
          * the command object.
-         * 
+         *
          * @param incidentUrgency the incident urgency, must not be {@code null}.
          * @return the builder itself.
          */
         public Builder withIncidentUrgency(IncidentUrgencyCode incidentUrgency) {
-            this.incidentUrgency = requireNonNull(incidentUrgency, "incidentUrgency cannot be null");
+            this.incidentUrgency = requireNonNull(incidentUrgency, "incidentUrgency must not be null");
             return this;
         }
 
         /**
          * Sets the {@linkplain AlertCommand#getMunicipality() municipality} of the
          * command object.
-         * 
+         *
          * @param municipality the municipality, must not be {@code null}.
          * @return the builder itself.
          */
         public Builder withMunicipality(Municipality municipality) {
-            this.municipality = requireNonNull(municipality, "municipality cannot be null");
+            this.municipality = requireNonNull(municipality, "municipality must not be null");
             return this;
         }
 
         /**
          * Sets the {@linkplain AlertCommand#getCoordinates() coordinates} of the
          * command object.
-         * 
+         *
          * @param coordinates the coordinates, must not be {@code null}.
          * @return the builder itself.
          */
         public Builder withCoordinates(GeoPoint coordinates) {
-            this.coordinates = requireNonNull(coordinates, "coordinates cannot be null");
+            this.coordinates = requireNonNull(coordinates, "coordinates must not be null");
             return this;
         }
 
@@ -257,13 +251,13 @@ public class AlertCommand {
          * Adds a {@linkplain AlertCommand#getResourcesToAlert() resource to alert} to
          * the command object. The resource will also be automatically added to the
          * {@linkplain AlertCommand#getAssignedResources() assigned resources}.
-         * 
+         *
          * @param resourceToAlert the resource that will receive the alert, must not be
          *                        {@code null}.
          * @return the builder itself.
          */
         public Builder withResourceToAlert(ResourceIdentifier resourceToAlert) {
-            requireNonNull(resourceToAlert, "resourceToAlert cannot be null");
+            requireNonNull(resourceToAlert, "resourceToAlert must not be null");
             this.resourcesToAlert.add(resourceToAlert);
             this.assignedResources.add(resourceToAlert);
             return this;
@@ -273,12 +267,12 @@ public class AlertCommand {
          * Adds an {@linkplain AlertCommand#getAssignedResources() assigned resource}
          * that is assigned to the incident but will not receive an alert at this time
          * (for example, if it has already been alerted earlier).
-         * 
+         *
          * @param assignedResource the assigned resource, must not be {@code null}.
          * @return the builder itself.
          */
         public Builder withAssignedResource(ResourceIdentifier assignedResource) {
-            requireNonNull(assignedResource, "assignedResource cannot be null");
+            requireNonNull(assignedResource, "assignedResource must not be null");
             this.assignedResources.add(assignedResource);
             return this;
         }
@@ -286,7 +280,7 @@ public class AlertCommand {
         /**
          * Sets the {@linkplain AlertCommand#getAddress() address} of the incident that
          * the resources will be alerted to.
-         * 
+         *
          * @param address the address, may be {@code null}.
          * @return the builder itself.
          */
@@ -297,7 +291,7 @@ public class AlertCommand {
 
         /**
          * Sets the {@linkplain AlertCommand#getDetails() details} of the alert.
-         * 
+         *
          * @param details the details, {@code null} will be converted to an empty
          *                string.
          * @return the builder itself.
@@ -310,7 +304,7 @@ public class AlertCommand {
         /**
          * Sets the {@linkplain AlertCommand#getIncidentIdentifier() incident identifier
          * of the alert.
-         * 
+         *
          * @param incidentIdentifier the incident identifier, may be {@code null}.
          * @return the builder itself.
          */
@@ -322,7 +316,7 @@ public class AlertCommand {
         /**
          * Sets the {@linkplain AlertCommand#getIncidentInstant() incident instant} of
          * the alert.
-         * 
+         *
          * @param incidentInstant the incident instant, may be {@code null}.
          * @return the builder itself.
          */
@@ -334,7 +328,7 @@ public class AlertCommand {
         /**
          * Builds a new {@link AlertCommand} object. This method can be invoked multiple
          * times and will yield a new instance every time.
-         * 
+         *
          * @return a new {@link AlertCommand} object.
          */
         public AlertCommand build() {

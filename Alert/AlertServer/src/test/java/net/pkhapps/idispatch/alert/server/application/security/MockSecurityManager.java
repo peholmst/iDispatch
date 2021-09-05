@@ -30,7 +30,7 @@ public class MockSecurityManager implements SecurityManager {
 
     /**
      * Sets the permissions that the "current user" will have.
-     * 
+     *
      * @param permissions an array of permissions, may be empty.
      */
     public void setPermissionsOfCurrentUser(Permission... permissions) {
@@ -39,7 +39,7 @@ public class MockSecurityManager implements SecurityManager {
 
     /**
      * Sets the permissions that the "current user" will have.
-     * 
+     *
      * @param permissions a collection of permissions, may be empty but never
      *                    {@code null}.
      */
