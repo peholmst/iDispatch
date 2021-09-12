@@ -21,7 +21,7 @@ package net.pkhapps.idispatch.alert.client.admin.resource;
 import net.pkhapps.idispatch.alert.client.admin.base.Essence;
 
 /**
- * Essence for constructing new {@code Resource}s.
+ * Essence for constructing new {@link Resource}s.
  */
 public class ResourceEssence extends Essence {
 
@@ -47,7 +47,7 @@ public class ResourceEssence extends Essence {
     /**
      * @see Resource#globalIdentifier()
      */
-    public String getGlobalIdentifier() {
+    public String globalIdentifier() {
         return globalIdentifier;
     }
 
