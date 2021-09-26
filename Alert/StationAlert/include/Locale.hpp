@@ -14,28 +14,18 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef __ALERT_CLIENT_HPP__
-#define __ALERT_CLIENT_HPP__
+#ifndef __LOCALE_HPP__
+#define __LOCALE_HPP__
 
 #include <string>
 
-struct AlertServerHost
+namespace utils
 {
-    std::string host;
-    uint16_t port;
-};
+    typedef std::string Locale;
 
-struct AlertServerCredentials
-{
-    std::string clientId;
-    std::string clientSecret;
-};
-
-class AlertClient
-{
-public:
-    AlertClient(const AlertServerCredentials credentials, const AlertServerHost hosts[]);
-    ~AlertClient();
+    const Locale ROOT_LOCALE = "";
+    const Locale SWEDISH = "sv";
+    const Locale FINNISH = "fi";
 };
 
 #endif

@@ -14,28 +14,30 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef __ALERT_CLIENT_HPP__
-#define __ALERT_CLIENT_HPP__
+#ifndef __DATE_WIDGET_HPP__
+#define __DATE_WIDGET_HPP__
 
-#include <string>
+#include <gtkmm/drawingarea.h>
 
-struct AlertServerHost
+#include "Locale.hpp"
+
+namespace ui
 {
-    std::string host;
-    uint16_t port;
-};
+    class DateWidget : public Gtk::DrawingArea
+    {
+    public:
+        DateWidget();
+        virtual ~DateWidget();
+        void changeLocale(const utils::Locale locale);
 
-struct AlertServerCredentials
-{
-    std::string clientId;
-    std::string clientSecret;
-};
+    protected:
+        bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+        bool on_timeout();
 
-class AlertClient
-{
-public:
-    AlertClient(const AlertServerCredentials credentials, const AlertServerHost hosts[]);
-    ~AlertClient();
+    private:
+        sigc::connection signal_timeout_connection;
+        utils::Locale locale;
+    };
 };
 
 #endif

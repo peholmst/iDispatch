@@ -14,28 +14,28 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#ifndef __ALERT_CLIENT_HPP__
-#define __ALERT_CLIENT_HPP__
+#ifndef __CLOCK_WIDGET_HPP__
+#define __CLOCK_WIDGET_HPP__
 
-#include <string>
+#include <gtkmm/drawingarea.h>
 
-struct AlertServerHost
+namespace ui
 {
-    std::string host;
-    uint16_t port;
-};
+    class ClockWidget : public Gtk::DrawingArea
+    {
+    public:
+        ClockWidget();
+        virtual ~ClockWidget();
 
-struct AlertServerCredentials
-{
-    std::string clientId;
-    std::string clientSecret;
-};
+    protected:
+        bool on_draw(const Cairo::RefPtr<Cairo::Context> &cr) override;
+        bool on_timeout();
 
-class AlertClient
-{
-public:
-    AlertClient(const AlertServerCredentials credentials, const AlertServerHost hosts[]);
-    ~AlertClient();
+    private:
+        double radius;
+        double lineWidth;
+        sigc::connection signal_timeout_connection;
+    };
 };
 
 #endif
