@@ -1,0 +1,30 @@
+syntax = "proto3";
+package idispatch.messages.types;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.types";
+
+message Timestamp {
+    int64 seconds = 1;
+    int32 nanos = 2;
+}
+
+message Color {
+    int32 rgb = 1;
+}
+
+message Locale {
+    oneof language {
+        string iso2 = 1;
+        string iso3 = 2;    
+    }
+    string country = 3;
+}
+
+message LocalizedString {
+    Locale locale = 1;
+    string value = 2;
+}
+
+message MultilingualString {
+    repeated LocalizedString strings = 1;
+}

@@ -1,0 +1,44 @@
+syntax = "proto3";
+package idispatch.messages.identifiers;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.identifiers";
+
+message ResourceId {
+    int64 id = 1;
+}
+
+message ResourceCode {
+    string code = 1;
+}
+
+message StationId {
+    int64 id = 1;
+}
+
+message StationCode {
+    string code = 1;
+}
+
+message MunicipalityCode {
+    string code = 1;
+}
+
+message IncidentId {
+    int64 id = 1;
+}
+
+message AlertId {
+    int64 id = 1;
+}
+
+message ResourceStateId {
+    int64 id = 1;
+}
+
+message ResourceReservationLevelId {
+    int64 id = 1;
+}
+
+message EventId {
+    int64 id = 1;
+}

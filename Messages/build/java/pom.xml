@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- iDispatch Messages -->
+<!-- Copyright (C) 2021 Petter Holmström -->
+<!-- -->
+<!-- This program is free software: you can redistribute it and/or modify -->
+<!-- it under the terms of the GNU Affero General Public License as -->
+<!-- published by the Free Software Foundation, either version 3 of the -->
+<!-- License, or (at your option) any later version. -->
+<!-- -->
+<!-- This program is distributed in the hope that it will be useful, -->
+<!-- but WITHOUT ANY WARRANTY; without even the implied warranty of -->
+<!-- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the -->
+<!-- GNU Affero General Public License for more details. -->
+<!-- -->
+<!-- You should have received a copy of the GNU Affero General Public License -->
+<!-- along with this program.  If not, see <https://www.gnu.org/licenses/>. -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.pkhapps.idispatch.messages</groupId>
+    <artifactId>idispatch-messages</artifactId>
+    <version>3.0-SNAPSHOT</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>17</maven.compiler.source>
+        <protobuf-java.version>3.19.1</protobuf-java.version>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License v3</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.en.html</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Petter Holmström</name>
+            <email>petter.holmstrom@outlook.com</email>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>${protobuf-java.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
+        </plugins>
+    </build>
+</project>

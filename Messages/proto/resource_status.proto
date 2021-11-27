@@ -1,0 +1,57 @@
+syntax = "proto3";
+package idispatch.messages.resourcestatus;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.resourcestatus";
+
+import "geo.proto";
+import "identifiers.proto";
+import "types.proto";
+
+message StateDescriptor {
+    idispatch.messages.identifiers.ResourceStateId id = 1;
+    idispatch.messages.types.MultilingualString name = 2;
+    idispatch.messages.types.Color color = 3;
+    bool reportableByResource = 4;
+    repeated idispatch.messages.identifiers.ResourceStateId validTransitions = 5;
+}
+
+message ReservationLevelDescriptor {
+    idispatch.messages.identifiers.ResourceReservationLevelId id = 1;
+    idispatch.messages.types.MultilingualString name = 2;
+    idispatch.messages.types.Color color = 3;
+}
+
+message Staffing {
+    int32 chief_officers = 1;
+    int32 sub_officers = 2;
+    int32 crew = 3;
+}
+
+message Status {
+    idispatch.messages.identifiers.ResourceId resource = 1;
+    idispatch.messages.identifiers.ResourceStateId state = 2;
+    idispatch.messages.types.Timestamp stateChangedOn = 3;
+    Staffing staffing = 4;
+    idispatch.messages.types.Timestamp staffingChangedOn = 5;
+    idispatch.messages.identifiers.IncidentId incident = 6;
+    idispatch.messages.types.Timestamp incidentChangedOn = 7;
+    idispatch.messages.geo.Point location = 8;
+    idispatch.messages.types.Timestamp locationChangedOn = 9;
+    idispatch.messages.identifiers.ResourceReservationLevelId reservationLevel = 10;
+    idispatch.messages.types.Timestamp reservationLevelChangedOn = 11;
+}
+
+message StatusUpdatedEvent {
+    idispatch.messages.identifiers.EventId id = 1;
+    idispatch.messages.types.Timestamp timestamp = 2;
+    Status updatedStatus = 3;
+}
+
+message UpdateStatusCommand {
+    idispatch.messages.identifiers.ResourceId resource = 1;
+    idispatch.messages.identifiers.ResourceStateId newState = 2;
+    Staffing newStaffing = 3;
+    idispatch.messages.identifiers.IncidentId newIncident = 4;
+    idispatch.messages.geo.Point newLocation = 5;
+    idispatch.messages.identifiers.ResourceReservationLevelId newReservationLevel = 6;
+}

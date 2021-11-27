@@ -1,0 +1,14 @@
+syntax = "proto3";
+package idispatch.messages.geo;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.geo";
+
+message SRID {
+    int32 srid = 1;
+}
+
+message Point {
+    SRID srid = 1;
+    double lat = 2;
+    double lon = 3;
+}
