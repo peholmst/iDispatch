@@ -1,0 +1,27 @@
+syntax = "proto3";
+package idispatch.messages.resource;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.resource";
+
+import "address.proto";
+import "identifiers.proto";
+import "types.proto";
+
+message Station {
+    idispatch.messages.identifiers.StationId id = 1;
+    idispatch.messages.identifiers.StationCode code = 2;
+    idispatch.messages.types.MultilingualString name = 3;
+    idispatch.messages.address.Address address = 4;
+}
+
+message ResourceType {
+    idispatch.messages.identifiers.ResourceTypeId id = 1;
+    idispatch.messages.types.MultilingualString name = 2;
+}
+
+message Resource {
+    idispatch.messages.identifiers.ResourceId id = 1;
+    idispatch.messages.identifiers.ResourceCode code = 2;
+    idispatch.messages.identifiers.ResourceTypeId type = 3;
+    idispatch.messages.identifiers.StationId station = 4;
+}

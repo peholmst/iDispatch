@@ -1,0 +1,43 @@
+syntax = "proto3";
+package idispatch.messages.address;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.address";
+
+import "geo.proto";
+import "types.proto";
+
+message MunicipalityCode {
+    string code = 1;
+}
+
+message Municipality {
+    MunicipalityCode code = 1;
+    idispatch.messages.types.MultilingualString name = 2;
+}
+
+message NamedAddress {
+    idispatch.messages.types.MultilingualString name = 1;
+    string number = 2;
+    repeated idispatch.messages.types.MultilingualString aliases = 3;
+}
+
+message Intersection {
+    idispatch.messages.types.MultilingualString primaryRoadName = 1;
+    idispatch.messages.types.MultilingualString crossingRoadName = 2;
+}
+
+message UnnamedAddress {
+    string directions = 1;
+}
+
+message Address {
+    idispatch.messages.geo.Point coordinates = 1;
+    Municipality municipality = 2;
+    bool exact = 3;
+    string additionalInfo = 4;
+    oneof humanReadableAddress {
+        NamedAddress namedAddress = 5;
+        Intersection intersection = 6;
+        UnnamedAddress unnamedAddress = 7;
+    }
+}

@@ -1,0 +1,46 @@
+syntax = "proto3";
+package idispatch.messages.incident;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.incident";
+
+import "address.proto";
+import "identifiers.proto";
+import "types.proto";
+
+message PriorityCode {
+    string code = 1;
+}
+
+message IncidentType {
+    idispatch.messages.identifiers.IncidentTypeId id = 1;
+    idispatch.messages.identifiers.IncidentTypeCode code = 2;
+    idispatch.messages.types.MultilingualString name = 3;
+}
+
+message IncidentStateDescriptor {
+    idispatch.messages.identifiers.IncidentStateId id = 1;
+    idispatch.messages.types.MultilingualString name = 2;
+    idispatch.messages.types.Color color = 3;
+}
+
+message Incident {
+    idispatch.messages.identifiers.IncidentId id = 1;
+    idispatch.messages.types.Timestamp openedOn = 2;
+    idispatch.messages.types.Timestamp closedOn = 3;
+    idispatch.messages.identifiers.IncidentStateId state = 4;
+    idispatch.messages.identifiers.IncidentTypeId type = 5;
+    PriorityCode priority = 6;
+    idispatch.messages.address.Address address = 7;
+    string details = 8;
+}
+
+message ResourceAssignment {
+    idispatch.messages.identifiers.IncidentId incident = 1;
+    idispatch.messages.identifiers.ResourceId resource = 2;
+    idispatch.messages.types.Timestamp assignedOn = 3;
+    idispatch.messages.types.Timestamp alertedOn = 4;
+    idispatch.messages.types.Timestamp acknowledgedOn = 5;
+    idispatch.messages.types.Timestamp enRouteOn = 6;
+    idispatch.messages.types.Timestamp onSceneOn = 7;
+    idispatch.messages.types.Timestamp detachedOn = 8;
+}

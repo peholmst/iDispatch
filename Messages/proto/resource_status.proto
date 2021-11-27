@@ -41,6 +41,8 @@ message Status {
     idispatch.messages.types.Timestamp reservationLevelChangedOn = 11;
 }
 
+// TODO Move events and commands to their own files
+
 message StatusUpdatedEvent {
     idispatch.messages.identifiers.EventId id = 1;
     idispatch.messages.types.Timestamp timestamp = 2;

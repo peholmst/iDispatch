@@ -1,0 +1,22 @@
+syntax = "proto3";
+package idispatch.messages.alert;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.alert";
+
+import "address.proto";
+import "identifiers.proto";
+import "incident.proto";
+import "types.proto";
+
+message Alert {
+    idispatch.messages.identifiers.AlertId id = 1;
+    idispatch.messages.types.Timestamp timestamp = 2;
+    idispatch.messages.identifiers.IncidentId incident = 3;
+    idispatch.messages.incident.IncidentType incidentType = 4;
+    idispatch.messages.types.Timestamp incidentTimestamp = 5;
+    idispatch.messages.incident.PriorityCode priority = 6;
+    idispatch.messages.address.Address address = 7;
+    string details = 8;
+    repeated idispatch.messages.identifiers.ResourceCode assignedResources = 9;
+    repeated idispatch.messages.identifiers.ResourceCode resourcesToAlert = 10;
+}

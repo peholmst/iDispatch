@@ -7,6 +7,10 @@ message ResourceId {
     int64 id = 1;
 }
 
+message ResourceTypeId {
+    int64 id = 1;
+}
+
 message ResourceCode {
     string code = 1;
 }
@@ -19,12 +23,20 @@ message StationCode {
     string code = 1;
 }
 
-message MunicipalityCode {
-    string code = 1;
-}
-
 message IncidentId {
     int64 id = 1;
+}
+
+message IncidentStateId {
+    int64 id = 1;
+}
+
+message IncidentTypeId {
+    int64 id = 1;
+}
+
+message IncidentTypeCode {
+    string code = 1;
 }
 
 message AlertId {
