@@ -46,25 +46,25 @@ public interface AlertServer {
     void acknowledgeAlert(AcknowledgeAlertCommand command);
 
     /**
-     * TODO Document me!
+     * Subscribes to alerts sent to the given receiver.
      *
-     * @param receiverId
-     * @param alertConsumer
-     * @return
+     * @param receiverId    the ID of the receiver.
+     * @param alertConsumer the callback to be notified when an alert arrives.
+     * @return a {@link Subscription} object.
      */
     Subscription subscribeToAlerts(AlertReceiverId receiverId, Consumer<Alert> alertConsumer);
 
     /**
-     *
+     * Interface defining a subscription to alerts sent to a specific receiver.
      */
     interface Subscription {
         /**
-         *
+         * Unsubscribes the receiver. After this, no more alerts will be delivered.
          */
         void unsubscribe();
 
         /**
-         *
+         * Informs the alert server that the receiver of the subscription is alive and well.
          */
         void pong();
     }
