@@ -18,8 +18,12 @@
 
 package net.pkhapps.idispatch.gateway.alert;
 
+import net.pkhapps.idispatch.messages.alert.Alert;
 import net.pkhapps.idispatch.messages.alert.commands.AcknowledgeAlertCommand;
 import net.pkhapps.idispatch.messages.alert.commands.SendAlertCommand;
+import net.pkhapps.idispatch.messages.identifiers.AlertReceiverId;
+
+import java.util.function.Consumer;
 
 /**
  * Interface representing the iDispatch Alert Server.
@@ -40,4 +44,28 @@ public interface AlertServer {
      * @param command the command.
      */
     void acknowledgeAlert(AcknowledgeAlertCommand command);
+
+    /**
+     * TODO Document me!
+     *
+     * @param receiverId
+     * @param alertConsumer
+     * @return
+     */
+    Subscription subscribeToAlerts(AlertReceiverId receiverId, Consumer<Alert> alertConsumer);
+
+    /**
+     *
+     */
+    interface Subscription {
+        /**
+         *
+         */
+        void unsubscribe();
+
+        /**
+         *
+         */
+        void pong();
+    }
 }

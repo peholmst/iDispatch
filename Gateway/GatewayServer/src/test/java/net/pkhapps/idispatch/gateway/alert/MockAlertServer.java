@@ -19,52 +19,142 @@
 package net.pkhapps.idispatch.gateway.alert;
 
 import io.quarkus.test.Mock;
+import net.pkhapps.idispatch.messages.alert.Alert;
 import net.pkhapps.idispatch.messages.alert.commands.AcknowledgeAlertCommand;
 import net.pkhapps.idispatch.messages.alert.commands.SendAlertCommand;
+import net.pkhapps.idispatch.messages.identifiers.AlertReceiverId;
 
 import javax.enterprise.context.ApplicationScoped;
-import java.util.Collections;
-import java.util.LinkedList;
+import java.time.Instant;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 /**
- * TODO Document me
+ * Mock implementation of {@link AlertServer} intended for testing only.
  */
 @Mock
 @ApplicationScoped
 public class MockAlertServer implements AlertServer {
 
-    private final List<SendAlertCommand> sentAlerts = new LinkedList<>();
-    private final List<AcknowledgeAlertCommand> acknowledgedAlerts = new LinkedList<>();
+    private final LinkedBlockingDeque<SendAlertCommand> sentAlerts = new LinkedBlockingDeque<>();
+    private final LinkedBlockingDeque<AcknowledgeAlertCommand> acknowledgedAlerts = new LinkedBlockingDeque<>();
+    private final ConcurrentMap<AlertReceiverId, SubscriptionImpl> subscriptions = new ConcurrentHashMap<>();
 
     @Override
-    public synchronized void sendAlert(SendAlertCommand command) {
+    public void sendAlert(SendAlertCommand command) {
         sentAlerts.add(command);
     }
 
     @Override
-    public synchronized void acknowledgeAlert(AcknowledgeAlertCommand command) {
+    public void acknowledgeAlert(AcknowledgeAlertCommand command) {
         acknowledgedAlerts.add(command);
     }
 
-    public synchronized List<AcknowledgeAlertCommand> acknowledgedAlerts() {
-        return Collections.unmodifiableList(acknowledgedAlerts);
+    @Override
+    public Subscription subscribeToAlerts(AlertReceiverId receiverId, Consumer<Alert> alertConsumer) {
+        var subscription = new SubscriptionImpl(receiverId, alertConsumer);
+        subscriptions.put(receiverId, subscription);
+        synchronized (this) {
+            notify();
+        }
+        return subscription;
     }
 
-    public synchronized AcknowledgeAlertCommand lastAcknowledgedAlert() {
-        return acknowledgedAlerts.get(acknowledgedAlerts.size() - 1);
+    public void awaitSubscription(AlertReceiverId receiverId, int timeoutSeconds) throws Exception {
+        if (subscriptions.containsKey(receiverId)) {
+            return;
+        }
+        synchronized (this) {
+            wait(timeoutSeconds * 1000L);
+        }
+        if (!subscriptions.containsKey(receiverId)) {
+            throw new IllegalStateException("Did not receive subscription for " + receiverId);
+        }
     }
 
-    public synchronized List<SendAlertCommand> sentAlerts() {
-        return Collections.unmodifiableList(sentAlerts);
+    public boolean isSubscribed(AlertReceiverId receiverId) {
+        return subscriptions.containsKey(receiverId);
     }
 
-    public synchronized SendAlertCommand lastSentAlert() {
-        return sentAlerts.get(sentAlerts.size() - 1);
+    public void awaitPong(AlertReceiverId receiverId, int timeoutSeconds) throws Exception {
+        var now = Instant.now();
+        if (hasBeenPongedAfter(receiverId, now))
+            return;
+        synchronized (this) {
+            wait(timeoutSeconds * 1000L);
+        }
+        if (!hasBeenPongedAfter(receiverId, now)) {
+            throw new IllegalStateException("Did not receive a pong for " + receiverId);
+        }
     }
 
-    public synchronized void reset() {
+    private boolean hasBeenPongedAfter(AlertReceiverId receiverId, Instant instant) {
+        var subscription = subscriptions.get(receiverId);
+        if (subscription == null) {
+            return false;
+        }
+        var lastSeen = subscription.lastSeen.get();
+        return lastSeen != null && lastSeen.isAfter(instant);
+    }
+
+    public void sendAlert(AlertReceiverId receiverId, Alert alert) {
+        var subscription = subscriptions.get(receiverId);
+        if (subscription != null) {
+            subscription.sendAlert(alert);
+        }
+    }
+
+    public List<AcknowledgeAlertCommand> acknowledgedAlerts() {
+        return acknowledgedAlerts.stream().toList();
+    }
+
+    public AcknowledgeAlertCommand lastAcknowledgedAlert() {
+        return acknowledgedAlerts.peekLast();
+    }
+
+    public List<SendAlertCommand> sentAlerts() {
+        return sentAlerts.stream().toList();
+    }
+
+    public SendAlertCommand lastSentAlert() {
+        return sentAlerts.peekLast();
+    }
+
+    public void reset() {
         sentAlerts.clear();
         acknowledgedAlerts.clear();
+    }
+
+    private class SubscriptionImpl implements Subscription {
+
+        private final AlertReceiverId receiverId;
+        private final Consumer<Alert> alertConsumer;
+        private final AtomicReference<Instant> lastSeen = new AtomicReference<>();
+
+        SubscriptionImpl(AlertReceiverId receiverId, Consumer<Alert> alertConsumer) {
+            this.receiverId = receiverId;
+            this.alertConsumer = alertConsumer;
+        }
+
+        @Override
+        public void unsubscribe() {
+            subscriptions.remove(receiverId);
+        }
+
+        @Override
+        public void pong() {
+            lastSeen.set(Instant.now());
+            synchronized (MockAlertServer.this) {
+                MockAlertServer.this.notify();
+            }
+        }
+
+        void sendAlert(Alert alert) {
+            alertConsumer.accept(alert);
+        }
     }
 }

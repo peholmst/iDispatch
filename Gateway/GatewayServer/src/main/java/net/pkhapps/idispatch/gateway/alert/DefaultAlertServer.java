@@ -18,10 +18,13 @@
 
 package net.pkhapps.idispatch.gateway.alert;
 
+import net.pkhapps.idispatch.messages.alert.Alert;
 import net.pkhapps.idispatch.messages.alert.commands.AcknowledgeAlertCommand;
 import net.pkhapps.idispatch.messages.alert.commands.SendAlertCommand;
+import net.pkhapps.idispatch.messages.identifiers.AlertReceiverId;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.util.function.Consumer;
 
 /**
  * TODO Document me
@@ -39,5 +42,10 @@ public class DefaultAlertServer implements AlertServer {
     @Override
     public void acknowledgeAlert(AcknowledgeAlertCommand command) {
 
+    }
+
+    @Override
+    public Subscription subscribeToAlerts(AlertReceiverId receiverId, Consumer<Alert> alertConsumer) {
+        return null;
     }
 }

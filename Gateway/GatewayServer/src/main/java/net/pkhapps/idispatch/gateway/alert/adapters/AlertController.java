@@ -57,6 +57,7 @@ public class AlertController {
     @POST
     @RolesAllowed(AlertRoles.ROLE_DISPATCHER)
     public void sendAlert(SendAlertCommand command) {
+        log.debug("Sending alert ({})", command);
         server.sendAlert(command);
     }
 
@@ -73,6 +74,7 @@ public class AlertController {
                     securityIdentity.getPrincipal());
             throw new WebApplicationException(Response.Status.FORBIDDEN);
         }
+        log.debug("Acknowledging alert ({})", command);
         server.acknowledgeAlert(command);
     }
 }

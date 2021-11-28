@@ -21,7 +21,6 @@ package net.pkhapps.idispatch.gateway.alert.adapters;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.oidc.server.OidcWiremockTestResource;
-import io.smallrye.jwt.build.Jwt;
 import net.pkhapps.idispatch.gateway.alert.MockAlertServer;
 import net.pkhapps.idispatch.gateway.protobuf.ContentTypes;
 import net.pkhapps.idispatch.messages.alert.commands.AcknowledgeAlertCommand;
@@ -31,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.inject.Inject;
-import java.util.Set;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,11 +40,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AlertControllerTest {
 
     @Inject
-    MockAlertServer mockAlertPort;
+    MockAlertServer mockAlertServer;
 
     @BeforeEach
     public void setUp() {
-        mockAlertPort.reset();
+        mockAlertServer.reset();
     }
 
     @Test
@@ -55,14 +53,14 @@ public class AlertControllerTest {
                 .setReceiver(AlertReceiverId.newBuilder().setId(123L).build())
                 .build();
         given()
-                .auth().oauth2(getAlertReceiverAccessToken(123L))
+                .auth().oauth2(AlertTokens.getAlertReceiverAccessToken(123L))
                 .when()
                 .body(command.toByteArray())
                 .contentType(ContentTypes.PROTOBUF)
                 .post("/alert/ack")
                 .then().statusCode(204);
 
-        assertEquals(command, mockAlertPort.lastAcknowledgedAlert());
+        assertEquals(command, mockAlertServer.lastAcknowledgedAlert());
     }
 
     @Test
@@ -71,14 +69,14 @@ public class AlertControllerTest {
                 .setReceiver(AlertReceiverId.newBuilder().setId(123L).build())
                 .build();
         given()
-                .auth().oauth2(getAlertReceiverAccessToken(4546L))
+                .auth().oauth2(AlertTokens.getAlertReceiverAccessToken(4546L))
                 .when()
                 .body(command.toByteArray())
                 .contentType(ContentTypes.PROTOBUF)
                 .post("/alert/ack")
                 .then().statusCode(403);
 
-        assertTrue(mockAlertPort.acknowledgedAlerts().isEmpty());
+        assertTrue(mockAlertServer.acknowledgedAlerts().isEmpty());
     }
 
     @Test
@@ -87,14 +85,14 @@ public class AlertControllerTest {
                 .setReceiver(AlertReceiverId.newBuilder().setId(123L).build())
                 .build();
         given()
-                .auth().oauth2(getDispatcherAccessToken("dispatch-server"))
+                .auth().oauth2(AlertTokens.getDispatcherAccessToken("dispatch-server"))
                 .when()
                 .body(command.toByteArray())
                 .contentType(ContentTypes.PROTOBUF)
                 .post("/alert/ack")
                 .then().statusCode(403);
 
-        assertTrue(mockAlertPort.acknowledgedAlerts().isEmpty());
+        assertTrue(mockAlertServer.acknowledgedAlerts().isEmpty());
     }
 
     @Test
@@ -107,49 +105,49 @@ public class AlertControllerTest {
                 .post("/alert/ack")
                 .then().statusCode(401);
 
-        assertTrue(mockAlertPort.acknowledgedAlerts().isEmpty());
+        assertTrue(mockAlertServer.acknowledgedAlerts().isEmpty());
     }
 
     @Test
     public void testAckEndpoint_missingReceiverId() {
         var command = AcknowledgeAlertCommand.newBuilder().build();
         given()
-                .auth().oauth2(getAlertReceiverAccessToken(4546L))
+                .auth().oauth2(AlertTokens.getAlertReceiverAccessToken(4546L))
                 .when()
                 .body(command.toByteArray())
                 .contentType(ContentTypes.PROTOBUF)
                 .post("/alert/ack")
                 .then().statusCode(400);
 
-        assertTrue(mockAlertPort.acknowledgedAlerts().isEmpty());
+        assertTrue(mockAlertServer.acknowledgedAlerts().isEmpty());
     }
 
     @Test
     public void testSendEndpoint_authenticatedAsDispatcher() {
         var command = SendAlertCommand.newBuilder().build();
         given()
-                .auth().oauth2(getDispatcherAccessToken("dispatch-server"))
+                .auth().oauth2(AlertTokens.getDispatcherAccessToken("dispatch-server"))
                 .when()
                 .body(command.toByteArray())
                 .contentType(ContentTypes.PROTOBUF)
                 .post("/alert/send")
                 .then().statusCode(204);
 
-        assertEquals(command, mockAlertPort.lastSentAlert());
+        assertEquals(command, mockAlertServer.lastSentAlert());
     }
 
     @Test
     public void testSendEndpoint_authenticatedAsAlertReceiver() {
         var command = SendAlertCommand.newBuilder().build();
         given()
-                .auth().oauth2(getAlertReceiverAccessToken(123L))
+                .auth().oauth2(AlertTokens.getAlertReceiverAccessToken(123L))
                 .when()
                 .body(command.toByteArray())
                 .contentType(ContentTypes.PROTOBUF)
                 .post("/alert/send")
                 .then().statusCode(403);
 
-        assertTrue(mockAlertPort.sentAlerts().isEmpty());
+        assertTrue(mockAlertServer.sentAlerts().isEmpty());
     }
 
     @Test
@@ -162,22 +160,6 @@ public class AlertControllerTest {
                 .post("/alert/send")
                 .then().statusCode(401);
 
-        assertTrue(mockAlertPort.sentAlerts().isEmpty());
-    }
-
-    private String getAlertReceiverAccessToken(long alertReceiverId) {
-        return Jwt.preferredUserName("alert-receiver-" + alertReceiverId)
-                .groups(Set.of(AlertRoles.ROLE_RECEIVER, AlertRoles.receiverSpecificRole(alertReceiverId)))
-                .issuer("https://server.example.com")
-                .audience("https://service.example.com")
-                .sign();
-    }
-
-    private String getDispatcherAccessToken(String username) {
-        return Jwt.preferredUserName(username)
-                .groups(AlertRoles.ROLE_DISPATCHER)
-                .issuer("https://server.example.com")
-                .audience("https://service.example.com")
-                .sign();
+        assertTrue(mockAlertServer.sentAlerts().isEmpty());
     }
 }
