@@ -1,3 +1,6 @@
 .tools/
 build/java/src
 build/java/target
+build/cpp/src
+build/cpp/lib
+build/cpp/obj
