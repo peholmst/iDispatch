@@ -1,6 +1,6 @@
 # These variables you may want to modify
-$PROTOC_VERSION = "3.19.1"
-$SOURCES = "address.proto", "alert.proto", "geo.proto", "identifiers.proto", "incident.proto", "resource_status.proto", "resource.proto", "types.proto"
+$PROTOC_VERSION = "3.19.4"
+$SOURCES = "address.proto", "alert_commands.proto", "alert.proto", "geo.proto", "identifiers.proto", "incident.proto", "resource_status.proto", "resource.proto", "types.proto"
 
 # These variables should typically remain unchanged
 $PROTOC_URL = "https://github.com/protocolbuffers/protobuf/releases/download/v$PROTOC_VERSION/protoc-$PROTOC_VERSION-win64.zip"

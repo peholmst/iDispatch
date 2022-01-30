@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- iDispatch Messages -->
-<!-- Copyright (C) 2021 Petter Holmström -->
+<!-- Copyright (C) 2021, 2022 Petter Holmström -->
 <!-- -->
 <!-- This program is free software: you can redistribute it and/or modify -->
 <!-- it under the terms of the GNU Affero General Public License as -->
@@ -26,7 +26,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>17</maven.compiler.target>
         <maven.compiler.source>17</maven.compiler.source>
-        <protobuf-java.version>3.19.1</protobuf-java.version>
+        <protobuf-java.version>3.19.4</protobuf-java.version>
     </properties>
 
     <licenses>
@@ -56,7 +56,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.9.0</version>
             </plugin>
         </plugins>
     </build>

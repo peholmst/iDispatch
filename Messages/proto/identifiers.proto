@@ -43,6 +43,10 @@ message AlertId {
     int64 id = 1;
 }
 
+message AlertReceiverId {
+    int64 id = 1;
+}
+
 message ResourceStateId {
     int64 id = 1;
 }

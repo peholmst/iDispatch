@@ -1,0 +1,16 @@
+syntax = "proto3";
+package idispatch.messages.alert.commands;
+option java_multiple_files = true;
+option java_package = "net.pkhapps.idispatch.messages.alert.commands";
+
+import "alert.proto";
+import "identifiers.proto";
+
+message AcknowledgeAlertCommand {
+    idispatch.messages.identifiers.AlertId alert = 1;
+    idispatch.messages.identifiers.AlertReceiverId receiver = 2;
+}
+
+message SendAlertCommand {
+    idispatch.messages.alert.Alert alert = 1;
+}
