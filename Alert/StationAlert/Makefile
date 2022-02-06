@@ -1,5 +1,5 @@
 # iDispatch Station Alert
-# Copyright (C) 2021 Petter Holmström 
+# Copyright (C) 2021, 2022 Petter Holmström 
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -17,38 +17,45 @@
 SRC_DIR := src
 OBJ_DIR := obj
 BIN_DIR := bin
-RES_DIR := res
-RES_OBJ_DIR := resobj
+TEST_DIR := test
+TEST_OBJ_DIR := testobj
+TEST_BIN_DIR := testbin
 
 EXECUTABLE := $(BIN_DIR)/stationalert
 SOURCES := $(wildcard $(SRC_DIR)/*.cpp)
 OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
-RESOURCES := $(wildcard $(RES_DIR)/*)
-RESOURCE_OBJECTS := $(RESOURCES:$(RES_DIR)/%=$(RES_OBJ_DIR)/%.o)
+TESTS := $(wildcard $(TEST_DIR)/*.cpp)
+TEST_OBJECTS := $(TESTS:$(TEST_DIR)/%.cpp=$(TEST_OBJ_DIR)/%.o)
 
-CPPFLAGS := -Iinclude -MMD -MP
-CXXFLAGS := -std=c++17 -Wall `pkg-config --cflags gtkmm-3.0`
+CXXFLAGS := -Iinclude -MMD -MP -std=c++17 -Wall -DBOOST_LOG_DYN_LINK
 LDFLAGS :=
-LDLIBS := `pkg-config --libs gtkmm-3.0`
-OBJCOPY := objcopy
+LDLIBS := -lraylib -lGLESv2 -lEGL -lpthread -lgbm -ldrm -lboost_system -lboost_log -lssl -lcrypto
+TEST_LDLIBS := $(LDLIBS) -lcppunit
 
 .PHONY: all clean
 
 all: $(EXECUTABLE)
 
-$(EXECUTABLE): $(OBJECTS) $(RESOURCE_OBJECTS) | $(BIN_DIR)
+$(EXECUTABLE): $(OBJECTS) | $(BIN_DIR)
 	 $(CXX) $(LDFLAGS) $^ $(LDLIBS) -o $@
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(RES_OBJ_DIR)/%.o: $(RES_DIR)/% | $(RES_OBJ_DIR)
-	$(OBJCOPY) --input binary --output elf64-x86-64 --binary-architecture i386:x86-64 $< $@
+$(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp | $(TEST_OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(BIN_DIR) $(OBJ_DIR) $(RES_OBJ_DIR):
+$(TEST_BIN_DIR)/%: $(TEST_OBJECTS) | $(TEST_BIN_DIR)
+	$(CXX) $(LDFLAGS) $^ $(TEST_LDLIBS) -o $@
+
+$(BIN_DIR) $(OBJ_DIR) $(TEST_OBJ_DIR) $(TEST_BIN_DIR):
 	mkdir -p $@
 
+tests: $(TEST_OBJECTS) $(filter-out $(OBJ_DIR)/main.o, $(OBJECTS)) | $(TEST_BIN_DIR)
+	$(CXX) $(LDFLAGS) $^ $(TEST_LDLIBS) -o $(TEST_BIN_DIR)/AllTests
+	$(TEST_BIN_DIR)/AllTests
+
 clean:
-	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR) $(RES_OBJ_DIR)
+	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR) $(TEST_OBJ_DIR) $(TEST_BIN_DIR)
 
 -include $(OBJ:.o=.d)
