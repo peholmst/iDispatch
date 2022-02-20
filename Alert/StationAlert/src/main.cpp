@@ -1,5 +1,5 @@
 // iDispatch Station Alert
-// Copyright (C) 2021 Petter Holmström
+// Copyright (C) 2021, 2022 Petter Holmström
 //
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Affero General Public License as
@@ -14,6 +14,46 @@
 // You should have received a copy of the GNU Affero General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <raylib.h>
+#include <iostream>
+
+// #include "AuthClient.hpp"
+// #include "ServerClient.hpp"
+// #include "Url.hpp"
+// #include "Json.hpp"
+
+int main(int argc, char *argv[])
+{
+    const int screenWidth = 1280;
+    const int screenHeight = 720;
+
+    /*    idispatch::net::Url gatewayServerUrl("ws://192.168.1.108:8080/alert/receiver/999");
+
+        client::Server server{"192.168.1.108", 8080, "/", false};
+        client::ClientParameters params{123l, "username", "password", std::vector<client::Server>{server}};
+        client::ServerClient client{params};
+
+        client.connect();*/
+
+    InitWindow(screenWidth, screenHeight, "iDispatch Station Alert");
+    SetTargetFPS(10);
+
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+        ClearBackground(RAYWHITE);
+        DrawText("Congrats! You created your first window!", 190, 200, 20, LIGHTGRAY);
+        EndDrawing();
+    }
+
+    CloseWindow();
+
+    // client.disconnect();
+
+    return 0;
+}
+
+/*
 #include <iostream>
 #include <sstream>
 
@@ -46,4 +86,4 @@ int main(int argc, char *argv[])
 
     // Run app
     return app->run(mainWindow);
-}
+}*/
