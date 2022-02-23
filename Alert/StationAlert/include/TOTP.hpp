@@ -22,6 +22,7 @@
 #include <exception>
 #include <iterator>
 #include <string>
+#include <vector>
 
 namespace idispatch::security
 {
@@ -125,7 +126,89 @@ namespace idispatch::security
         return !(l == r);
     }
 
-    typedef std::string SharedSecret;
+    class SharedSecret
+    {
+    private:
+        u_char *secret;
+        size_t secretLength;
+
+        inline static u_char hexCharToByte(const char &chr)
+        {
+            if (chr >= 48 && chr <= 57) // 0-9
+            {
+                return chr - 48;
+            }
+            else if (chr >= 65 && chr <= 70) // A-B
+            {
+                return chr - 55;
+            }
+            else if (chr >= 97 && chr <= 102) // a-b
+            {
+                return chr - 87;
+            }
+            else
+            {
+                throw std::invalid_argument("The shared secret is not a valid hex string");
+            }
+        }
+
+        SharedSecret(u_char *data, const size_t &length)
+            : secret(data), secretLength(length) {}
+
+        SharedSecret(SharedSecret &&original)
+            : secret(original.secret), secretLength(original.secretLength)
+        {
+            original.secret = nullptr;
+        }
+
+        inline void copyBytes(u_char *destination, const size_t &length) const
+        {
+            for (size_t i = 0; i < length; ++i)
+            {
+                destination[i] = secret[i % secretLength];
+            }
+        }
+
+    public:
+        SharedSecret(const SharedSecret &original) = delete;
+
+        ~SharedSecret()
+        {
+            if (secret != nullptr)
+            {
+                delete[] secret;
+            }
+        }
+
+        inline size_t length() const { return secretLength; }
+
+        OneTimePassword &operator=(const OneTimePassword &other) = delete;
+
+        static SharedSecret fromAsciiString(const std::string &str)
+        {
+            u_char *secret = new u_char[str.length()];
+            std::copy(str.c_str(), str.c_str() + str.length(), secret);
+            return std::move(SharedSecret(secret, str.length()));
+        }
+
+        static SharedSecret fromHexString(const std::string &str)
+        {
+            size_t length = (str.length() + 1) / 2; // Force the number of bytes to be even
+            u_char *secret = new u_char[length];
+            for (size_t i = 0; i < str.length(); i += 2)
+            {
+                u_char &byte = secret[i / 2];
+                byte = hexCharToByte(str.at(i)) << 4;
+                if (i < str.length() - 1)
+                {
+                    byte += hexCharToByte(str.at(i + 1));
+                }
+            }
+            return std::move(SharedSecret(secret, length));
+        }
+
+        friend OneTimePassword generateOneTimePassword(const SharedSecret &sharedSecret, const std::time_t &now);
+    };
 
     OneTimePassword generateOneTimePassword(const SharedSecret &sharedSecret, const std::time_t &now);
 };

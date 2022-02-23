@@ -22,8 +22,7 @@
 using namespace idispatch::security;
 
 // Test data coming from https://datatracker.ietf.org/doc/html/rfc6238
-
-const SharedSecret testSecret = "31323334353637383930313233343536373839303132333435363738393031323334353637383930313233343536373839303132333435363738393031323334";
+const SharedSecret testSecret = SharedSecret::fromHexString("31323334353637383930313233343536373839303132333435363738393031323334353637383930313233343536373839303132333435363738393031323334");
 
 BOOST_AUTO_TEST_CASE(rfc6238_test_vectors)
 {
@@ -76,4 +75,13 @@ BOOST_AUTO_TEST_CASE(move_assignment_and_equality)
     otp = generateOneTimePassword(testSecret, 59);
 
     BOOST_TEST(otp.length() > (size_t)0);
+}
+
+BOOST_AUTO_TEST_CASE(shared_secret_from_ascii_string)
+{
+    auto asciiSecret = SharedSecret::fromAsciiString("12345678901234567890"); // This should give the same key as above
+    auto asciiOtp = generateOneTimePassword(asciiSecret, 59);
+    auto otp = generateOneTimePassword(testSecret, 59);
+
+    BOOST_TEST((otp == asciiOtp));
 }
