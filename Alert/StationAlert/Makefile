@@ -27,10 +27,10 @@ OBJECTS := $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 TESTS := $(wildcard $(TEST_DIR)/*.cpp)
 TEST_OBJECTS := $(TESTS:$(TEST_DIR)/%.cpp=$(TEST_OBJ_DIR)/%.o)
 
-CXXFLAGS := -Iinclude -MMD -MP -std=c++17 -Wall -DBOOST_LOG_DYN_LINK
+CXXFLAGS := -Iinclude -I$(BOOST_INCLUDE_DIR) -MMD -MP -std=c++17 -Wall -DBOOST_LOG_DYN_LINK
 LDFLAGS :=
-LDLIBS := -lraylib -lGLESv2 -lEGL -lpthread -lgbm -ldrm -lboost_system -lboost_log -lssl -lcrypto
-TEST_LDLIBS := $(LDLIBS) -lcppunit
+LDLIBS := -L$(BOOST_LIB_DIR) -lraylib -lGLESv2 -lEGL -lpthread -lgbm -ldrm -lboost_system -lboost_log -lboost_thread -lboost_filesystem -lssl -lcrypto
+TEST_LDLIBS := $(LDLIBS) -lboost_unit_test_framework
 
 .PHONY: all clean
 
@@ -45,15 +45,17 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp | $(OBJ_DIR)
 $(TEST_OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp | $(TEST_OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(TEST_BIN_DIR)/%: $(TEST_OBJECTS) | $(TEST_BIN_DIR)
+$(TEST_BIN_DIR)/%: $(TEST_OBJ_DIR)/%.o $(filter-out $(OBJ_DIR)/main.o, $(OBJECTS)) | $(TEST_BIN_DIR)
 	$(CXX) $(LDFLAGS) $^ $(TEST_LDLIBS) -o $@
 
 $(BIN_DIR) $(OBJ_DIR) $(TEST_OBJ_DIR) $(TEST_BIN_DIR):
 	mkdir -p $@
 
-tests: $(TEST_OBJECTS) $(filter-out $(OBJ_DIR)/main.o, $(OBJECTS)) | $(TEST_BIN_DIR)
-	$(CXX) $(LDFLAGS) $^ $(TEST_LDLIBS) -o $(TEST_BIN_DIR)/AllTests
-	$(TEST_BIN_DIR)/AllTests
+#tests: $(TEST_OBJECTS)
+
+#tests: $(TEST_OBJECTS) $(filter-out $(OBJ_DIR)/main.o, $(OBJECTS)) | $(TEST_BIN_DIR)
+#	$(CXX) $(LDFLAGS) $^ $(TEST_LDLIBS) -o $(TEST_BIN_DIR)/AllTests
+#	$(TEST_BIN_DIR)/AllTests
 
 clean:
 	@$(RM) -rv $(BIN_DIR) $(OBJ_DIR) $(TEST_OBJ_DIR) $(TEST_BIN_DIR)
