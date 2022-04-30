@@ -1,0 +1,43 @@
+/*
+ * iDispatch Client
+ *
+ * Copyright (c) 2022 Petter Holmström
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+
+.menu-item {
+    -fx-padding: 4 8 4 8;
+}
+
+.split-pane {
+    -fx-background-color: transparent, -fx-background;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.table-view.no-border {
+    -fx-background-color: transparent, -fx-background;
+    -fx-padding: 0;
+    -fx-background-insets: 0;
+}
+
+.table-view .column-header .label {
+    -fx-alignment: left;
+    -fx-padding: 2 4;
+}
+
+.table-view .table-cell {
+    -fx-padding: 2 4;
+}
