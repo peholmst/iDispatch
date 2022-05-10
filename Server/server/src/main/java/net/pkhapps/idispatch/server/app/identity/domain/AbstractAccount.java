@@ -33,7 +33,7 @@ import java.time.Instant;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Base class for user accounts.
+ * Base class for user accounts. All users use the {@link TOTP} algorithm for authentication.
  */
 @MappedSuperclass
 public abstract class AbstractAccount {
@@ -60,7 +60,7 @@ public abstract class AbstractAccount {
     /**
      * Default constructor, only because Hibernate requires it. Application code should never use this constructor.
      */
-    protected AbstractAccount() { // Used by Hibernate only
+    protected AbstractAccount() {
     }
 
     /**
