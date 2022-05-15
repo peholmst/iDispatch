@@ -19,6 +19,8 @@
 
 package net.pkhapps.idispatch.common.security;
 
+import org.jetbrains.annotations.NotNull;
+
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigInteger;
@@ -58,7 +60,7 @@ public final class TOTP {
         return result;
     }
 
-    static byte[] hexStringToBytes(String hexString) {
+    static byte[] hexStringToBytes(@NotNull String hexString) {
         if (hexString.length() % 2 == 1) {
             hexString = "0" + hexString;
         }
@@ -80,7 +82,8 @@ public final class TOTP {
      * @param timestamp    the timestamp.
      * @return the one-time password.
      */
-    public static OneTimePassword generateOneTimePassword(SharedSecret sharedSecret, Instant timestamp) {
+    public static @NotNull OneTimePassword generateOneTimePassword(@NotNull SharedSecret sharedSecret,
+                                                                   @NotNull Instant timestamp) {
         return generateOneTimePassword(sharedSecret, calculateTimeStep(timestamp));
     }
 
@@ -93,7 +96,8 @@ public final class TOTP {
      * @throws RuntimeException if the one-time password could not be generated (should never happen if the JVM has the
      *                          correct algorithm installed).
      */
-    public static OneTimePassword generateOneTimePassword(SharedSecret sharedSecret, BigInteger timeStep) {
+    public static @NotNull OneTimePassword generateOneTimePassword(@NotNull SharedSecret sharedSecret,
+                                                                   @NotNull BigInteger timeStep) {
         try {
             var mac = Mac.getInstance(HMAC_ALGORITHM);
             sharedSecret.initMac(mac, HMAC_KEY_LENGTH);
@@ -111,7 +115,7 @@ public final class TOTP {
      * @param timestamp the timestamp to calculate the time step for.
      * @return the time step.
      */
-    public static BigInteger calculateTimeStep(Instant timestamp) {
+    public static @NotNull BigInteger calculateTimeStep(@NotNull Instant timestamp) {
         return calculateTimeStep(BigInteger.valueOf(timestamp.getEpochSecond()));
     }
 
@@ -121,7 +125,7 @@ public final class TOTP {
      * @param epochSeconds the epoch seconds to calculate the time step for.
      * @return the time step.
      */
-    public static BigInteger calculateTimeStep(BigInteger epochSeconds) {
+    public static @NotNull BigInteger calculateTimeStep(@NotNull BigInteger epochSeconds) {
         return epochSeconds.subtract(T0).divide(X);
     }
 
@@ -143,7 +147,7 @@ public final class TOTP {
          * @param hexString the hexadecimal representation of the shared secret.
          * @return the shared secret.
          */
-        public static SharedSecret fromHexString(String hexString) {
+        public static @NotNull SharedSecret fromHexString(@NotNull String hexString) {
             return new SharedSecret(hexStringToBytes(hexString));
         }
 
@@ -153,7 +157,7 @@ public final class TOTP {
          * @param base64String a Base64 representation of the shared secret.
          * @return the shared secret.
          */
-        public static SharedSecret fromBase64String(String base64String) {
+        public static @NotNull SharedSecret fromBase64String(@NotNull String base64String) {
             return new SharedSecret(Base64.getDecoder().decode(base64String));
         }
 
@@ -167,7 +171,7 @@ public final class TOTP {
          * @see #toHexString()
          * @see #toBase64String()
          */
-        public static SharedSecret fromRandom() {
+        public static @NotNull SharedSecret fromRandom() {
             try {
                 var random = SecureRandom.getInstanceStrong();
                 var bytes = new byte[HMAC_KEY_LENGTH];
@@ -184,7 +188,7 @@ public final class TOTP {
          * @return a hexadecimal string.
          * @see #fromHexString(String)
          */
-        public String toHexString() {
+        public @NotNull String toHexString() {
             var sb = new StringBuilder();
             for (byte b : data) {
                 sb.append(Integer.toHexString(b & 0xff));
@@ -202,11 +206,11 @@ public final class TOTP {
          * @return a Base64 encoded string.
          * @see #fromBase64String(String)
          */
-        public String toBase64String() {
+        public @NotNull String toBase64String() {
             return Base64.getEncoder().encodeToString(data);
         }
 
-        private void initMac(Mac mac, int keyLength) throws InvalidKeyException {
+        private void initMac(@NotNull Mac mac, int keyLength) throws InvalidKeyException {
             if (keyLength == data.length) {
                 mac.init(new SecretKeySpec(data, "RAW"));
             } else {
@@ -241,7 +245,7 @@ public final class TOTP {
          * @return the truncated password.
          * @throws IllegalArgumentException if the number of digits is not within the given range.
          */
-        public String truncate(int digits) {
+        public @NotNull String truncate(int digits) {
             if (digits > 8) {
                 throw new IllegalArgumentException("Number of digits must not be greater than 8");
             }
@@ -254,6 +258,5 @@ public final class TOTP {
             }
             return sb.toString();
         }
-
     }
 }
