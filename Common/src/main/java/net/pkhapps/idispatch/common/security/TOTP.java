@@ -28,6 +28,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HexFormat;
 
@@ -132,7 +133,6 @@ public final class TOTP {
     /**
      * Class representing a shared secret used to calculate a one-time password.
      */
-    @SuppressWarnings("ClassCanBeRecord")
     public static final class SharedSecret {
 
         private final byte[] data;
@@ -221,6 +221,19 @@ public final class TOTP {
                 mac.init(new SecretKeySpec(key, "RAW"));
             }
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            SharedSecret that = (SharedSecret) o;
+            return Arrays.equals(data, that.data);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(data);
+        }
     }
 
     /**
@@ -228,7 +241,6 @@ public final class TOTP {
      *
      * @see #truncate(int)
      */
-    @SuppressWarnings("ClassCanBeRecord")
     public static final class OneTimePassword {
 
         private static final int[] DIGITS_POWER = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
@@ -257,6 +269,19 @@ public final class TOTP {
                 sb.insert(0, "0");
             }
             return sb.toString();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            OneTimePassword that = (OneTimePassword) o;
+            return Arrays.equals(data, that.data);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(data);
         }
     }
 }

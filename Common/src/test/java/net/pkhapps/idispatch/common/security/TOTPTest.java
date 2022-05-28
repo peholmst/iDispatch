@@ -24,8 +24,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.time.Instant;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TOTPTest {
 
@@ -81,6 +80,15 @@ public class TOTPTest {
     }
 
     @Test
+    public void oneTimePasswordEqualsAndHashCode() {
+        var otp = TOTP.generateOneTimePassword(SECRET, Instant.ofEpochSecond(2000000000));
+        var otpCopy = TOTP.generateOneTimePassword(SECRET, Instant.ofEpochSecond(2000000000));
+        assertNotSame(otp, otpCopy);
+        assertEquals(otp, otpCopy);
+        assertEquals(otp.hashCode(), otpCopy.hashCode());
+    }
+
+    @Test
     public void sharedSecretFromRandom_noExceptionThrown() {
         var secret = TOTP.SharedSecret.fromRandom();
         // No assertions, just shouldn't throw any exceptions
@@ -99,5 +107,13 @@ public class TOTPTest {
         var base64 = "YWJjZGVmZwo=";
         var secret = TOTP.SharedSecret.fromBase64String(base64);
         assertEquals(base64, secret.toBase64String());
+    }
+
+    @Test
+    public void sharedSecretEqualsAndHashCode() {
+        var secretCopy = TOTP.SharedSecret.fromHexString(SECRET.toHexString());
+        assertNotSame(SECRET, secretCopy);
+        assertEquals(SECRET, secretCopy);
+        assertEquals(SECRET.hashCode(), secretCopy.hashCode());
     }
 }
